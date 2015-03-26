@@ -27,12 +27,14 @@ var Person = caplet.createModelClass({
   },
   save: function() {
     if(this.uid) {
-      peopleCollection.update(this, { 
+      peopleCollection.update({ 
+        data: this.toJSON(),
         route: "/people/" + this.uid
       }, ok(this.setData));
 
     } else {
-      peopleCollection.create(this, { 
+      peopleCollection.create({ 
+        data: this.toJSON()
         route: "/people",
       }, ok(this.setData));
     }
