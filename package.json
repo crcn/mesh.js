@@ -15,5 +15,21 @@
   "bugs": {
     "url": "https://github.com/crcn/crudlet.js/issues"
   },
-  "homepage": "https://github.com/crcn/crudlet.js"
+  "homepage": "https://github.com/crcn/crudlet.js",
+  "devDependencies": {
+    "browserify": "^9.0.3",
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-coveralls": "^0.1.3",
+    "gulp-istanbul": "^0.7.0",
+    "gulp-jscs": "^1.4.0",
+    "gulp-jshint": "^1.9.4",
+    "gulp-mocha": "^2.0.0",
+    "gulp-plumber": "^1.0.0",
+    "gulp-uglify": "^1.1.0",
+    "karma": "^0.12.31",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "yargs": "^3.6.0"
+  }
 }
