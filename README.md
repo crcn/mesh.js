@@ -9,10 +9,12 @@ var ok      = require("okay");
 
 
 var db = crudlet(
-  crudlet.parallel(
-    pubnub(),
-    localdb(),
-    http()
+  crudlet.sequence(
+    crudlet.parallel(
+      localdb(),
+      http()
+    ),
+    pubnub()
   )
 );
 
@@ -23,7 +25,10 @@ var peopleCollection = db.child({
 var Person = caplet.createModelClass({
   initialize: function() {
     this.setData = this.set.bind(this, "data");
-    peopleCollection.tail({ "data.cid": this.cid }, this.setData);
+    peopleCollection.run("tail", { "data.cid": this.cid }, this.setData);
+    this.watch(function() {
+      peopleCollection.run("sync", { data: this.toJSON() });
+    });
   },
   save: function() {
     if(this.uid) {
@@ -38,10 +43,15 @@ var Person = caplet.createModelClass({
         route: "/people",
       }, ok(this.setData));
     }
+  },
+  load: function() {
+    peopleCollection.load({
+      data: this.toJSON()
+    }, ok(this.setData));
   }
 });
 
-peopleCollection.tail({ action: /create|remove/ }, function(op) {
+peopleCollection.run("tail", { action: /create|remove/ }, function(op) {
   console.log(op.action);
   console.log(op.collection);
   console.log(op.data); 
