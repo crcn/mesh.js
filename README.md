@@ -38,7 +38,7 @@ var Person = caplet.createModelClass({
   }
 });
 
-peopleCollection({ action: /create|remove/ }, function(op) {
+peopleCollection.tail({ action: /create|remove/ }, function(op) {
   console.log(op.action);
   console.log(op.collection);
   console.log(op.data); 
