@@ -7,34 +7,41 @@ var pubnub  = require("crudlet-pubnub");
 var xtend   = require("xtend/mutable");
 var ok      = require("okay");
 
+
+
 var db = crudlet(
   pubnub(),
   localdb(),
   http()
 );
 
+var peopleCollection = db.child({ 
+  collection: "people"
+});
+
 var Person = caplet.createModelClass({
   initialize: function() {
-    db.tail(this, { collection: "people" }); // listen for any changes
+    this.setData = this.set.bind(this, "data");
+    peopleCollection.tail({ "data.cid": this.cid }, this.setData);
   },
   save: function() {
     if(this.uid) {
-      db.update(this, { 
-        collection: "people",
+      peopleCollection.update(this, { 
         route: "/people/" + this.uid
-      }, ok(this.set.bind(this, "data")));
+      }, ok(this.setData));
 
     } else {
-      db.create(this, { 
-        collection: "people",
+      peopleCollection.create(this, { 
         route: "/people",
-      }, ok(this.set.bind(this, "data")));
+      }, ok(this.setData));
     }
   }
 });
 
-db.collection("people").watch(function() {
-  
+peopleCollection({ action: /create|remove/ }, function(op) {
+  console.log(op.action);
+  console.log(op.collection);
+  console.log(op.data); 
 });
 
 var p = new Person();
