@@ -8,11 +8,12 @@ var xtend   = require("xtend/mutable");
 var ok      = require("okay");
 
 
-
 var db = crudlet(
-  pubnub(),
-  localdb(),
-  http()
+  crudlet.parallel(
+    pubnub(),
+    localdb(),
+    http()
+  )
 );
 
 var peopleCollection = db.child({ 
