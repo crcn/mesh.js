@@ -7,7 +7,7 @@ describe(__filename + "#", function() {
 
   beforeEach(function() {
     db = crudlet(
-      crudlet.db.memory()
+      crudlet.db.memory("id")
     );
   })
 
@@ -26,6 +26,12 @@ describe(__filename + "#", function() {
   it("can update with a query", function() {
     db.insert({ data: { name: "abba" }, collection: "people" });
     db.update({ data: { name: "baab" }, query: { name: "abba" }, collection: "people" });
+    expect(db.target._db.people[0].name).to.be("baab");
+  });
+
+  it("can update without a query", function() {
+    db.insert({ data: { id: 1, name: "abba" }, collection: "people" });
+    db.update({ data: { id: 1, name: "baab" }, collection: "people" });
     expect(db.target._db.people[0].name).to.be("baab");
   });
 

@@ -25,7 +25,7 @@ var peopleCollection = db.child({
 var Person = caplet.createModelClass({
   initialize: function() {
     this.setData = this.set.bind(this, "data");
-    peopleCollection.run("tail", { "data.cid": this.cid }, this.setData);
+    peopleCollection.run("tail", { { query: { "data.cid": this.cid }}}, this.setData);
     this.watch(function() {
       peopleCollection.run("sync", { data: this.toJSON() });
     });
