@@ -1,0 +1,19 @@
+{
+  "name": "crudlet",
+  "version": "0.0.0",
+  "description": "```javascript var caplet  = require(\"caplet\"); var crudlet = require(\"crudlet\"); var localdb = require(\"crudlet-localdb\"); var http    = require(\"crudlet-http\"); var pubnub  = require(\"crudlet-pubnub\"); var xtend   = require(\"xtend/mutable\"); var ok      = require(\"okay\");",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "gulp lint test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crcn/crudlet.js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/crcn/crudlet.js/issues"
+  },
+  "homepage": "https://github.com/crcn/crudlet.js"
+}
