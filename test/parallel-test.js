@@ -10,7 +10,6 @@ describe(__filename + "#", function() {
 
     var startTime = Date.now();
 
-
     var db1 = function() {
       return through.obj(function(operation, enc, next) {
         i++;
@@ -23,7 +22,7 @@ describe(__filename + "#", function() {
 
     var db2 = function() {
       return through.obj(function(operation, enc, next) {
-        i++
+        i++;
         this.push({ name: "a" });
         this.push({ name: "a" });
         this.push({ name: "a" });
@@ -31,10 +30,10 @@ describe(__filename + "#", function() {
       });
     };
 
-    var db3 = crudlet(crudlet.parallel(db1, db2));
+    var db3 = crudlet.parallel(db1, db2);
     db3().on("data", function() {
       j++;
-    }).on("end", function(){
+    }).on("end", function() {
       expect(Date.now() - startTime).to.be.lessThan(80);
       expect(i).to.be(2);
       expect(j).to.be(6);

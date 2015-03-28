@@ -10,11 +10,9 @@ describe(__filename + "#", function() {
         this.push(operation.data);
         next();
       });
-    }
+    };
 
-    var db = crudlet(db1);
-    var stream = db();
-
+    var stream = db1();
 
     var c = stream.pipe(crudlet.delta());
     c.once("data", function(data) {
@@ -31,6 +29,5 @@ describe(__filename + "#", function() {
     });
 
     stream.write(crudlet.operation("update", { data: { name: "abba" }}));
-
   });
 });
