@@ -5,7 +5,6 @@ var localdb = require("crudlet-localdb");
 var http    = require("crudlet-http");
 var pubnub  = require("crudlet-pubnub");
 var xtend   = require("xtend/mutable");
-var ok      = require("okay");
 
 
 var db = crudlet(
@@ -18,45 +17,41 @@ var db = crudlet(
   )
 );
 
-var peopleCollection = db.child({ 
+var peopleCollection = db.child({
   collection: "people"
 });
 
 var Person = caplet.createModelClass({
   initialize: function() {
-    this.setData = this.set.bind(this, "data");
-    peopleCollection.run("tail", { { query: { "data.cid": this.cid }}}, this.setData);
-    this.watch(function() {
-      peopleCollection.run("sync", { data: this.toJSON() });
-    });
+    this.opStream = db();
+    this.opStream.pipe(crudlet.delta()).on("data", this.set.bind(this, "data"));
   },
   save: function() {
     if(this.uid) {
-      peopleCollection.update({ 
-        data: this.toJSON(),
+      this.opStream.write(crudlet.operation("update", {
+        data: this,
         route: "/people/" + this.uid
-      }, ok(this.setData));
-
+      }));
     } else {
-      peopleCollection.create({ 
-        data: this.toJSON()
-        route: "/people",
-      }, ok(this.setData));
+      this.opStream.write(crudlet.operation("insert", {
+        data: this,
+        route: "/people"
+      }));
     }
   },
   load: function() {
-    peopleCollection.load({
-      data: this.toJSON()
-    }, ok(this.setData));
+    this.opStream.write(crudlet.operation("load", {
+      data: this
+    }));
   }
 });
 
-peopleCollection.run("tail", { action: /create|remove/ }, function(op) {
-  console.log(op.action);
-  console.log(op.collection);
-  console.log(op.data); 
+db("tail").pipe(crudlet.filter({ name: /create|remove/ })).on("data", function(operation) {
+  console.log(operation.name);
+  console.log(operation.collection);
+  console.log(operation.data);
 });
 
 var p = new Person();
-p.set("name", "john"); // trigger watch 
+p.set("name", "john"); // trigger watch
 ```
