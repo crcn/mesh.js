@@ -1,57 +1,29 @@
+Example:
+
 ```javascript
-var caplet  = require("caplet");
 var crudlet = require("crudlet");
 var localdb = require("crudlet-localdb");
 var http    = require("crudlet-http");
-var pubnub  = require("crudlet-pubnub");
-var xtend   = require("xtend/mutable");
+var webrtc  = require("crudlet-webrtc");
 
 
-var db = crudlet(
-  crudlet.sequence(
-    crudlet.parallel(
-      localdb(),
-      http()
-    ),
-    pubnub()
-  )
-);
+var db = crudlet.parallel(localdb(), http(), webrtc());
 
-var peopleCollection = db.child({
-  collection: "people"
-});
-
-var Person = caplet.createModelClass({
-  initialize: function() {
-    this.opStream = db();
-    this.opStream.pipe(crudlet.delta()).on("data", this.set.bind(this, "data"));
-  },
-  save: function() {
-    if(this.uid) {
-      this.opStream.write(crudlet.operation("update", {
-        data: this,
-        route: "/people/" + this.uid
-      }));
-    } else {
-      this.opStream.write(crudlet.operation("insert", {
-        data: this,
-        route: "/people"
-      }));
-    }
-  },
-  load: function() {
-    this.opStream.write(crudlet.operation("load", {
-      data: this
-    }));
+var peopleDb = db.child(db, {
+  collection: "people",
+  http: {
+    get: "/people",
+    post: "/people",
+    put: "/people/:data.uid",
+    del: "/people/:data.uid"
   }
 });
 
-db("tail").pipe(crudlet.filter({ name: /create|remove/ })).on("data", function(operation) {
-  console.log(operation.name);
-  console.log(operation.collection);
-  console.log(operation.data);
-});
+// tail remote operations (webrtc)
+peopleDb.on("data", function(operation) {
 
-var p = new Person();
-p.set("name", "john"); // trigger watch
+}).write(crudlet.operation("tail", { remote: true }));
+
+// write to localdb, http, and webrtc
+peopleDb.write(crudet.operation("insert", { data: { name: "blarg" }}));
 ```
