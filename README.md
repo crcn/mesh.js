@@ -30,7 +30,7 @@ crudlet.run(peopleDb, "insert", { data: { name: "blarg" }}).on("data", function(
 
 #### crudlet.run(db, operationName, properties)
 
-Creates a new operation
+run an operation against a db.
 
 ```javascript
 var crudlet     = require("crudlet");
@@ -42,10 +42,6 @@ crudlet.run(db, "load", { query: { name: "Oprah" }}).on("data", function(data) {
 
 });
 ```
-
-#### crudlet.operation(name, properties)
-
-Creates a new operation
 
 #### crudlet.parallel(...dbs)
 
