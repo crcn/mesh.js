@@ -1,6 +1,6 @@
 {
   "name": "crudlet",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "```javascript var caplet  = require(\"caplet\"); var crudlet = require(\"crudlet\"); var localdb = require(\"crudlet-localdb\"); var http    = require(\"crudlet-http\"); var pubnub  = require(\"crudlet-pubnub\"); var xtend   = require(\"xtend/mutable\"); var ok      = require(\"okay\");",
   "main": "./lib/index.js",
   "scripts": {
@@ -18,6 +18,10 @@
   "homepage": "https://github.com/crcn/crudlet.js",
   "devDependencies": {
     "browserify": "^9.0.3",
+    "crudlet-http": "0.0.4",
+    "crudlet-local-storage": "0.0.7",
+    "crudlet-pubnub": "0.0.7",
+    "crudlet-webrtc": "0.0.7",
     "expect.js": "^0.3.1",
     "gulp": "^3.8.11",
     "gulp-concat": "^2.5.2",
