@@ -1,10 +1,12 @@
 Example:
 
 ```javascript
-var crudlet = require("crudlet");
-var localdb = require("crudlet-localdb");
-var http    = require("crudlet-http");
-var webrtc  = require("crudlet-webrtc");
+var crudlet  = require("crudlet");
+var caplet   = require("caplet");
+var localdb  = require("crudlet-localdb");
+var http     = require("crudlet-http");
+var webrtc   = require("crudlet-webrtc");
+var _        = require("highland");
 
 
 var db = crudlet.parallel(localdb(), http(), webrtc());
@@ -14,33 +16,41 @@ var peopleDb = db.child(db, {
   http: {
     get: "/people",
     post: "/people",
-    put: "/people/:data.uid",
-    del: "/people/:data.uid"
+    put: "/people/:uid",
+    del: "/people/:uid"
   }
 });
 
-crudlet.run(peopleDb, "tail", { remote: true }).on("data", function() {
-
+var Person = caplet.createModelClass({
+  initialize: function() {
+    this.updateStream = crudlet.stream(peopleDb).pipe(crudlet.delta()).on("data", this.set.bind(this, "data"));
+  }, 
+  load: function() {
+    _([crudlet.operation("insert", { data: this })]).pipe(this.updateStream);
+  },
+  save: function() {
+    _([crudlet.operation(this.uid ? "insert" : "update", { data: this })]).pipe(this.updateStream);
+  }
 });
 
-crudlet.run(peopleDb, "insert", { data: { name: "blarg" }}).on("data", function() {
-
-});
 ```
 
 #### crudlet.run(db, operationName, properties)
 
-run an operation against a db.
+creates a new operation stream
 
 ```javascript
-var crudlet     = require("crudlet");
-var localStore  = require("crudlet-local-storage");
+var crudlet    = require("crudlet");
+var localStore = require("crudlet-local-storage");
+var _          = require("highland");
 
 var db = localStore();
 
-crudlet.run(db, "load", { query: { name: "Oprah" }}).on("data", function(data) {
 
+crudlet.run(db, "load", { query: { uid: "uid" }}).on("data", function() {
+  
 });
+
 ```
 
 #### crudlet.parallel(...dbs)
@@ -83,14 +93,21 @@ creates a db stream
 var crudlet = require("crudlet");
 var localstore = require("crudlet-local-storage");
 var db = localstore();
-var opStream = crudlet.stream(db);
+var _ = require("highland");
 
-opStream.on("data", function() {
+_([
+  crudlet.operation("insert", { data: { name: "blah" }}),
+  crudlet.operation("insert", { data: { name: "blarg" }})
+]).
+pipe(crudlet.stream(db)).
+on("data", function() {
+  
+});
 
-}).write(crudlet.operation("insert", { data: { name: "blah" }}));
+
 ```
 
-#### crudlet.operation(name, properties)
+#### operation crudlet.operation(name, properties)
 
 creates a new operation
 
