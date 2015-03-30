@@ -49,11 +49,13 @@ var Message = caplet.createModelClass({
 var Messages = caplet.createCollectionClass({
   modelClass: Message,
   initialize: function() {
+    // messagesDb("tail").on("data", this.load.bind(this));
     crudlet.open(messagesDb).
     on("data", this.load.bind(this)).
     write(crudlet.operation("tail"));
   },
   load: function() {
+    // messagesDb("load", { mutli: true }).on("data", this.set.bind(this, "data"));
     crudlet.open(messagesDb).
     on("data", this.set.bind(this, "data")).
     end(crudlet.operation("load", { multi: true }));
