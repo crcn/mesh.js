@@ -3,6 +3,7 @@ var caplet      = require("caplet");
 var localstore  = require("crudlet-local-storage");
 var pubnub      = require("crudlet-pubnub");
 var React       = require("react");
+var _           = require("highland");
 
 var localdb = localstore();
 var pubdb   = pubnub({
@@ -52,7 +53,7 @@ var Messages = caplet.createCollectionClass({
     messagesDb("tail").on("data", this.load.bind(this));
   },
   load: function() {
-    messagesDb("load", { multi: true }).pipe(crudlet.toArray()).on("data", this.set.bind(this, "data"));
+    messagesDb("load", { multi: true }).pipe(_().collect()).on("data", this.set.bind(this, "data"));
     return this;
   }
 });

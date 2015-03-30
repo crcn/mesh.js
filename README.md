@@ -121,18 +121,6 @@ opStream.write(crudlet.operation("update", { data: { name: "craig" }})); // delt
 opStream.write(crudlet.operation("update", { data: { name: "craig", age: 17 }})); // delta { age: 17 }
 ```
 
-#### crudlet.toArray()
-
-takes stream data and puts it in an array
-
-```javascript
-
-// take stream of data and place in buffer before going on
-db("load", { multi: true }).pipe(crudlet.toArray()).on("data", function(items) {
-  
-});
-```
-
 <!--
 
 ```javascript
