@@ -28,9 +28,9 @@ var Person = caplet.createModelClass({
 
 ```
 
-#### crudlet.run(db, operationName, properties)
+#### db(operationName, properties)
 
-creates a new operation stream
+runs a new operation
 
 ```javascript
 var crudlet    = require("crudlet");
@@ -39,8 +39,7 @@ var _          = require("highland");
 
 var db = localStore();
 
-
-crudlet.run(db, "load", { query: { uid: "uid" }}).on("data", function() {
+db("load", { query: { uid: "uid" }}).on("data", function() {
   
 });
 
@@ -59,7 +58,7 @@ var http        = require("crudlet-http");
 vr db = crudlet.parallel(localstore(), http());
 
 // data will get emitted twice here
-crudlet.run(db, "load", {
+db("load", {
   query: {
     name: "Oprah"
   },
@@ -78,7 +77,7 @@ Runs databases in sequence. Similar to parallel()
 
 Creates a child db
 
-#### crudlet.stream(db)
+#### crudlet.open(db)
 
 creates a db stream
 
@@ -92,7 +91,7 @@ _([
   crudlet.operation("insert", { data: { name: "blah" }}),
   crudlet.operation("insert", { data: { name: "blarg" }})
 ]).
-pipe(crudlet.stream(db)).
+pipe(crudlet.open(db)).
 on("data", function() {
   
 });
@@ -122,6 +121,17 @@ opStream.write(crudlet.operation("update", { data: { name: "craig" }})); // delt
 opStream.write(crudlet.operation("update", { data: { name: "craig", age: 17 }})); // delta { age: 17 }
 ```
 
+#### crudlet.toArray()
+
+takes stream data and puts it in an array
+
+```javascript
+
+// take stream of data and place in buffer before going on
+db("load", { multi: true }).pipe(crudlet.toArray()).on("data", function(items) {
+  
+});
+```
 
 <!--
 
