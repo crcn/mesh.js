@@ -14,10 +14,10 @@ var pubdb   = pubnub({
 
 pubdb.addChannel("chatroom");
 
-var db      = crudlet.tailable(crudlet.parallel(localdb, pubdb));
-crudlet.run(pubdb, "tail").on("data", function(operation) {
-  console.log(operation);
-}).pipe(crudlet.open(db));
+var db = crudlet.tailable(crudlet.parallel(localdb, pubdb));
+
+// pipe all pubnub operations back into the database
+crudlet.run(pubdb, "tail").pipe(crudlet.open(db));
 
 var messagesDb = crudlet.child(db, { collection: "messages" });
 
@@ -35,11 +35,11 @@ var Message = caplet.createModelClass({
   },
   save: function() {
     this.opStream.
-    write(crudlet.operation(this.uid ? "update" : "insert", { query: { uid: this.uid }, data: this }));
+    write(crudlet.operation(this.uid ? "update" : "insert", { query: { uid: this.uid }, data: this.toData() }));
   },
   toData: function() {
     return {
-      uid  : this.uid || String(Date.now()) + "_" + Math.round(Math.random() * 999999999),
+      uid  : this.uid || (this.uid = String(Date.now()) + "_" + Math.round(Math.random() * 999999999)),
       text : this.text
     };
   }
@@ -58,9 +58,6 @@ var Messages = caplet.createCollectionClass({
   load: function() {
     crudlet.open(messagesDb).
     on("data", this.set.bind(this, "data")).
-    on("data", function(data) {
-      console.log(data);
-    }).
     end(crudlet.operation("load", { multi: true }));
     return this;
   }
@@ -1734,7 +1731,7 @@ module.exports = function(options) {
     c.subscribe({
       channel: channel,
       callback: function(operation) {
-        console.log(operation);
+        console.log("R");
         if (operation.remoteClientId === clientId) return;
         for (var i = listeners.length; i--;) {
           if (listeners[i].test(operation)) {
@@ -1746,7 +1743,7 @@ module.exports = function(options) {
 
     streams.push({
       send: function(data) {
-        console.log("PUB");
+        console.log("S");
         c.publish({
           channel: channel,
           message: data
