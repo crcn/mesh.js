@@ -8,28 +8,21 @@ var http     = require("crudlet-http");
 var webrtc   = require("crudlet-webrtc");
 var _        = require("highland");
 
-
 var db = crudlet.parallel(localdb(), http(), webrtc());
 
 var peopleDb = db.child(db, {
-  collection: "people",
-  http: {
-    get: "/people",
-    post: "/people",
-    put: "/people/:uid",
-    del: "/people/:uid"
-  }
+  collection: "people"
 });
 
 var Person = caplet.createModelClass({
   initialize: function() {
-    this.updateStream = crudlet.stream(peopleDb).pipe(crudlet.delta()).on("data", this.set.bind(this, "data"));
+    this.opStream = crudlet.open(peopleDb).pipe(crudlet.delta()).on("data", this.set.bind(this, "data"));
   }, 
   load: function() {
-    _([crudlet.operation("insert", { data: this })]).pipe(this.updateStream);
+    this.opStream.write(crudlet.operation("insert", { data: this }));
   },
   save: function() {
-    _([crudlet.operation(this.uid ? "insert" : "update", { data: this })]).pipe(this.updateStream);
+    this.opStream.write(crudlet.operation(this.uid ? "insert" : "update", { data: this }));
   }
 });
 
