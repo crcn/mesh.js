@@ -17,7 +17,7 @@ pubdb.addChannel("chatroom");
 var db = crudlet.tailable(crudlet.parallel(localdb, pubdb));
 
 // pipe all pubnub operations back into the database
-crudlet.run(pubdb, "tail").pipe(crudlet.open(db));
+pubdb("tail").pipe(crudlet.open(db));
 
 var messagesDb = crudlet.child(db, { collection: "messages" });
 
@@ -51,14 +51,10 @@ var Message = caplet.createModelClass({
 var Messages = caplet.createCollectionClass({
   modelClass: Message,
   initialize: function() {
-    crudlet.open(messagesDb).
-    on("data", this.load.bind(this)).
-    write(crudlet.operation("tail"));
+    messagesDb("tail").on("data", this.load.bind(this));
   },
   load: function() {
-    crudlet.open(messagesDb).
-    on("data", this.set.bind(this, "data")).
-    end(crudlet.operation("load", { multi: true }));
+    messagesDb("load", { multi: true }).pipe(crudlet.toArray()).on("data", this.set.bind(this, "data"));
     return this;
   }
 });
@@ -119,14 +115,8 @@ var createOperation = require("./operation");
 var extend          = require("deep-extend");
 
 module.exports = function(db, options) {
-  return function() {
-    return through.obj(function(op, enc, next) {
-      var childOperation = createOperation(op.name, extend({}, op, options));
-      var self = this;
-      db().on("data", function(data) {
-        self.push(data);
-      }).once("end", next).end(childOperation);
-    });
+  return function(name, properties) {
+    return db(name, extend({}, properties, options));
   };
 };
 
@@ -163,18 +153,25 @@ module.exports = {
   operation : require("./operation"),
   delta     : require("./delta"),
   child     : require("./child"),
-  run       : require("./run"),
   stream    : require("./open"),
+  toArray   : require("./to-array"),
   open      : require("./open"),
   tailable  : require("./tailable")
 };
 
-},{"./child":2,"./delta":3,"./open":5,"./operation":6,"./parallel":7,"./run":8,"./sequence":9,"./tailable":10}],5:[function(require,module,exports){
+},{"./child":2,"./delta":3,"./open":5,"./operation":6,"./parallel":7,"./sequence":8,"./tailable":9,"./to-array":10}],5:[function(require,module,exports){
+var through = require("through2");
+
 module.exports = function(db) {
-  return db();
+  return through.obj(function(operation, enc, next) {
+    var self = this;
+    db(operation.name, operation).on("data", function(data) {
+      self.push(data);
+    }).on("end", next);
+  });
 };
 
-},{}],6:[function(require,module,exports){
+},{"through2":202}],6:[function(require,module,exports){
 var extend = require("deep-extend");
 
 /**
@@ -194,104 +191,111 @@ module.exports = function(name, options) {
 };
 
 },{"deep-extend":34}],7:[function(require,module,exports){
+(function (process){
 var through = require("through2");
+var Readable = require("stream").Stream;
 
 /**
  */
 
 module.exports = function() {
   var dbs = Array.prototype.slice.apply(arguments);
-  return function() {
-    return through.obj(function(operation, enc, next) {
-      var i = 0;
-      var self = this;
+  return function(name, properties) {
+    var i = 0;
+    var self = this;
+
+    var stream = new Readable();
+
+    process.nextTick(function() {
       dbs.forEach(function(db) {
-        db().on("data", function(data) {
-          self.push(data);
+        db(name, properties).on("data", function(data) {
+          stream.emit("data", data);
         }).on("end", function() {
           if (++i >= dbs.length) {
-            return next();
+            return stream.emit("end");
           }
-        }).end(operation);
+        });
       });
-    });
+    })
+
+    return stream;
   };
-};
-
-},{"through2":202}],8:[function(require,module,exports){
-(function (process){
-var createOperation = require("./operation");
-
-module.exports = function(db, operationName, properties) {
-
-  var stream = db();
-  var operation;
-
-  if (operationName.name) {
-    operation = operationName;
-  } else {
-    operation = createOperation(operationName, properties);
-  }
-
-  process.nextTick(function() {
-    stream.end(operation);
-  });
-
-  return stream;
 };
 
 }).call(this,require('_process'))
-},{"./operation":6,"_process":213}],9:[function(require,module,exports){
+},{"_process":213,"stream":225,"through2":202}],8:[function(require,module,exports){
+(function (process){
+
+
 var through = require("through2");
+var Readable = require("stream").Stream;
 
 /**
  */
 
 module.exports = function() {
   var dbs = Array.prototype.slice.apply(arguments);
-  return function() {
-    return through.obj(function(operation, enc, next) {
-      var i = 0;
-      var self = this;
+  return function(name, properties) {
+    var i = 0;
 
+    var stream = new Readable();
+
+    process.nextTick(function() {
       function run() {
-        if (i >= dbs.length) return next();
+        if (i >= dbs.length) return stream.emit("end");
         var db = dbs[i++];
-        db().on("data", function(data) {
-          self.push(data);
-        }).on("end", run).end(operation);
+        db(name, properties).on("data", function(data) {
+          stream.emit("data", data);
+        }).on("end", run);
       }
       run();
-    });
+    })
+
+    return stream;
   };
 };
 
-},{"through2":202}],10:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"_process":213,"stream":225,"through2":202}],9:[function(require,module,exports){
 var through      = require("through2");
 var EventEmitter = require("fast-event-emitter");
+var Stream       = require("stream").Stream;
+var operation    = require("./operation");
 
 module.exports = function(db, reject) {
   if (!reject) reject = ["load"];
   var tails = [];
 
-  return function() {
-    return through.obj(function(operation, enc, next) {
-      if (operation.name === "tail") {
-        tails.push(this);
-      } else {
-        var self = this;
-        var stream = db().on("data", function(data) {
-          self.push(data);
-        }).on("end", function() {
-          next();
-          if (~reject.indexOf(operation.name)) return;
-          for (var i = tails.length; i--;) tails[i].push(operation);
-        }).end(operation);
-      }
-    }); 
+  return function(name, properties) {
+    if (name === "tail") {
+      var stream = new Stream();
+      tails.push(stream);
+      return stream;
+    } else {
+      var self = this;
+      var stream = db(name, properties);
+      stream.on("data", function(){});
+      stream.on("end", function() {
+        if (~reject.indexOf(name)) return;
+        for (var i = tails.length; i--;) tails[i].emit("data", operation(name, properties));
+      });
+      return stream;
+    }
   }
 }
-},{"fast-event-emitter":35,"through2":202}],11:[function(require,module,exports){
+},{"./operation":6,"fast-event-emitter":35,"stream":225,"through2":202}],10:[function(require,module,exports){
+var through = require("through2");
+
+module.exports = function() {
+  var buffer = [];
+  return through.obj(function(chunk, enc, next) {
+    buffer.push(chunk);
+    next();
+  }, function() {
+    this.push(buffer);
+  });
+}
+},{"through2":202}],11:[function(require,module,exports){
 var watchProperty = require("./watch-property");
 
 module.exports = function(fromTarget, fromProperty, toTarget, toProperty) {
@@ -1538,10 +1542,11 @@ module.exports = MemoryDatabase.getStreamer(LocalStorageDatabase);
 })(Function('return this')());
 
 },{}],31:[function(require,module,exports){
+(function (process){
 var extend       = require("deep-extend");
 var sift         = require("sift");
 var protoclass   = require("protoclass");
-var through      = require("through2");
+var Stream       = require("stream").Stream;
 
 /**
  */
@@ -1608,7 +1613,7 @@ protoclass(MemoryDatabase, {
       for (var i = items.length; i--;) extend(items[i], options.data);
     } else {
       var item = items.shift();
-      ret = items;
+      ret = item;
       if (item) extend(item, options.data);
     }
 
@@ -1627,7 +1632,7 @@ protoclass(MemoryDatabase, {
       for (var i = items.length; i--;) collection.splice(collection.indexOf(items[i]), 1);
     } else {
       var item = items.shift();
-      ret = items;
+      ret = item;
       if (item) collection.splice(collection.indexOf(item), 1);
     }
 
@@ -1664,21 +1669,27 @@ module.exports.getStreamer = function(clazz) {
   return function(options) {
     var db = new clazz(options);
 
-    function ret () {
-      return through.obj(function(operation, enc, next) {
-        var self = this;
-        db.run(operation, function(err, data) {
-          if (err) self.emit("error", err);
+    function ret (name, properties) {
+
+      var stream = new Stream();
+
+      process.nextTick(function() {
+         db.run(extend({name:name}, properties), function(err, data) {
+          if (err) stream.emit("error", err);
           if (Object.prototype.toString.call(data) === "[object Array]") {
             data.forEach(function(item) {
-              self.push(data);
+              stream.emit("data", item);
             });
           } else {
-            self.push(data);
+            stream.emit("data", data);
           }
-          next();
+          stream.emit("end");
         });
       });
+
+     
+
+      return stream;
     }
 
     ret.target = db;
@@ -1693,10 +1704,14 @@ module.exports.extend = function() {
   return MemoryDatabase.extend.apply(MemoryDatabase, arguments);
 };
 
-},{"deep-extend":34,"protoclass":36,"sift":192,"through2":202}],32:[function(require,module,exports){
-var through      = require("through2");
-var PUBNUB       = require("pubnub-browserify");
-var sift         = require("sift");
+}).call(this,require('_process'))
+},{"_process":213,"deep-extend":34,"protoclass":36,"sift":192,"stream":225}],32:[function(require,module,exports){
+(function (process){
+var through = require("through2");
+var PUBNUB  = require("pubnub-browserify");
+var sift    = require("sift");
+var Stream  = require("stream");
+var extend  = require("xtend");
 
 module.exports = function(options) {
 
@@ -1704,26 +1719,29 @@ module.exports = function(options) {
   var c = PUBNUB.init(options);
   var clientId = Date.now() + "_" + Math.round(Math.random() * 999999999);
 
-  var streams   = [];
-  var listeners = [];
+  var clients = [];
+  var tails   = [];
 
 
-  function createStream() {
-    return through.obj(function(operation, enc, next) {
+  function createStream(name, properties) {
+    var stream = new Stream();
 
-      if (operation.name === "tail") {
-        return tail(this, operation);
+    process.nextTick(function() {
+      if (name === "tail") {
+        return tail(stream, properties);
       }
 
-      if (!operation.remoteClientId && /insert|update|remove/.test(operation.name)) {
-        operation.remoteClientId = clientId;
-        for (var i = streams.length; i--;) {
-          streams[i].send(operation);
+      if (!properties.remoteClientId && /insert|update|remove/.test(name)) {
+        properties.remoteClientId = clientId;
+        for (var i = clients.length; i--;) {
+          clients[i].send(extend({ name: name }, properties));
         }
       }
 
-      next();
+      stream.emit("end");
     });
+
+    return stream;
   };
 
   createStream.addChannel = function(channel) {
@@ -1731,19 +1749,18 @@ module.exports = function(options) {
     c.subscribe({
       channel: channel,
       callback: function(operation) {
-        console.log("R");
         if (operation.remoteClientId === clientId) return;
-        for (var i = listeners.length; i--;) {
-          if (listeners[i].test(operation)) {
-            listeners[i].stream.push(operation);
+        console.log(operation);
+        for (var i = tails.length; i--;) {
+          if (tails[i].test(operation)) {
+            tails[i].stream.emit("data", operation);
           }
         }
       }
     });
 
-    streams.push({
+    clients.push({
       send: function(data) {
-        console.log("S");
         c.publish({
           channel: channel,
           message: data
@@ -1752,21 +1769,17 @@ module.exports = function(options) {
     });
   }
 
-
-
   return createStream;
 
-  function tail (stream, operation) {
-    var op = JSON.parse(JSON.stringify(operation));
-    delete op.name;
-
-    listeners.push({
-      test: sift(op),
+  function tail (stream, properties) {
+    tails.push({
+      test: sift(properties ? JSON.parse(JSON.stringify(properties)) : function(){ return true }),
       stream: stream
     });
   }
 };
-},{"pubnub-browserify":33,"sift":192,"through2":202}],33:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"_process":213,"pubnub-browserify":33,"sift":192,"stream":225,"through2":202,"xtend":203}],33:[function(require,module,exports){
 /* ---------------------------------------------------------------------------
 WAIT! - This file depends on instructions from the PUBNUB Cloud.
 http://www.pubnub.com/account-javascript-api-include

@@ -15,7 +15,7 @@ pubdb.addChannel("chatroom");
 var db = crudlet.tailable(crudlet.parallel(localdb, pubdb));
 
 // pipe all pubnub operations back into the database
-crudlet.run(pubdb, "tail").pipe(crudlet.open(db));
+pubdb("tail").pipe(crudlet.open(db));
 
 var messagesDb = crudlet.child(db, { collection: "messages" });
 
@@ -49,16 +49,10 @@ var Message = caplet.createModelClass({
 var Messages = caplet.createCollectionClass({
   modelClass: Message,
   initialize: function() {
-    // messagesDb("tail").on("data", this.load.bind(this));
-    crudlet.open(messagesDb).
-    on("data", this.load.bind(this)).
-    write(crudlet.operation("tail"));
+    messagesDb("tail").on("data", this.load.bind(this));
   },
   load: function() {
-    // messagesDb("load", { mutli: true }).on("data", this.set.bind(this, "data"));
-    crudlet.open(messagesDb).
-    on("data", this.set.bind(this, "data")).
-    end(crudlet.operation("load", { multi: true }));
+    messagesDb("load", { multi: true }).pipe(crudlet.toArray()).on("data", this.set.bind(this, "data"));
     return this;
   }
 });
