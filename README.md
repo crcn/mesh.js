@@ -12,7 +12,7 @@ can use any database (or even your API) without it being coupled to your applica
 
 #### Example
 
-Below is an example of a realtime DB that uses pubnub, and local storage.
+Below is an example of a realtime DB that uses [pubnub](https://github.com/mojo-js/crudlet-pubnub), and [local storage](https://github.com/mojo-js/crudlet-local-storage).
 
 ```javascript
 var crud          = require("crudlet");
