@@ -7,8 +7,8 @@ var _           = require("highland");
 
 var localdb = localstore();
 var pubdb   = pubnub({
-  publish_key: "pub-c-ca2119a6-a6a6-4374-8020-c94f5e439d77",
-  subscribe_key: "sub-c-5bbdee5e-d560-11e4-b585-0619f8945a4f"
+  publishKey: "pub-c-ca2119a6-a6a6-4374-8020-c94f5e439d77",
+  subscribeKey: "sub-c-5bbdee5e-d560-11e4-b585-0619f8945a4f"
 });
 
 pubdb.addChannel("chatroom");
@@ -24,6 +24,11 @@ var messagesDb = crudlet.child(db, { collection: "messages" });
  */
 
 var Message = caplet.createModelClass({
+  getInitialProperties: function() {
+    return {
+      uid: String(Date.now()) + "_" + Math.round(Math.random() * 999999999)
+    };
+  },
   initialize: function() {
     this.opStream = crudlet.open(messagesDb).on("data", this.set.bind(this, "data"));
   },
@@ -34,11 +39,11 @@ var Message = caplet.createModelClass({
   },
   save: function() {
     this.opStream.
-    write(crudlet.operation(this.uid ? "update" : "insert", { query: { uid: this.uid }, data: this.toData() }));
+    write(crudlet.operation("upsert", { query: { uid: this.uid }, data: this.toData() }));
   },
   toData: function() {
     return {
-      uid  : this.uid || (this.uid = String(Date.now()) + "_" + Math.round(Math.random() * 999999999)),
+      uid  : this.uid,
       text : this.text
     };
   }
@@ -51,6 +56,12 @@ var Messages = caplet.createCollectionClass({
   modelClass: Message,
   initialize: function() {
     messagesDb("tail").on("data", this.load.bind(this));
+  },
+  addMessage: function(properties) {
+    var m = this.createModel(properties);
+    this.push(m);
+    m.save();
+    return m;
   },
   load: function() {
     messagesDb("load", { multi: true }).pipe(_().collect()).on("data", this.set.bind(this, "data"));
@@ -67,7 +78,7 @@ var MessageView = React.createClass({
     this.props.message.remove();
   },
   render: function() {
-    return React.createElement("li", null, 
+    return React.createElement("li", null,
       this.props.message.uid,
       this.props.message.text,
       " ",
@@ -84,15 +95,15 @@ var MessagesView = React.createClass({
   onKeyDown: function(event) {
     if (event.keyCode !== 13) return;
     var input = this.refs.input.getDOMNode();
-    this.props.messages.create({ 
+    this.props.messages.addMessage({
       text: input.value
-    }).save();
+    });
     input.value = "";
   },
   render: function() {
-    return React.createElement("div", null, 
+    return React.createElement("div", null,
       React.createElement("input", { ref: "input", placeholder: "Message", onKeyDown: this.onKeyDown }),
-      React.createElement("ul", null, 
+      React.createElement("ul", null,
         this.props.messages.map(function(message) {
           return React.createElement(MessageView, { message: message })
         })

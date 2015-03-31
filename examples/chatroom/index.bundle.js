@@ -9,8 +9,8 @@ var _           = require("highland");
 
 var localdb = localstore();
 var pubdb   = pubnub({
-  publish_key: "pub-c-ca2119a6-a6a6-4374-8020-c94f5e439d77",
-  subscribe_key: "sub-c-5bbdee5e-d560-11e4-b585-0619f8945a4f"
+  publishKey: "pub-c-ca2119a6-a6a6-4374-8020-c94f5e439d77",
+  subscribeKey: "sub-c-5bbdee5e-d560-11e4-b585-0619f8945a4f"
 });
 
 pubdb.addChannel("chatroom");
@@ -26,6 +26,11 @@ var messagesDb = crudlet.child(db, { collection: "messages" });
  */
 
 var Message = caplet.createModelClass({
+  getInitialProperties: function() {
+    return {
+      uid: String(Date.now()) + "_" + Math.round(Math.random() * 999999999)
+    };
+  },
   initialize: function() {
     this.opStream = crudlet.open(messagesDb).on("data", this.set.bind(this, "data"));
   },
@@ -36,11 +41,11 @@ var Message = caplet.createModelClass({
   },
   save: function() {
     this.opStream.
-    write(crudlet.operation(this.uid ? "update" : "insert", { query: { uid: this.uid }, data: this.toData() }));
+    write(crudlet.operation("upsert", { query: { uid: this.uid }, data: this.toData() }));
   },
   toData: function() {
     return {
-      uid  : this.uid || (this.uid = String(Date.now()) + "_" + Math.round(Math.random() * 999999999)),
+      uid  : this.uid,
       text : this.text
     };
   }
@@ -53,6 +58,12 @@ var Messages = caplet.createCollectionClass({
   modelClass: Message,
   initialize: function() {
     messagesDb("tail").on("data", this.load.bind(this));
+  },
+  addMessage: function(properties) {
+    var m = this.createModel(properties);
+    this.push(m);
+    m.save();
+    return m;
   },
   load: function() {
     messagesDb("load", { multi: true }).pipe(_().collect()).on("data", this.set.bind(this, "data"));
@@ -69,7 +80,7 @@ var MessageView = React.createClass({
     this.props.message.remove();
   },
   render: function() {
-    return React.createElement("li", null, 
+    return React.createElement("li", null,
       this.props.message.uid,
       this.props.message.text,
       " ",
@@ -86,15 +97,15 @@ var MessagesView = React.createClass({
   onKeyDown: function(event) {
     if (event.keyCode !== 13) return;
     var input = this.refs.input.getDOMNode();
-    this.props.messages.create({ 
+    this.props.messages.addMessage({
       text: input.value
-    }).save();
+    });
     input.value = "";
   },
   render: function() {
-    return React.createElement("div", null, 
+    return React.createElement("div", null,
       React.createElement("input", { ref: "input", placeholder: "Message", onKeyDown: this.onKeyDown }),
-      React.createElement("ul", null, 
+      React.createElement("ul", null,
         this.props.messages.map(function(message) {
           return React.createElement(MessageView, { message: message })
         })
@@ -109,6 +120,7 @@ var MessagesView = React.createClass({
 React.render(React.createElement(MessagesView, {
   messages: global.messages = Messages().load()
 }), document.body);
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../..":4,"caplet":14,"crudlet-local-storage":28,"crudlet-pubnub":31,"highland":35,"react":191}],2:[function(require,module,exports){
 var through         = require("through2");
@@ -323,7 +335,6 @@ function Collection(sourceOrProperties) {
   }
 
   if (this.getInitialProperties) properties = extend({}, this.getInitialProperties(), properties);
-  this._emitter      = new FastEventEmitter();
 
   WatchableCollection.call(this);
   this.setProperties(properties);
@@ -366,19 +377,6 @@ WatchableCollection.extend(Collection, {
 
   createModel: function(properties) {
     return new this.modelClass(properties);
-  },
-
-  /**
-   */
-
-  create: function(properties) {
-    var model = this.createModel(properties);
-
-    if (!properties.waitUntilSave) {
-      this.push(model);
-    }
-
-    return model;
   },
 
   /**
@@ -469,7 +467,7 @@ WatchableCollection.extend(Collection, {
 
     this.source.forEach(function(model) {
       self._modelListeners.push(model.watch(onChange));
-      self._modelListeners.push(model._emitter.once("dispose", function() {
+      self._modelListeners.push(model.once("dispose", function() {
         self.splice(self.indexOf(model), 1);
       }));
     });
@@ -484,6 +482,14 @@ WatchableCollection.extend(Collection, {
       this._modelListeners[i].dispose();
     }
     this._modelListeners = void 0;
+  },
+
+  /**
+   */
+
+  dispose: function() {
+    WatchableCollection.prototype.dispose.call(this);
+    this.emit("dispose");
   }
 });
 
@@ -518,15 +524,15 @@ module.exports = Collection;
 },{"./missing-property-mixin":16,"./model":17,"./watch-property":24,"fast-event-emitter":34,"watchable-collection":25,"xtend/mutable":204}],12:[function(require,module,exports){
 (function (process){
 
-
 module.exports = function(fn, timeout) {
   if (!process.browser) return fn;
   var timer;
   return function() {
     clearTimeout(timer);
     timer = setTimeout(fn, timeout);
-  }
-}
+  };
+};
+
 }).call(this,require('_process'))
 },{"_process":213}],13:[function(require,module,exports){
 var watchProperty = require("./watch-property");
@@ -588,7 +594,7 @@ module.exports = {
     var missingProperty = (typeof keypath === "string" ? keypath.split(".") : keypath)[0];
     if (!this._missingProperties) this._missingProperties = {};
     if (this._missingProperties[missingProperty]) return;
-    this._emitter.emit("missingProperty", this._missingProperties[missingProperty] = missingProperty);
+    this.emit("missingProperty", this._missingProperties[missingProperty] = missingProperty);
     if (this[missingProperty] != void 0) return this.get(keypath);
   }
 };
@@ -619,8 +625,6 @@ function Model(properties) {
 
   WatchableObject.call(this, properties);
 
-  this._emitter = new FastEventEmitter();
-
   var self = this;
 
   watchProperty(this, "data", this.onDataChange).trigger();
@@ -640,8 +644,7 @@ WatchableObject.extend(Model, {
   /**
    */
 
-  initialize: function() {
-  },
+  initialize: function() { },
 
   /**
    * deserialize data from the this.data
@@ -705,7 +708,7 @@ WatchableObject.extend(Model, {
 
   dispose: function() {
     WatchableObject.prototype.dispose.call(this);
-    this._emitter.emit("dispose");
+    this.emit("dispose");
   }
 });
 
@@ -790,14 +793,14 @@ module.exports = function(target, virtuals) {
     };
   }
 
-  target._emitter.on("missingProperty", function(property) {
+  target.on("missingProperty", function(property) {
 
     var virtual = getVirtual(property);
 
     if (!virtual) return;
 
     function onLoad(err, value) {
-      if (err) return target._emitter.emit("error", err);
+      if (err) return target.emit("error", err);
 
       /* istanbul ignore else */
       if (!process.browser) {
@@ -819,7 +822,7 @@ module.exports = function(target, virtuals) {
 module.exports = function(target, property, load, onLoad) {
   if (!target._singletons) target._singletons = {};
   var event = "singleton:" + property;
-  target._emitter.once(event, onLoad || function() { });
+  target.once(event, onLoad || function() { });
   var singleton = target._singletons[property];
   if (singleton != void 0) return singleton;
 
@@ -830,7 +833,7 @@ module.exports = function(target, property, load, onLoad) {
   };
 
   load.call(target, function(err, value) {
-    target._emitter.emit.apply(target._emitter, [event, err, value]);
+    target.emit.apply(target, [event, err, value]);
   });
 
   return singleton;
@@ -1109,12 +1112,14 @@ module.exports = function(target, property, listener) {
     return watcher;
 }
 },{}],27:[function(require,module,exports){
-var protoclass = require("protoclass");
+var protoclass       = require("protoclass");
+var FastEventEmitter = require("fast-event-emitter");
 
 /**
  */
 
 function WatchableObject(properties) {
+  FastEventEmitter.call(this);
   this.__watchable = {};
   if (properties) {
     for (var key in properties) {
@@ -1126,35 +1131,13 @@ function WatchableObject(properties) {
 /**
  */
 
-protoclass(WatchableObject, {
+protoclass(FastEventEmitter, WatchableObject, {
 
   /**
    */
 
   watch: function(listener) {
-
-    if (!this._listeners) {
-      this._listeners = listener;
-    } else if (typeof this._listeners === "function") {
-      this._listeners = [this._listeners, listener];
-    } else {
-      this._listeners.push(listener);
-    }
-
-    var self = this;
-
-    return {
-      dispose: function() {
-        var i = 0;
-        if (!self._listeners) return;
-        if (typeof self._listeners !== "function" && ~(i = self._listeners.indexOf(listener))) {
-          self._listeners.splice(i, 1);
-          if (self._listeners.length === 0) self._listeners = void 0;
-        } else {
-          self._listeners = void 0;
-        }
-      }
-    };
+    return this.on("change", listener);
   },
 
   /**
@@ -1268,18 +1251,8 @@ protoclass(WatchableObject, {
 
   _triggerChange: function(defer) {
     this._changing = true;
-
-    var self = this;
-    if (self._listeners) {
-      if (typeof self._listeners === "function") {
-        self._listeners();
-      } else {
-        for (var i = self._listeners.length; self._listeners && i--;) {
-          self._listeners[i]();
-        }
-      }
-    }
-    self._changing = false;
+    this.emit("change");
+    this._changing = false;
   },
 
   /**
@@ -1291,12 +1264,13 @@ protoclass(WatchableObject, {
     }
     this.__watchable = {};
     this._listeners  = void 0;
+    this.removeAllListeners("change");
   }
 });
 
 module.exports = WatchableObject;
 
-},{"protoclass":36}],28:[function(require,module,exports){
+},{"fast-event-emitter":34,"protoclass":36}],28:[function(require,module,exports){
 (function (process){
 var extend = require("deep-extend");
 var sift   = require("sift");
@@ -1611,6 +1585,18 @@ protoclass(MemoryDatabase, {
   /**
    */
 
+  upsert: function(collection, options, onRun) {
+    var self = this;
+    this.update(collection, options, function(err, item) {
+      if (item) return onRun(err, item);
+      self.insert(collection, options, onRun);
+    });
+  },
+
+
+  /**
+   */
+
   remove: function(collection, options, onRun) {
 
     var items = sift(options.query, collection);
@@ -1668,14 +1654,14 @@ module.exports.getStreamer = function(clazz) {
             data.forEach(function(item) {
               stream.emit("data", item);
             });
-          } else {
+          } else if(data) {
             stream.emit("data", data);
           }
           stream.emit("end");
         });
       });
 
-     
+
 
       return stream;
     }
@@ -1701,10 +1687,15 @@ var sift    = require("sift");
 var Stream  = require("stream");
 var extend  = require("xtend");
 
-module.exports = function(options) {
+module.exports = function(options, reject) {
 
+  if (!reject) reject = ["load"];
 
-  var c = PUBNUB.init(options);
+  var c = PUBNUB.init({
+    publish_key: options.publishKey,
+    subscribe_key: options.subscribeKey
+  });
+
   var clientId = Date.now() + "_" + Math.round(Math.random() * 999999999);
 
   var clients = [];
@@ -1719,7 +1710,7 @@ module.exports = function(options) {
         return tail(stream, properties);
       }
 
-      if (!properties.remoteClientId && /insert|update|remove/.test(name)) {
+      if (!properties.remoteClientId && !~reject.indexOf(name)) {
         properties.remoteClientId = clientId;
         for (var i = clients.length; i--;) {
           clients[i].send(extend({ name: name }, properties));
@@ -1766,6 +1757,7 @@ module.exports = function(options) {
     });
   }
 };
+
 }).call(this,require('_process'))
 },{"_process":213,"pubnub-browserify":32,"sift":192,"stream":225,"through2":202,"xtend":203}],32:[function(require,module,exports){
 /* ---------------------------------------------------------------------------
