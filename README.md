@@ -51,6 +51,7 @@ peopleDb("insert", {
 });
 ```
 
+<!--
 #### More Examples
 
 Use SAME DB for same app
@@ -61,6 +62,7 @@ Use SAME DB for same app
 - TTL on local storage + http
 - file sharing
 - chatroom
+-->
 
 
 #### [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable) db(operationName, options)
