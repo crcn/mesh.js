@@ -49,7 +49,7 @@ var remotedb = pubnub({
 // local storage db
 var localdb  = localStorage();
 
-// pipe all operations from pubnub back to local sturage
+// pipe all operations from pubnub back to local storage
 remotedb("tail").pipe(crudlet.open(localdb));
 
 // use this as the main db - pass all operations to local storage, and pubnub
