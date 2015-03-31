@@ -6,14 +6,13 @@ is still a work in progress, and pretty **alpha** at this point.
 
 More info here soon.
 
-<!--
 #### Why?
 
 - Decoupled. Crudlet provides a common interface for all your data stores. Mix & match whatever you want.
 - Flexible. Stuff like realtime data & offline-mode is pretty simple to add.
-- Interoperable.
+- Interoperable. Mix and match database adapters depending on your environment. Use models in NodeJS, and in the browser.
 - Extensible. Based off node streams.
--->
+
 
 #### Adapters
 
