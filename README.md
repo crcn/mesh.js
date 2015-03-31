@@ -142,7 +142,7 @@ peopleDb("insert", {
 
 #### db crud.tailable(db, reject)
 
-makes the DB tailable. Simply allows the `tail` operation on the DB whenever another operation is invoked such as `create`, `update`, `remove`, and `load`.
+makes the db tailable. This simply allows you to listen for any operations invoked on a db such as `create`, `update`, `remove`, and `load`.
 
 `reject` is an array of operations to ignore. Default is `[load]`.
 
