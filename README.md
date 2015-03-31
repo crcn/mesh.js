@@ -1,31 +1,36 @@
+
+Crudlet provides a common, streamable interface for data stores.
+
+
 Example:
 
 ```javascript
-var crudlet  = require("crudlet");
-var caplet   = require("caplet");
-var localdb  = require("crudlet-localdb");
-var http     = require("crudlet-http");
-var webrtc   = require("crudlet-webrtc");
-var _        = require("highland");
+var crudlet       = require("crudlet");
+var localStorage  = require("crudlet-local-storage");
+var pubnub        = require("crudlet-pubnub");
 
-var db = crudlet.parallel(localdb(), http(), webrtc());
+var remotedb = pubnub({
+  key    : "pubnub key",
+  secret : "pubnub secret"
+});
 
+// local storage db
+var localdb  = localStorage();
+
+// pipe all operations from pubnub back to local sturage
+remotedb("tail").pipe(crudlet.open(local));
+
+// use this as the main db - pass all operations to local storage, and pubnub
+var db = crudlet.parallel(localdb, remotedb);
+
+// get the people DB
 var peopleDb = db.child(db, {
   collection: "people"
 });
 
-var Person = caplet.createModelClass({
-  initialize: function() {
-    this.opStream = crudlet.open(peopleDb).pipe(crudlet.delta()).on("data", this.set.bind(this, "data"));
-  }, 
-  load: function() {
-    this.opStream.write(crudlet.operation("insert", { data: this }));
-  },
-  save: function() {
-    this.opStream.write(crudlet.operation(this.uid ? "insert" : "update", { data: this }));
-  }
-});
-
+// add a new person to local storage & pubnub
+peopleDb("insert", { data: { name: "Oprah" }});
+peopleDb("insert", { data: { name: "Gordon" }});
 ```
 
 #### db(operationName, properties)
@@ -35,12 +40,11 @@ runs a new operation
 ```javascript
 var crudlet    = require("crudlet");
 var localStore = require("crudlet-local-storage");
-var _          = require("highland");
 
 var db = localStore();
 
 db("load", { query: { uid: "uid" }}).on("data", function() {
-  
+
 });
 
 ```
@@ -93,7 +97,7 @@ _([
 ]).
 pipe(crudlet.open(db)).
 on("data", function() {
-  
+
 });
 
 
