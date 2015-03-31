@@ -1,16 +1,19 @@
-var gulp                  = require("gulp");
-var istanbul              = require("gulp-istanbul");
-var mocha                 = require("gulp-mocha");
-var plumber               = require("gulp-plumber");
-var jshint                = require("gulp-jshint");
-var browserify            = require("browserify");
-var uglify                = require("gulp-uglify");
-var source                = require("vinyl-source-stream");
-var buffer                = require("vinyl-buffer");
-var jscs                  = require("gulp-jscs");
-var coveralls             = require("gulp-coveralls");
-var karma                 = require("karma").server;
-var options               = require("yargs").argv;
+var gulp       = require("gulp");
+var istanbul   = require("gulp-istanbul");
+var mocha      = require("gulp-mocha");
+var plumber    = require("gulp-plumber");
+var jshint     = require("gulp-jshint");
+var browserify = require("browserify");
+var uglify     = require("gulp-uglify");
+var source     = require("vinyl-source-stream");
+var buffer     = require("vinyl-buffer");
+var jscs       = require("gulp-jscs");
+var coveralls  = require("gulp-coveralls");
+var rename     = require("gulp-rename");
+var karma      = require("karma").server;
+var options    = require("yargs").argv;
+
+var pkg = require("./package");
 
 /**
  */
@@ -65,7 +68,7 @@ gulp.task("test-coveralls", ["test-coverage"], function () {
 gulp.task("bundle", function() {
   return browserify("./lib/index.js").
   bundle().
-  pipe(source('caplet.js')).
+  pipe(source(pkg.name + '.js')).
   pipe(buffer()).
   pipe(gulp.dest('./dist'));
 });
@@ -75,7 +78,7 @@ gulp.task("bundle", function() {
 
 gulp.task("minify", ["bundle"], function() {
   return gulp.
-  src("./dist/crudlet.js").
+  src("./dist/" + pkg.name + ".js").
   pipe(uglify()).
   pipe(rename(function(path) {
       path.basename += ".min";

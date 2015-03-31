@@ -1,6 +1,6 @@
 {
   "name": "crudlet",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "```javascript var caplet  = require(\"caplet\"); var crudlet = require(\"crudlet\"); var localdb = require(\"crudlet-localdb\"); var http    = require(\"crudlet-http\"); var pubnub  = require(\"crudlet-pubnub\"); var xtend   = require(\"xtend/mutable\"); var ok      = require(\"okay\");",
   "main": "./lib/index.js",
   "scripts": {
@@ -34,6 +34,7 @@
     "gulp-jshint": "^1.9.4",
     "gulp-mocha": "^2.0.0",
     "gulp-plumber": "^1.0.0",
+    "gulp-rename": "^1.2.0",
     "gulp-uglify": "^1.1.0",
     "karma": "^0.12.31",
     "react": "^0.13.1",
