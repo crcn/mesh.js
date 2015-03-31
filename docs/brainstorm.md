@@ -25,7 +25,8 @@ var localdb = localStorage();
 // pubnub adapter for sending operations to other connected clients
 var pubdb   = pubnub({
   publishKey   : "publish key",
-  subscribeKey : "subscribe key"
+  subscribeKey : "subscribe key",
+  channel      : "chatroom"
 });
 
 // the actual DB we're going to use. Pass
@@ -45,13 +46,155 @@ peopleDb("insert", {
     { name: "Gordon Ramsay" },
     { name: "Ben Stiller"   }
   ]
+}).on("data", function() {
+  // handle data here
 });
 ```
 
 #### More Examples
 
+Use SAME DB for same app
+
 - realtime todos (local storage + pubnub)
+- distributed event bus (server + client + socket.io)
+- offline-mode (save queries)
+- TTL on local storage + http
+- file sharing
+- chatroom
+
+
+#### [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable) db(operationName, options)
+
+Runs a new operation.
+
+> Note that the supported operations & required options may change depending on the data store you're using.
+
+```javascript
+var localStorage = require("crudlet-local-storage");
+
+var localdb = localStorage();
+localdb("insert", {
+  collection: "people",
+  data: { name: "Arnold Schwarzenegger" }
+}).on("data", function() {
+  // handle data here
+});
+```
+
+#### [stream.Stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) crud.open(db)
+
+Creates a new operation stream.
+
+```javascript
+var operationStream = crud.open(db);
+
+// emitted when the operation is performed
+operationStream.on("data", function() {
+
+});
+
+operationStream.write(crud.operation("insert", {
+  collection: "people",
+  data: { name: "Sandra Bullock" }
+}));
+
+operationStream.write(crud.operation("remove", {
+  collection: "people",
+  query: { name: "Jeff Goldbloom" }
+}));
+```
+
+#### operation db.operation(name, option)
+
+creates a new operation which can be written to a database stream. See `crud.open(db)`.
 
 <!--
+```javascript
+var localStorage = require("crudlet-local-storage");
+var pubnub       = require("crudlet-pubnub");
 
+var pubdb = pubnub({
+  subscribeKey: "sub key",
+  publishKey: "pub key",
+  channel: "channel"
+});
+
+
+pubdb("tail").on("data", function(operation) {
+
+});
+
+```
+-->
+
+#### db crud.child(db, options)
+
+Creates a new child database. `options` is essentially just added to each operation performed.
+
+```javascript
+var peopleDb = crud.child(db, { collection: "people" });
+
+// insert a new person into the people collection
+peopleDb("insert", {
+  data: { name: "Shrek" }
+});
+```
+
+#### db crud.tailable(db, reject)
+
+makes the DB tailable. Simply allows the `tail` operation on the DB whenever another operation is invoked such as `create`, `update`, `remove`, and `load`.
+
+`reject` is an array of operations to ignore. Default is `[load]`.
+
+```javascript
+var db = crud.tailable(localdb);
+db("tail", function() {
+
+});
+
+db("insert", { data: { name: "Donkey" }}); // trigger tail
+db("remove", { query: { name: "Donkey" }}); // trigger tail
+db("update", { query: { name: "Donkey" }, data: { name: "Donkay" }}); // trigger tail
+db("load", { query: { name: "Donkey" }}); // ignored by tail
+```
+
+#### db crud.parallel(...dbs)
+
+Combines databases and executes operations in parallel.
+
+<!-- note about emitting data multiple times -->
+
+```javascript
+var db = crud.parallel(localdb, httpdb);
+
+// execute "load" on localdb at the same time
+db("load").on("data", function() {
+  // Note that his will get called TWICE
+}).on("end", function() {
+  // called when operation is executed on all dbs
+});
+```
+
+#### db crud.sequence(...dbs)
+
+Combines databases and executes operations in sequence.
+
+<!-- note about emitting data multiple times -->
+
+```javascript
+var db = crud.parallel(localdb, httpdb);
+
+// load data from localdb first, then move to httpdb
+db("load").on("data", function() {
+  // Note that his will get called TWICE
+});
+```
+
+<!-- docs on crud -->
+
+
+<!--
+### Creating a DB adapter
+
+The crudlet API is
 -->
