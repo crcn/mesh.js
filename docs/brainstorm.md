@@ -12,6 +12,8 @@ can use any database (or even your API) without it being coupled to your applica
 
 #### Example
 
+Below is an example of a realtime DB that uses pubnub, and local storage.
+
 ```javascript
 var crud          = require("crudlet");
 var pubnub        = require("crudlet-pubnub");
@@ -28,7 +30,7 @@ var pubdb   = pubnub({
 
 // the actual DB we're going to use. Pass
 // all operations to localstorage, and pubnub
-var db = crud.tailable(crud.parallel(localdb, pubdb));
+var db = crud.parallel(localdb, pubdb);
 
 // tail all operations send to pubnub back into the database. Note
 // that remote calls won't get re-published to pubnub
@@ -37,17 +39,19 @@ pubdb("tail").pipe(crud.open(db));
 // create a child database - collection will get passed to each operation
 var peopleDb = crud.child(db, { collection: "people" });
 
-// insert some people into the database
+// insert some people
 peopleDb("insert", {
   data: [
     { name: "Gordon Ramsay" },
     { name: "Ben Stiller"   }
   ]
 });
-
-// listen for ALL operations on the people collection
-peopleDb("tail").on("data", function() {
-
-});
-
 ```
+
+#### More Examples
+
+- realtime todos (local storage + pubnub)
+
+<!--
+
+-->

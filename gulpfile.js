@@ -52,7 +52,7 @@ gulp.task("test-coverage", function (complete) {
 
 /**
  */
- 
+
 gulp.task("test-coveralls", ["test-coverage"], function () {
   return gulp.
   src("coverage/**/lcov.info").
@@ -72,13 +72,13 @@ gulp.task("bundle", function() {
 
 /**
  */
- 
+
 gulp.task("minify", ["bundle"], function() {
   return gulp.
   src("./dist/crudlet.js").
   pipe(uglify()).
   pipe(rename(function(path) {
-      path.basename += ".min"; 
+      path.basename += ".min";
   })).
   pipe(gulp.dest('./dist'));
 });
@@ -137,7 +137,7 @@ gulp.task("jshint", function() {
 /**
  */
 
-gulp.task("test", function (complete) { 
+gulp.task("test", function (complete) {
   gulp.
   src(paths.testFiles, { read: false }).
   pipe(plumber()).
@@ -159,6 +159,13 @@ gulp.task("watch", function () {
  */
 
 gulp.task("default", function () {
+  return gulp.run("test-coverage");
+});
+
+/**
+ */
+
+gulp.task("example", function () {
   return gulp.run("test-coverage");
 });
 
