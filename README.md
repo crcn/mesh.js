@@ -1,28 +1,16 @@
 [![Build Status](https://travis-ci.org/mojo-js/crudlet.js.svg)](https://travis-ci.org/mojo-js/crudlet.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/crudlet.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/crudlet.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/crudlet.js.svg)](https://david-dm.org/mojo-js/crudlet.js) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/crudlet.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-Crudlet is provides a common, streamable interface for data stores. It exists to unify & abstract how you communicate with a database
-
-<!--
-Unify & abstract. Examples below (snippets) of mixed & matched
--->
-
-
-
-More info here soon.
+Crudlet is a universal, [streamable](https://nodejs.org/api/stream.html) interface for data stores that works on any platform. Basically that means that you
+can use any database (or even your API) without it being coupled to your application. Crudlet also allows you to do some pretty fancy stuff too.
 
 #### Why?
 
-- Decoupled. Crudlet provides a common interface for all your data stores. Mix & match whatever you want.
-- Flexible. Stuff like realtime data & offline-mode is pretty simple to add.
-- Interoperable. Mix and match database adapters depending on your environment. Use your models in NodeJS, and in the browser.
-- Extensible. Based off node streams.
-
-<!--
-#### Use cases (inspration)
--->
-
-
-
+- Decoupled. Crudlet allows you to decouple any store (even your own API) from your front-end / backend application.
+- Vendor lock-in. Using Crudlet means that you're not locked into any particular data store, e.g:  easily swap between realtime services like firebase, socket.io, parse, etc.
+- Interoperable. Easily use your application code on multiple platforms (client & server-side). Just swap out the database adapter.
+- Testable. Crudlet makes it super easy to stub-out any data store for testing purposes. Super useful especially for server-side apps (e.g: stubbing-out mongodb).
+- Extensible. Easily add offline-mode & peer-to-peer (realtime) with just a few lines of code.
+- Mashable. Mix & match data-stores to add additional functionality to your application.
 
 #### Databases
 
