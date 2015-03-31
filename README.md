@@ -1,5 +1,27 @@
 
-Crudlet provides a common, streamable interface for data stores.
+Crudlet provides a common, streamable interface for data stores. This library
+is still a a work in progress, and pretty **alpha** at this point.
+
+More info here soon.
+
+<!--
+#### Why?
+
+- Decoupled. Crudlet provides a common interface for all your data stores. Mix & match whatever you want.
+- Flexible. Stuff like realtime data & offline-mode is pretty simple to add.
+- Interoperable.
+- Extensible. Based off node streams.
+-->
+
+#### Adapters
+
+- [pubnub](http://github.com/crcn/crudlet-pubnub)
+- [webrtc](http://github.com/crcn/crudlet-webrtc)
+- [http](http://github.com/crcn/crudlet-http)
+- [local storage](http://github.com/crcn/crudlet-local-storage)
+- [memory](http://github.com/crcn/crudlet-memory)
+- mongodb - soon
+- redis - soon
 
 
 Example:

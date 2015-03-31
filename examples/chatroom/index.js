@@ -64,6 +64,7 @@ var Messages = caplet.createCollectionClass({
     return m;
   },
   load: function() {
+    // messagesDb("load", { multi: true }).pipe(_().collect().map(createModel(Message, "uid")))
     messagesDb("load", { multi: true }).pipe(_().collect()).on("data", this.set.bind(this, "data"));
     return this;
   }
