@@ -23,6 +23,11 @@ More info here soon.
 - mongodb - soon
 - redis - soon
 
+#### Installation
+
+```
+npm install crudlet
+```
 
 #### Example:
 
