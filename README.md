@@ -24,7 +24,7 @@ More info here soon.
 - redis - soon
 
 
-Example:
+#### Example:
 
 ```javascript
 var crudlet       = require("crudlet");
