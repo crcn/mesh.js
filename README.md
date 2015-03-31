@@ -8,6 +8,8 @@ More info here soon.
 <!--
 #### Why?
 
+[![Join the chat at https://gitter.im/mojo-js/crudlet.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/crudlet.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 - Decoupled. Crudlet provides a common interface for all your data stores. Mix & match whatever you want.
 - Flexible. Stuff like realtime data & offline-mode is pretty simple to add.
 - Interoperable.
