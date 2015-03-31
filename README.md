@@ -14,7 +14,7 @@ More info here soon.
 
 - Decoupled. Crudlet provides a common interface for all your data stores. Mix & match whatever you want.
 - Flexible. Stuff like realtime data & offline-mode is pretty simple to add.
-- Interoperable. Mix and match database adapters depending on your environment. Use models in NodeJS, and in the browser.
+- Interoperable. Mix and match database adapters depending on your environment. Use your models in NodeJS, and in the browser.
 - Extensible. Based off node streams.
 
 <!--
@@ -60,7 +60,7 @@ var remotedb = pubnub({
 // local storage db
 var localdb  = localStorage();
 
-// pipe all operations from pubnub back to local sturage
+// pipe all operations from pubnub back to local storage
 remotedb("tail").pipe(crudlet.open(localdb));
 
 // use this as the main db - pass all operations to local storage, and pubnub
