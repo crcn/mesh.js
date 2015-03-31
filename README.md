@@ -113,6 +113,16 @@ Runs databases in sequence. Similar to parallel()
 
 Creates a child db
 
+```javascript
+var db = localStorage();
+var peopleDb = crud.child(db, { collection: "people" });
+
+// load from just the people collection
+peopleDb("load").on("data", function() {
+
+});
+```
+
 #### crudlet.open(db)
 
 creates a db stream
