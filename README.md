@@ -10,7 +10,7 @@ More info here soon.
 
 - Decoupled. Crudlet provides a common interface for all your data stores. Mix & match whatever you want.
 - Flexible. Stuff like realtime data & offline-mode is pretty simple to add.
-- Interoperable. Mix and match database adapters depending on your environment. Use models in NodeJS, and in the browser.
+- Interoperable. Mix and match database adapters depending on your environment. Use your models in NodeJS, and in the browser.
 - Extensible. Based off node streams.
 
 
