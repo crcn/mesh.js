@@ -12,7 +12,7 @@ describe(__filename + "#", function() {
     }
 
     var child  = crudlet.child(db, { a: 1 });
-    
+
     child("insert", { b: 2 }).once("data", function(data) {
       expect(data.a).to.be(1);
       expect(data.b).to.be(2);

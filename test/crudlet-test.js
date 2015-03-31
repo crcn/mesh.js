@@ -13,9 +13,8 @@ describe(__filename + "#", function() {
       return _([]);
     }
 
-    db("insert", { data: "a" }).on("data",function(){}).on("end", next);
+    db("insert", { data: "a" }).on("data", function() { }).on("end", next);
   });
-
 
   it("can write data to the stream", function(next) {
     function db(name, props) {

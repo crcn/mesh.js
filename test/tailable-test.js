@@ -7,11 +7,11 @@ describe(__filename + "#", function() {
 
   it("can tail a db", function(next) {
 
-    function db(name, properties) {
+    var db = function(name, properties) {
       return _([properties]);
-    }
+    };
 
-    var db = crudlet.tailable(db);
+    db = crudlet.tailable(db);
 
     db("tail").on("data", function(operation) {
       expect(operation.name).to.be("insert");
