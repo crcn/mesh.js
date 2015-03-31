@@ -18,7 +18,7 @@ var remotedb = pubnub({
 var localdb  = localStorage();
 
 // pipe all operations from pubnub back to local sturage
-remotedb("tail").pipe(crudlet.open(local));
+remotedb("tail").pipe(crudlet.open(localdb));
 
 // use this as the main db - pass all operations to local storage, and pubnub
 var db = crudlet.parallel(localdb, remotedb);
