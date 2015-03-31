@@ -31,7 +31,7 @@ More info here soon.
 - [http](http://github.com/crcn/crudlet-http) - meant to work with *your* API
 - [local storage](http://github.com/crcn/crudlet-local-storage) - local storage in the browser
 - [memory](http://github.com/crcn/crudlet-memory) - in-memory database
-- [loki](http://github.com/crcn/crudlet-loki) - [loki](http://lokijs.org/) in-memory datbase
+- [loki](http://github.com/mojo-js/crudlet-loki) - [loki](http://lokijs.org/) in-memory datbase
 - mongodb - soon
 - redis - soon
 
