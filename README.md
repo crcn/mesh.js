@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/mojo-js/crudlet.js.svg)](https://travis-ci.org/mojo-js/crudlet.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/crudlet.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/crudlet.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/crudlet.js.svg)](https://david-dm.org/mojo-js/crudlet.js) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/crudlet.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
+
 Crudlet (create/read/update/delete) provides a common, streamable interface for data stores. This library
 is still a work in progress, and pretty **alpha** at this point.
 
@@ -37,7 +38,7 @@ npm install crudlet
 #### Example:
 
 ```javascript
-var crudlet       = require("crudlet");
+var crud          = require("crudlet");
 var localStorage  = require("crudlet-local-storage");
 var pubnub        = require("crudlet-pubnub");
 
@@ -53,7 +54,7 @@ var localdb  = localStorage();
 remotedb("tail").pipe(crudlet.open(localdb));
 
 // use this as the main db - pass all operations to local storage, and pubnub
-var db = crudlet.parallel(localdb, remotedb);
+var db = crud.parallel(localdb, remotedb);
 
 // get the people DB
 var peopleDb = db.child(db, {
@@ -70,7 +71,7 @@ peopleDb("insert", { data: { name: "Gordon" }});
 runs a new operation
 
 ```javascript
-var crudlet    = require("crudlet");
+var crud       = require("crudlet");
 var localStore = require("crudlet-local-storage");
 
 var db = localStore();
@@ -86,12 +87,12 @@ db("load", { query: { uid: "uid" }}).on("data", function() {
 Runs databases in parallel
 
 ```javascript
-var crudlet     = require("crudlet");
+var crud        = require("crudlet");
 var localstore  = require("crudlet-local-storage");
 var http        = require("crudlet-http");
 
 // load localstore at the same time as an http request
-vr db = crudlet.parallel(localstore(), http());
+vr db = crud.parallel(localstore(), http());
 
 // data will get emitted twice here
 db("load", {
@@ -118,16 +119,16 @@ Creates a child db
 creates a db stream
 
 ```javascript
-var crudlet = require("crudlet");
+var crud = require("crudlet");
 var localstore = require("crudlet-local-storage");
 var db = localstore();
 var _ = require("highland");
 
 _([
-  crudlet.operation("insert", { data: { name: "blah" }}),
-  crudlet.operation("insert", { data: { name: "blarg" }})
+  crud.operation("insert", { data: { name: "blah" }}),
+  crud.operation("insert", { data: { name: "blarg" }})
 ]).
-pipe(crudlet.open(db)).
+pipe(crud.open(db)).
 on("data", function() {
 
 });
@@ -144,17 +145,17 @@ creates a new operation
 applies delta change on piped data from a db operation
 
 ```javascript
-var crudlet = require("crudlet");
+var crud = require("crudlet");
 var memorystore = require("crudlet-memory");
 
 var db = memorystore();
 
-var opStream = crudlet.stream(db);
-opStream.pipe(crudlet.delta()).on("data", function(data) {
+var opStream = crud.stream(db);
+opStream.pipe(crud.delta()).on("data", function(data) {
   console.log(data);
 });
-opStream.write(crudlet.operation("update", { data: { name: "craig" }})); // delta { name: craig }
-opStream.write(crudlet.operation("update", { data: { name: "craig", age: 17 }})); // delta { age: 17 }
+opStream.write(crud.operation("update", { data: { name: "craig" }})); // delta { name: craig }
+opStream.write(crud.operation("update", { data: { name: "craig", age: 17 }})); // delta { age: 17 }
 ```
 
 <!--
