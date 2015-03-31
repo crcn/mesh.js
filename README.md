@@ -1,6 +1,6 @@
 
 Crudlet provides a common, streamable interface for data stores. This library
-is still a a work in progress, and pretty **alpha** at this point.
+is still a work in progress, and pretty **alpha** at this point.
 
 More info here soon.
 
