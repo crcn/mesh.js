@@ -4,7 +4,7 @@
   "description": "```javascript var caplet  = require(\"caplet\"); var crudlet = require(\"crudlet\"); var localdb = require(\"crudlet-localdb\"); var http    = require(\"crudlet-http\"); var pubnub  = require(\"crudlet-pubnub\"); var xtend   = require(\"xtend/mutable\"); var ok      = require(\"okay\");",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "gulp lint test"
+    "test": "gulp lint test-coveralls"
   },
   "repository": {
     "type": "git",
