@@ -1,8 +1,12 @@
 [![Build Status](https://travis-ci.org/mojo-js/crudlet.js.svg)](https://travis-ci.org/mojo-js/crudlet.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/crudlet.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/crudlet.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/crudlet.js.svg)](https://david-dm.org/mojo-js/crudlet.js) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/crudlet.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
+Crudlet is provides a common, streamable interface for data stores. It exists to unify & abstract how you communicate with a database
 
-Crudlet (create/read/update/delete) provides a common, streamable interface for data stores. This library
-is still a work in progress, and pretty **alpha** at this point.
+<!--
+Unify & abstract. Examples below (snippets) of mixed & matched
+-->
+
+
 
 More info here soon.
 
@@ -13,14 +17,21 @@ More info here soon.
 - Interoperable. Mix and match database adapters depending on your environment. Use models in NodeJS, and in the browser.
 - Extensible. Based off node streams.
 
+<!--
+#### Use cases (inspration)
+-->
 
-#### Adapters
 
-- [pubnub](http://github.com/crcn/crudlet-pubnub)
-- [webrtc](http://github.com/crcn/crudlet-webrtc)
-- [http](http://github.com/crcn/crudlet-http)
-- [local storage](http://github.com/crcn/crudlet-local-storage)
-- [memory](http://github.com/crcn/crudlet-memory)
+
+
+#### Databases
+
+- [pubnub](http://github.com/crcn/crudlet-pubnub) - [pubnub](http://www.pubnub.com/) (realtime data)
+- [webrtc](http://github.com/crcn/crudlet-webrtc) - via [PeerJS](http://peerjs.com/) (realtime data)
+- [http](http://github.com/crcn/crudlet-http) - meant to work with *your* API
+- [local storage](http://github.com/crcn/crudlet-local-storage) - local storage in the browser
+- [memory](http://github.com/crcn/crudlet-memory) - in-memory database
+- [loki](http://lokijs.org/) - in-memory datbase
 - mongodb - soon
 - redis - soon
 
