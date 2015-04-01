@@ -25,7 +25,7 @@ npm install crudlet
 - [pubnub](http://github.com/mojo-js/crudlet-pubnub) - [pubnub](http://www.pubnub.com/) sync adapter
 - [socket.io](http://github.com/mojo-js/crudlet-webrtc) - [socket.io](http://socket.io/) sync adapter
 - [webrtc](http://github.com/mojo-js/crudlet-webrtc) - [webrtc](http://www.webrtc.org/) sync adapter
-- [loki](http://github.com/mojo-js/crudlet-loki) - in-memory database
+- [loki](http://github.com/mojo-js/crudlet-loki) - [loki](http://lokijs.org/#/) in-memory database
 - [memory](http://github.com/mojo-js/crudlet-memory) - another in-memory database
 - [local-storage](http://github.com/mojo-js/crudlet-local-storage) - local storage database
 
