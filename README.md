@@ -7,7 +7,7 @@ can use just about any database (or even your API) without it being coupled to y
 
 #### Why?
 
-- **Decoupled**. Crudlet allows you to decouple any store (even your own API) from your front-end / backend application. E.g: easily swap between realtime services like firebase, socket.io, parse, etc.
+- **Decoupled**. Crudlet allows you to decouple any store (even your own API) from your front-end / backend application. 
 - **Interoperable**. Use Crudlet with just about any library, or framework.
 - **Tiny**. Crudlet is only 11kb minified.
 - **Isomorphic**. Easily use your application code on multiple platforms (client & server-side). Just swap out the database adapter.
