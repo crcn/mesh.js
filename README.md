@@ -7,13 +7,12 @@ can use just about any database (or even your API) without it being coupled to y
 
 #### Why?
 
-- **Decoupled**. Crudlet allows you to decouple any store (even your own API) from your front-end / backend application. 
+- **Decoupled**. Crudlet allows you to decouple any store (even your own API) from your front-end / backend application.
 - **Interoperable**. Use Crudlet with just about any library, or framework.
 - **Tiny**. Crudlet is only 11kb minified.
 - **Isomorphic**. Easily use your application code on multiple platforms (client & server-side). Just swap out the database adapter.
 - **Testable**. Crudlet makes it super easy to stub-out any data store for testing purposes. Super useful especially for server-side apps (e.g: stubbing-out mongodb).
 - **Extensible**. Easily add offline-mode & peer-to-peer (realtime) with just a few lines of code.
-<!--- **Mashable**. Mix & match data-stores to add additional functionality to your application.-->
 
 #### Installation
 
