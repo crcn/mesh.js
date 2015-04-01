@@ -15,6 +15,7 @@ describe(__filename + "#", function() {
     var stream = db1();
 
     var c = stream.pipe(crudlet.delta());
+
     c.once("data", function(data) {
       expect(data.name).to.be("abba");
       c.once("data", function(data) {

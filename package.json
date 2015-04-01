@@ -1,6 +1,6 @@
 {
   "name": "crudlet",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "```javascript var caplet  = require(\"caplet\"); var crudlet = require(\"crudlet\"); var localdb = require(\"crudlet-localdb\"); var http    = require(\"crudlet-http\"); var pubnub  = require(\"crudlet-pubnub\"); var xtend   = require(\"xtend/mutable\"); var ok      = require(\"okay\");",
   "main": "./lib/index.js",
   "scripts": {
@@ -44,9 +44,9 @@
     "yargs": "^3.6.0"
   },
   "dependencies": {
-    "deep-extend": "^0.3.2",
     "fast-event-emitter": "0.0.2",
     "highland": "^2.4.0",
+    "obj-stream": "0.0.x",
     "protoclass": "0.0.6",
     "sift": "^1.1.0",
     "through2": "^0.6.3",
