@@ -9,7 +9,8 @@ can use just about any database (or even your API) without it being coupled to y
 
 - Decoupled. Crudlet allows you to decouple any store (even your own API) from your front-end / backend application.
 - Vendor lock-in. Using Crudlet means that you're not locked into any particular data store, e.g:  easily swap between realtime services like firebase, socket.io, parse, etc.
-- Interoperable. Easily use your application code on multiple platforms (client & server-side). Just swap out the database adapter.
+- Interoperable. Use Crudlet with just about any library, or framework. 
+- Isomorphic. Easily use your application code on multiple platforms (client & server-side). Just swap out the database adapter.
 - Testable. Crudlet makes it super easy to stub-out any data store for testing purposes. Super useful especially for server-side apps (e.g: stubbing-out mongodb).
 - Extensible. Easily add offline-mode & peer-to-peer (realtime) with just a few lines of code.
 - Mashable. Mix & match data-stores to add additional functionality to your application.
