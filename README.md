@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/mojo-js/crudlet.js.svg)](https://travis-ci.org/mojo-js/crudlet.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/crudlet.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/crudlet.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/crudlet.js.svg)](https://david-dm.org/mojo-js/crudlet.js) [![Join the chat at https://gitter.im/mojo-js/crudlet.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/crudlet.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Crudlet is a universal, [streamable](https://nodejs.org/api/stream.html) interface for data stores that works on any platform. Basically that means that you
+Crudlet is a tiny (11 kb) universal, [streamable](https://nodejs.org/api/stream.html) interface for data stores that works on any platform. Basically that means that you
 can use any database (or even your API) without it being coupled to your application. Crudlet also allows you to do some pretty fancy stuff too.
 
 #### Why?
@@ -24,7 +24,7 @@ npm install crudlet
 - [loki](http://github.com/mojo-js/crudlet-loki) - in-memory database
 - [memory](http://github.com/mojo-js/crudlet-memory) - another in-memory database
 - [local-storage](http://github.com/mojo-js/crudlet-local-storage) - local storage database
-- [webrtc](http://github.com/mojo-js/crudlet-webrtc) - webrtc adapter 
+- [webrtc](http://github.com/mojo-js/crudlet-webrtc) - webrtc adapter
 
 #### Example
 
@@ -208,11 +208,181 @@ db("load").on("data", function() {
 });
 ```
 
-<!-- docs on crud -->
+### Building a custom database
+
+Building a custom database is pretty easy. All you need to do
+is return a stream when `db(operationName, options)` is called.
+
+Here's some scaffolding for a custom db:
+
+```javascript
+
+// slimmed down version of node streams.
+var stream = require("obj-stream");
+
+function createDatabase(options) {
+
+  // create database here
+
+  // return fn that executes operations
+  return function (operationName, options) {
+    var writable = stream.writable();
+
+    // this is important so that data can be piped to other things
+    process.nextTick(function() {
+
+      // collection MUST exist
+      if (!options.collection) return writable.reader.emit("error", new Error("missing collection"));
+
+      // perform task here
+
+      // write data from insert/load
+      writable.write(data);
+
+      // must call end operation when complete
+      writable.end();
+    });
+
+    return writable.reader;
+  };
+}
+```
+
+> Keep in mind that there are a few conventions you should follow when writing custom database adapters. These conventions are here to ensure that databases are interoperable with each other.
+
+#### db(insert, options)
+
+Insert a new item in the database. Note that `data` is emitted for each item inserted in the database.
+
+- `options` - db options
+  - `data` - data to insert. Accepts 1 or many items
+  - `collection` - collection to insert (optional for dbs that don't have it)
+
+```javascript
+var _ = require("highland");
+var peopleDb = crud.child(db, { collection: "people" });
+
+// insert one item
+peopleDb("insert", {
+  data: { name: "jeff" }
+});
+
+// insert many items & collect the results in 1
+// array
+peopleDb("insert", {
+  data: [
+    { name: "Joe" },
+    { name: "Rogan" }
+  ]
+}).pipe(_.pipeline(_.collect)).on("data", function(people) {
+
+});
+```
+
+#### db(update, options)
+
+Updates an item in the database. Doesn't return any values.
+
+- `options`
+  - `query` - search query for items to update
+  - `data`  - data to merge with
+  - `collection` - db collection
+  - `multi` - `true` to update multiple items. `false` is default.
+
+```javascript
+var peopleDb = crud.child(db, { collection: "people" });
+
+peopleDb("update", {
+  query: { name: "jake" },
+  data : { age: 17 }
+});
+
+// update multiple items
+peopleDb("update", {
+  multi: true,
+  query: { name: "joe" },
+  data : { age: 17 }
+});
+```
+
+#### db(upsert, options)
+
+Updates an item if it exists. Inserts an item if it doesn't.
+
+- `options`
+  - `query` - search query for items to update
+  - `data`  - data to merge or insert
+  - `collection` - db collection
+
+```javascript
+var peopleDb = crud.child(db, { collection: "people" });
+
+// insert
+peopleDb("upsert", {
+  query: { name: "jake" },
+  data : { name: "jake", age: 17 }
+}).on("end", function() {
+
+  // update
+  peopleDb("upsert", {
+    query: { name: "jake" },
+    data : { name: "jake", age: 18 }
+  })
+});
+```
+
+#### db(load, options)
+
+Loads one or many items from the database.
+
+- `options`
+  - `query` - search query for items
+  - `collection` - db collection
+  - `multi` - `true` if loading multiple. `false` is default.
+
+```javascript
+
+var peopleDb = crud.child(db, { collection: "people" });
+
+// load one item
+peopleDb("load", {
+  query: { name: "tina" }
+}).on("data", function() {
+  // handle
+});
 
 
-<!--
-### Creating a DB adapter
+// load many items
+peopleDb("load", {
+  multi: true,
+  query: { name: "tina" }
+}).pipe(_.pipeline(_.collect)).on("data", function(people) {
+  // handle
+});
+```
 
-The crudlet API is
--->
+#### db(remove, options)
+
+Removes an item from the database.
+
+- `options`
+  - `query` - query to search
+  - `collection` - collection to search
+  - `multi` - `true` to remove multiple items
+
+```javascript
+
+// remove one item
+db("remove", {
+  collection: "people",
+  query: { name: "batman" }
+});
+
+
+// remove all instances where age = 54
+db("remove", {
+  collection: "people",
+  query: { age: 54 },
+  multi: true
+});
+```
