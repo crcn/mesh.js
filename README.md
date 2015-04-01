@@ -218,7 +218,7 @@ db("load").on("data", function() {
 ### Building a custom database
 
 Building a custom database is pretty easy. All you need to do
-is return a stream when `db(operationName, options)` is called.
+is return a stream when `db(opName, options)` is called.
 
 Here's some scaffolding for a custom db:
 
