@@ -126,6 +126,13 @@ operationStream.write(crud.operation("remove", {
 
 creates a new operation which can be written to a database stream. See `crud.open(db)`.
 
+```javascript
+crud.open(db).write(crud.operation("insert", {
+  collection: "friends",
+  data: { name: "Blakers" }
+}));
+```
+
 <!--
 ```javascript
 var localStorage = require("crudlet-local-storage");
