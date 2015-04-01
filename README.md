@@ -12,6 +12,20 @@ can use any database (or even your API) without it being coupled to your applica
 - Extensible. Easily add offline-mode & peer-to-peer (realtime) with just a few lines of code.
 - Mashable. Mix & match data-stores to add additional functionality to your application.
 
+#### Installation
+
+```
+npm install crudlet
+```
+
+#### Adapters
+
+- [pubnub](http://github.com/mojo-js/crudlet-pubnub) - realtime db
+- [loki](http://github.com/mojo-js/crudlet-loki) - in-memory database
+- [memory](http://github.com/mojo-js/crudlet-memory) - another in-memory database
+- [local-storage](http://github.com/mojo-js/crudlet-local-storage) - local storage database
+- [webrtc](http://github.com/mojo-js/crudlet-webrtc) - webrtc adapter 
+
 #### Example
 
 Below is an example of a realtime DB that uses [pubnub](https://github.com/mojo-js/crudlet-pubnub), and [local storage](https://github.com/mojo-js/crudlet-local-storage).
