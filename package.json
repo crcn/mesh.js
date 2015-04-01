@@ -1,10 +1,11 @@
 {
   "name": "crudlet",
   "version": "0.0.10",
-  "description": "```javascript var caplet  = require(\"caplet\"); var crudlet = require(\"crudlet\"); var localdb = require(\"crudlet-localdb\"); var http    = require(\"crudlet-http\"); var pubnub  = require(\"crudlet-pubnub\"); var xtend   = require(\"xtend/mutable\"); var ok      = require(\"okay\");",
+  "description": "reactive data store library",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "gulp lint test-coveralls"
+    "test": "gulp lint test-coveralls",
+    "start": "node ./examples/_app"
   },
   "repository": {
     "type": "git",
@@ -39,6 +40,7 @@
     "gulp-uglify": "^1.1.0",
     "karma": "^0.12.31",
     "react": "^0.13.1",
+    "reactify": "^1.1.0",
     "socket.io": "^1.3.5",
     "through2": "^0.6.3",
     "vinyl-buffer": "^1.0.0",

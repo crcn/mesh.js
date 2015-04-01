@@ -168,8 +168,8 @@ gulp.task("default", function () {
 /**
  */
 
-gulp.task("example", function () {
-  return gulp.run("test-coverage");
+gulp.task("examples", function (next) {
+  require("./examples/_app");
 });
 
 /**
