@@ -32,7 +32,7 @@ npm install crudlet
 
 #### Examples
 
-- [collaborative todos](crudlet.herokuapp.com/#/todos)
+- [collaborative todos](http://crudlet.herokuapp.com/#/todos)
 
 #### Example
 
