@@ -53,7 +53,7 @@ function setData() {
 }
 
 // wait for operations on local storage, then refresh todos
-db("tail").on("data", setData);
+todosDb("tail").on("data", setData);
 
 // load todos initially
 setData();
