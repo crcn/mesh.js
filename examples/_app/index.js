@@ -5,6 +5,7 @@ var watchify   = require("watchify");
 var extend     = require("xtend/mutable");
 var less       = require("less");
 var glob       = require("glob");
+var io         = require("socket.io");
 
 
 var port = process.env.PORT || 8080;
@@ -63,4 +64,10 @@ server.get("/api/examples", function(req, res) {
 
 
 
-server.listen(port)
+var ioserver = io(server.listen(port));
+
+ioserver.on("connection", function(connection) {
+  connection.on("operation", function (operation) {
+    connection.broadcast.emit("operation", operation);
+  });
+});
