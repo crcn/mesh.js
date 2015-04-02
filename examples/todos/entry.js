@@ -6,7 +6,8 @@ var _            = require("highland");
 var memory         = require("crudlet-memory");
 
 var iodb = io({
-  host: "http://" + location.host
+  host: "http://" + location.host,
+  channel: "todos"
 });
 
 var db = crud.tailable(localStorage());

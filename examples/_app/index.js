@@ -6,6 +6,7 @@ var extend     = require("xtend/mutable");
 var less       = require("less");
 var glob       = require("glob");
 var io         = require("socket.io");
+var iowc       = require("socketio-wildcard");
 
 
 var port = process.env.PORT || 8080;
@@ -41,9 +42,14 @@ server.use(staticMiddleware);
 fs.readdirSync(__dirname + "/../").filter(function(name) {
   return !/^(_|\.)/.test(name);
 }).forEach(function(name) {
+
+  var dirname =  __dirname + "/../" + name;
   examples.push({ name: name });
-  addBundleable("/" + name + "/entry.bundle.js", __dirname + "/../" + name + "/entry.js");
+  addBundleable("/" + name + "/entry.bundle.js", dirname + "/entry.js");
   server.use("/" + name, staticMiddleware);
+
+  var serverFile = dirname = "/server.js";
+  if (fs.existsSync(serverFile)) require(serverFile)(server);
 });
 
 server.get("/css/bundle.css", function(req, res) {
@@ -57,7 +63,6 @@ server.get("/css/bundle.css", function(req, res) {
   });
 });
 
-
 server.get("/api/examples", function(req, res) {
   res.send(examples);
 });
@@ -65,9 +70,10 @@ server.get("/api/examples", function(req, res) {
 
 
 var ioserver = io(server.listen(port));
+ioserver.use(iowc());
 
 ioserver.on("connection", function(connection) {
-  connection.on("operation", function (operation) {
-    connection.broadcast.emit("operation", operation);
+  connection.on("*", function (message) {
+    connection.broadcast.emit(message.data[0], message.data[1]);
   });
 });
