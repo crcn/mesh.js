@@ -28,6 +28,7 @@ npm install crudlet
 - [loki](http://github.com/mojo-js/crudlet-loki) - [loki](http://lokijs.org/#/) in-memory database
 - [memory](http://github.com/mojo-js/crudlet-memory) - another in-memory database
 - [local-storage](http://github.com/mojo-js/crudlet-local-storage) - local storage database
+- [http](http://github.com/mojo-js/crudlet-http) - HTTP adapter
 
 #### Examples
 
