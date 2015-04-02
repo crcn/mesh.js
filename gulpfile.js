@@ -10,6 +10,7 @@ var buffer     = require("vinyl-buffer");
 var jscs       = require("gulp-jscs");
 var coveralls  = require("gulp-coveralls");
 var rename     = require("gulp-rename");
+var bsync      = require("browser-sync");
 var karma      = require("karma").server;
 var options    = require("yargs").argv;
 
@@ -170,6 +171,16 @@ gulp.task("default", function () {
 
 gulp.task("examples", function (next) {
   require("./examples/_app");
+});
+
+/**
+ */
+
+gulp.task("browser-sync", function (next) {
+  bsync({
+    proxy: "http://0.0.0.0:8080",
+    files: __dirname + "/examples/**/*"
+    });
 });
 
 /**

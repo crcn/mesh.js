@@ -1,8 +1,13 @@
 <html>
   <head>
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bundle.css" rel="stylesheet">
   </head>
   <body>
-    <script type="text/javascript" src="/js/entry.bundle.js"></script>
+    <script type="text/javascript">
+      var script = document.createElement("script");
+      script.src = location.pathname === "/" ? "/js/entry.bundle.js" : location.pathname + "entry.bundle.js";
+      document.body.appendChild(script);
+    </script>
   </body>
 </html>
