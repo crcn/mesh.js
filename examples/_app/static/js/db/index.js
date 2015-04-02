@@ -3,7 +3,7 @@ var crudlet = require("../../../../..");
 
 module.exports = function() {
 
-  var httpdb = http();
+  var httpdb = http({ prefix: "/api" });
 
   // db is the default NS we wanna use - just re-assign
   // httpdb
@@ -12,6 +12,6 @@ module.exports = function() {
 
   // return the collections
   return {
-    examples: crudlet.child(db, { collection: "api/examples"})
+    examplesDb: crudlet.child(db, { collection: "examples" })
   };
 }

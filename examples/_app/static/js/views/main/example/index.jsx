@@ -11,9 +11,13 @@ module.exports = React.createClass({
   render: function() {
     var self = this;
     return <div className="row example">
-      <iframe src={"/" + this.state.app.currentExampleUID}>
+      { 
+        this.state.app.currentExampleUID ? 
+          <iframe src={"/" + this.state.app.currentExampleUID}>
 
-      </iframe>
+          </iframe> : 
+          <h3>&lt;- Pick an example</h3>
+      }
     </div>;
   }
 });
