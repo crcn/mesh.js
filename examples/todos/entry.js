@@ -20,9 +20,9 @@ db("tail").pipe(crud.open(iodb));
 
 // the template
 var tpl = pc.template(
-  "<h3>Local torage + socket.io (realtime) todos</h3>" +
-  "<input type='text' placeholder='add todo' value={{<~>todoText}} onEnter={{addTodo(todoText)}} />" +
-  "<ul>" +
+  "<h3>Local storage + socket.io (realtime) todos</h3>" +
+  "<input type='text' class='form-control' placeholder='add todo' value={{<~>todoText}} onEnter={{addTodo(todoText)}} />" +
+  "<ul class='todo-items'>" +
     "<repeat each={{todos}} as='todo'>" +
       "<li><a href='#' onClick={{removeTodo(todo)}}>x</a> {{todo.text}}</li>" +
     "</repeat>" +
@@ -53,7 +53,7 @@ function setData() {
 }
 
 // wait for operations on local storage, then refresh todos
-todosDb("tail").on("data", setData);
+db("tail").on("data", setData);
 
 // load todos initially
 setData();
