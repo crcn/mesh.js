@@ -48,9 +48,7 @@ var view = tpl.view({
 function setData() {
   todosDb("load", { multi: true }).
   pipe(_.pipeline(_.collect)).
-  on("data", function(todos) {
-    view.set("todos", todos);
-  });
+  on("data", view.set.bind(view, "todos"));
 }
 
 // wait for operations on local storage, then refresh todos
