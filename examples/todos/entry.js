@@ -20,7 +20,7 @@ db("tail").pipe(crud.open(iodb));
 
 // the template
 var tpl = pc.template(
-  "<h3>Local Storage + socket.io (realtime) todos</h3>" +
+  "<h3>Local torage + socket.io (realtime) todos</h3>" +
   "<input type='text' placeholder='add todo' value={{<~>todoText}} onEnter={{addTodo(todoText)}} />" +
   "<ul>" +
     "<repeat each={{todos}} as='todo'>" +
