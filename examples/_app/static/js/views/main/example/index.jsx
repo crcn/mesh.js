@@ -13,9 +13,14 @@ module.exports = React.createClass({
     return <div className="row example">
       { 
         this.state.app.currentExampleUID ? 
-          <iframe src={"/" + this.state.app.currentExampleUID}>
+          <div>
+            <a href={"https://github.com/mojo-js/crudlet.js/tree/master/examples/" + this.state.app.currentExampleUID }>
+              View {this.state.app.currentExampleUID} source
+            </a>
+            <iframe src={"/" + this.state.app.currentExampleUID}>
 
-          </iframe> : 
+            </iframe> 
+          </div>: 
           <h3>&lt;- Pick an example</h3>
       }
     </div>;
