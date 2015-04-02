@@ -31,6 +31,7 @@
     "crudlet-webrtc": "0.0.x",
     "expect.js": "^0.3.1",
     "express": "^4.12.3",
+    "famous": "^0.3.5",
     "glob": "^5.0.3",
     "gulp": "^3.8.11",
     "gulp-concat": "^2.5.2",
