@@ -146,6 +146,7 @@ gulp.task("test", function (complete) {
   src(paths.testFiles, { read: false }).
   pipe(plumber()).
   pipe(mocha(mochaOptions)).
+  on("error", complete).
   on("end", complete);
 });
 

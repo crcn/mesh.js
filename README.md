@@ -223,6 +223,49 @@ db("load").on("data", function() {
 });
 ```
 
+#### db crud.first(...dbs)
+
+Runs dbs in sequence, but stops when a result is emitted from a database.
+
+```javascript
+var db = crud.first(localStorage(), http());
+
+// load data from local storage if it exists, or continue
+// to http storage
+db("load", { collection: "people" }).on("data", function() {
+
+});
+```
+
+#### db crud.accept(db[, ...operationNames])
+
+Accepts only the provided operations.
+
+```javascript
+// main DB - api server
+var httpdb  = crud.tailable(http());
+
+// temporary cache
+var localdb = localStorage();
+
+// main DB - get cached data from local storage before
+// checking the server
+var db      = crud.first(crud.accept(localdb, "load"), httpdb);
+
+// pipe all persistence operations back to local storage
+httpdb("tail").pipe(crud.open(localdb));
+```
+
+
+#### db crud.reject(db[, ...operationNames])
+
+Runs all operations except the ones provided.
+
+
+<!--#### db crud.intercept()
+
+Intercepts an operation based on the given test-->
+
 ### Building a custom database
 
 Building a custom database is pretty easy. All you need to do
@@ -231,7 +274,6 @@ is return a stream when `db(opName, options)` is called.
 Here's some scaffolding for a custom db:
 
 ```javascript
-
 // slimmed down version of node streams.
 var stream = require("obj-stream");
 
