@@ -185,10 +185,12 @@ db("tail", function() {
 
 });
 
-db("insert", { data: { name: "Donkey" }}); // trigger tail
-db("remove", { query: { name: "Donkey" }}); // trigger tail
-db("update", { query: { name: "Donkey" }, data: { name: "Donkay" }}); // trigger tail
-db("load", { query: { name: "Donkey" }}); // ignored by tail
+var peopleDb = crud.child(db, { collection: "people" });
+
+peopleDb("insert", { data: { name: "Donkey" }}); // trigger tail
+peopleDb("remove", { query: { name: "Donkey" }}); // trigger tail
+peopleDb("update", { query: { name: "Donkey" }, data: { name: "Donkay" }}); // trigger tail
+peopleDb("load", { query: { name: "Donkey" }}); // ignored by tail
 ```
 
 #### db crud.parallel(...dbs)
