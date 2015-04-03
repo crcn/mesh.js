@@ -20,6 +20,6 @@ describe(__filename + "#", function() {
     dbs("load").on("end", function() {
       expect(i).to.be(1);
       next();
-    })
+    });
   });
 });

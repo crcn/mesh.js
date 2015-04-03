@@ -1,6 +1,6 @@
 {
   "name": "crudlet",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "reactive data store library",
   "main": "./lib/index.js",
   "scripts": {

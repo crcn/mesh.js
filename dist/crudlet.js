@@ -6,15 +6,35 @@
 module.exports = {
   parallel  : require("./parallel"),
   sequence  : require("./sequence"),
+  first     : require("./first"),
   operation : require("./operation"),
   delta     : require("./delta"),
   child     : require("./child"),
   stream    : require("./open"),
   open      : require("./open"),
-  tailable  : require("./tailable")
+  tailable  : require("./tailable"),
+  accept    : require("./accept"),
+  reject    : require("./reject")
 };
 
-},{"./child":2,"./delta":3,"./open":4,"./operation":5,"./parallel":6,"./sequence":7,"./tailable":8}],2:[function(require,module,exports){
+},{"./accept":2,"./child":3,"./delta":4,"./first":5,"./open":6,"./operation":7,"./parallel":8,"./reject":9,"./sequence":10,"./tailable":11}],2:[function(require,module,exports){
+(function (process){
+var stream = require("obj-stream");
+
+module.exports = function(db, accept) {
+  accept = Array.prototype.slice.call(arguments, 1);
+  return function(operationName, options) {
+    if (!!~accept.indexOf(operationName)) return db(operationName, options);
+    var writable = stream.writable();
+    process.nextTick(function() {
+      writable.end();
+    });
+    return writable.reader;
+  };
+};
+
+}).call(this,require('_process'))
+},{"_process":13,"obj-stream":14}],3:[function(require,module,exports){
 var createOperation = require("./operation");
 var extend          = require("xtend/mutable");
 
@@ -24,7 +44,7 @@ module.exports = function(db, options) {
   };
 };
 
-},{"./operation":5,"xtend/mutable":19}],3:[function(require,module,exports){
+},{"./operation":7,"xtend/mutable":21}],4:[function(require,module,exports){
 var through = require("obj-stream").through;
 
 module.exports = function() {
@@ -46,7 +66,46 @@ module.exports = function() {
   });
 };
 
-},{"obj-stream":12}],4:[function(require,module,exports){
+},{"obj-stream":14}],5:[function(require,module,exports){
+(function (process){
+var Writable = require("obj-stream").Writable;
+
+/**
+ */
+
+module.exports = function() {
+  var dbs = Array.prototype.slice.apply(arguments);
+  return function(name, properties) {
+    var i = 0;
+
+    var stream = new Writable();
+
+    process.nextTick(function() {
+
+      function run() {
+        if (i >= dbs.length) return stream.end();
+        var db = dbs[i++];
+        var found = false;
+        db(name, properties).on("data", function(data) {
+          found = true;
+          stream.write(data);
+        }).on("end", function() {
+          if (found) {
+            return stream.end();
+          } else {
+            return run();
+          }
+        });
+      }
+      run();
+    });
+
+    return stream.reader;
+  };
+};
+
+}).call(this,require('_process'))
+},{"_process":13,"obj-stream":14}],6:[function(require,module,exports){
 var through = require("obj-stream").through;
 
 module.exports = function(db) {
@@ -58,7 +117,7 @@ module.exports = function(db) {
   });
 };
 
-},{"obj-stream":12}],5:[function(require,module,exports){
+},{"obj-stream":14}],7:[function(require,module,exports){
 var extend = require("xtend/mutable");
 
 /**
@@ -77,7 +136,7 @@ module.exports = function(name, options) {
   return new Operation(name, options);
 };
 
-},{"xtend/mutable":19}],6:[function(require,module,exports){
+},{"xtend/mutable":21}],8:[function(require,module,exports){
 (function (process){
 var Writable = require("obj-stream").Writable;
 
@@ -109,7 +168,24 @@ module.exports = function() {
 };
 
 }).call(this,require('_process'))
-},{"_process":10,"obj-stream":12}],7:[function(require,module,exports){
+},{"_process":13,"obj-stream":14}],9:[function(require,module,exports){
+(function (process){
+var stream = require("obj-stream");
+
+module.exports = function(db, reject) {
+  reject = Array.prototype.slice.call(arguments, 1);
+  return function(operationName, options) {
+    if (!~reject.indexOf(operationName)) return db(operationName, options);
+    var writable = stream.writable();
+    process.nextTick(function() {
+      writable.end();
+    });
+    return writable.reader;
+  };
+};
+
+}).call(this,require('_process'))
+},{"_process":13,"obj-stream":14}],10:[function(require,module,exports){
 (function (process){
 var Writable = require("obj-stream").Writable;
 
@@ -139,7 +215,7 @@ module.exports = function() {
 };
 
 }).call(this,require('_process'))
-},{"_process":10,"obj-stream":12}],8:[function(require,module,exports){
+},{"_process":13,"obj-stream":14}],11:[function(require,module,exports){
 var Stream       = require("obj-stream").Stream;
 var operation    = require("./operation");
 
@@ -165,7 +241,7 @@ module.exports = function(db, reject) {
   };
 };
 
-},{"./operation":5,"obj-stream":12}],9:[function(require,module,exports){
+},{"./operation":7,"obj-stream":14}],12:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -468,7 +544,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],10:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -528,7 +604,155 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],11:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
+var Readable = require("./readable");
+var Writable = require("./writable");
+var Stream   = require("./stream");
+var through  = require("./through");
+
+exports.Readable = Readable;
+exports.readable = Readable;
+
+exports.Writable = Writable;
+exports.writable = Writable;
+
+exports.Stream = Stream;
+exports.stream = Stream;
+
+exports.through = through;
+
+},{"./readable":16,"./stream":17,"./through":18,"./writable":19}],15:[function(require,module,exports){
+module.exports = function(src, dst, ops) {
+
+  var listeners = [];
+
+  function cleanup() {
+    for (var i = listeners.length; i--;) listeners[i].dispose();
+  }
+
+  function onData(data) {
+    if (dst.writable && dst.write(data) === false) {
+      src.pause();
+    }
+  }
+
+  function onDrain() {
+    if (src.readable) {
+      src.resume();
+    }
+  }
+
+  function onError(error) {
+    cleanup();
+    // TODO: throw error if there are no handlers here
+  }
+
+  var didEnd = false;
+
+  function onEnd() {
+    if (didEnd) return;
+    didEnd = true;
+    dst.end();
+  }
+
+  function onClose() {
+    if (didEnd) return;
+    didEnd = true;
+    if (typeof dst.destroy === "function") dst.destroy();
+  }
+
+  function listen(target, event, listener) {
+    target.on(event, listener);
+    return {
+      dispose: function() {
+        return target.removeListener(event, listener);
+      }
+    };
+  }
+
+  if (!ops || ops.end !== false) {
+    listeners.push(
+      listen(src, "end", onEnd),
+      listen(src, "close", onClose)
+    );
+  }
+
+  listeners.push(
+    listen(src, "data", onData),
+    listen(dst, "drain", onDrain),
+    listen(src, "end", cleanup),
+    listen(src, "close", cleanup),
+    listen(dst, "close", cleanup),
+    listen(src, "error", onError),
+    listen(dst, "error", onError)
+  );
+
+  dst.emit("pipe", src);
+
+  return dst;
+};
+
+},{}],16:[function(require,module,exports){
+var protoclass   = require("protoclass");
+var EventEmitter = require("events").EventEmitter;
+var pipe         = require("./pipe");
+
+/**
+ */
+
+function Readable () {
+  if (!(this instanceof Readable)) return new Readable();
+  EventEmitter.call(this);
+}
+
+/**
+ */
+
+protoclass(EventEmitter, Readable, {
+
+  /**
+   */
+
+  _flowing: true,
+  readable: true,
+  writable: false,
+
+  /**
+   */
+
+  pause: function() {
+    if (!this._flowing) return;
+    this._flowing = false;
+    this.emit("pause");
+  },
+
+  /**
+   */
+
+  resume: function() {
+    if (this._flowing) return;
+    this._flowing = true;
+    this.emit("resume");
+  },
+
+  /**
+   */
+
+  isPaused: function() {
+    return !this._flowing;
+  },
+
+  /**
+   */
+
+  pipe: function(dst, ops) {
+    return pipe(this, dst, ops);
+  }
+});
+
+module.exports = Readable;
+
+},{"./pipe":15,"events":12,"protoclass":20}],17:[function(require,module,exports){
 var protoclass = require("protoclass");
 var Writer     = require("./writable");
 
@@ -620,157 +844,7 @@ protoclass(Stream, {
 
 module.exports = Stream;
 
-},{"./writable":17,"protoclass":18}],12:[function(require,module,exports){
-var Readable = require("./readable");
-var Writable = require("./writable");
-var Stream   = require("./Stream");
-var through  = require("./through");
-
-exports.Readable = Readable;
-exports.readable = Readable;
-
-exports.Writable = Writable;
-exports.writable = Writable;
-
-exports.Stream = Stream;
-exports.stream = Stream;
-
-exports.through = through;
-
-},{"./Stream":11,"./readable":14,"./through":16,"./writable":17}],13:[function(require,module,exports){
-module.exports = function(src, dst, ops) {
-
-  var listeners = [];
-
-  function cleanup() {
-    for (var i = listeners.length; i--;) listeners[i].dispose();
-  }
-
-  function onData(data) {
-    if (dst.writable && dst.write(data) === false) {
-      src.pause();
-    }
-  }
-
-  function onDrain() {
-    if (src.readable) {
-      src.resume();
-    }
-  }
-
-  function onError(error) {
-    cleanup();
-    // TODO: throw error if there are no handlers here
-  }
-
-  var didEnd = false;
-
-  function onEnd() {
-    if (didEnd) return;
-    didEnd = true;
-    dst.end();
-  }
-
-  function onClose() {
-    if (didEnd) return;
-    didEnd = true;
-    if (typeof dst.destroy === "function") dst.destroy();
-  }
-
-  function listen(target, event, listener) {
-    target.on(event, listener);
-    return {
-      dispose: function() {
-        return target.removeListener(event, listener);
-      }
-    };
-  }
-
-  if (!ops || ops.end !== false) {
-    listeners.push(
-      listen(src, "end", onEnd),
-      listen(src, "close", onClose)
-    );
-  }
-
-  listeners.push(
-    listen(src, "data", onData),
-    listen(dst, "drain", onDrain),
-    listen(src, "end", cleanup),
-    listen(src, "close", cleanup),
-    listen(dst, "close", cleanup),
-    listen(src, "error", onError),
-    listen(dst, "error", onError)
-  );
-
-  dst.emit("pipe", src);
-
-  return dst;
-};
-
-},{}],14:[function(require,module,exports){
-var protoclass   = require("protoclass");
-var EventEmitter = require("events").EventEmitter;
-var pipe         = require("./pipe");
-
-/**
- */
-
-function Readable () {
-  if (!(this instanceof Readable)) return new Readable();
-  EventEmitter.call(this);
-}
-
-/**
- */
-
-protoclass(EventEmitter, Readable, {
-
-  /**
-   */
-
-  _flowing: true,
-  readable: true,
-  writable: false,
-
-  /**
-   */
-
-  pause: function() {
-    if (!this._flowing) return;
-    this._flowing = false;
-    this.emit("pause");
-  },
-
-  /**
-   */
-
-  resume: function() {
-    if (this._flowing) return;
-    this._flowing = true;
-    this.emit("resume");
-  },
-
-  /**
-   */
-
-  isPaused: function() {
-    return !this._flowing;
-  },
-
-  /**
-   */
-
-  pipe: function(dst, ops) {
-    return pipe(this, dst, ops);
-  }
-});
-
-module.exports = Readable;
-
-},{"./pipe":13,"events":9,"protoclass":18}],15:[function(require,module,exports){
-arguments[4][11][0].apply(exports,arguments)
-},{"./writable":17,"dup":11,"protoclass":18}],16:[function(require,module,exports){
+},{"./writable":19,"protoclass":20}],18:[function(require,module,exports){
 var protoclass = require("protoclass");
 var Readable   = require("./readable");
 var Stream     = require("./stream");
@@ -833,7 +907,7 @@ module.exports = function(write, end) {
   return stream;
 };
 
-},{"./readable":14,"./stream":15,"./writable":17,"protoclass":18}],17:[function(require,module,exports){
+},{"./readable":16,"./stream":17,"./writable":19,"protoclass":20}],19:[function(require,module,exports){
 var protoclass   = require("protoclass");
 var EventEmitter = require("events").EventEmitter;
 var Reader       = require("./readable");
@@ -887,11 +961,15 @@ protoclass(EventEmitter, Writable, {
 
   end: function(object) {
 
+    this._ended = true;
+
     if (object != void 0) {
       this.write(object);
     }
 
-    this.reader.emit("end");
+    if (this._flowing) {
+      this.reader.emit("end");
+    }
   },
 
   /**
@@ -921,7 +999,8 @@ protoclass(EventEmitter, Writable, {
   _resume: function() {
     if (this._flowing) return;
     this._flowing = true;
-    this.emit("drain");
+    this.reader.emit("drain");
+
     while (this._pool.length) {
       var item = this._pool.shift();
       if (!this._write(item)) {
@@ -929,12 +1008,16 @@ protoclass(EventEmitter, Writable, {
         break;
       }
     }
+
+    if (!this._pool.length && this._ended) {
+      this.end();
+    }
   }
 });
 
 module.exports = Writable;
 
-},{"./readable":14,"events":9,"protoclass":18}],18:[function(require,module,exports){
+},{"./readable":16,"events":12,"protoclass":20}],20:[function(require,module,exports){
 function _copy (to, from) {
 
   for (var i = 0, n = from.length; i < n; i++) {
@@ -1010,7 +1093,7 @@ protoclass.setup = function (child) {
 
 
 module.exports = protoclass;
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = extend
 
 function extend(target) {
