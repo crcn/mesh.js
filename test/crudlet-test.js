@@ -35,12 +35,9 @@ describe(__filename + "#", function() {
       return writer.reader;
     }
 
-
-
     db(crudlet.operation("insert")).once("error", function(err) {
       expect(err.message).to.be("abba");
       next();
     });
-
   });
 });
