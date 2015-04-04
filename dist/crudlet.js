@@ -21,8 +21,12 @@ module.exports = {
 (function (process){
 var stream = require("obj-stream");
 
-module.exports = function(db, accept) {
-  accept = Array.prototype.slice.call(arguments, 1);
+module.exports = function(db) {
+
+  var args   = Array.prototype.slice.call(arguments);
+  var db     = args.pop();
+  var accept = args;
+
   return function(operationName, options) {
     if (!!~accept.indexOf(operationName)) return db(operationName, options);
     var writable = stream.writable();
@@ -172,8 +176,12 @@ module.exports = function() {
 (function (process){
 var stream = require("obj-stream");
 
-module.exports = function(db, reject) {
-  reject = Array.prototype.slice.call(arguments, 1);
+module.exports = function(db) {
+
+  var args   = Array.prototype.slice.call(arguments);
+  var db     = args.pop();
+  var reject = args;
+
   return function(operationName, options) {
     if (!~reject.indexOf(operationName)) return db(operationName, options);
     var writable = stream.writable();
