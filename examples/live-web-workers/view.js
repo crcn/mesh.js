@@ -20,28 +20,28 @@ module.exports = function(app, element) {
   // the view controller
   var view = tpl.view({
     addTodo: function(text) {
-      todosDb("insert", {
+      todosDb(crud.op("insert", {
         data: { text: text, uid: Date.now() }
-      });
+      }));
 
       this.todoText = "";
     },
     removeTodo: function(todo) {
-      todosDb("remove", {
+      todosDb(crud.op("remove", {
         query: { uid: todo.uid }
-      });
+      }));
     }
   });
 
   // reloads data in the view controller
   function update() {
-    todosDb("load", { multi: true }).
+    todosDb(crud.op("load", { multi: true })).
     pipe(_.pipeline(_.collect)).
     on("data", view.set.bind(view, "todos"));
   }
 
   // wait for operations on local storage, then refresh todos
-  todosDb("tail").on("data", update);
+  todosDb(crud.op("tail")).on("data", update);
 
   // load todos initially
   update();

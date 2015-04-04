@@ -8,10 +8,9 @@ if (cluster.isMaster) {
   var child = cluster.fork();
   var _i    = 0;
 
-  module.exports = function(operationName, properties) {
+  module.exports = function(op) {
 
     var writable = stream.writable();
-    var op       = crud.operation(operationName, properties);
     op._id       = _i++;
 
     function onMessage(name, payload) {
