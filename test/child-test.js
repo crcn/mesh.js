@@ -7,11 +7,11 @@ describe(__filename + "#", function() {
 
   it("can be created", function(next) {
 
-    function db(name, properties) {
-      return _([properties]);
+    function db(operation) {
+      return _([operation]);
     }
 
-    var child  = crudlet.child(db, { a: 1 });
+    var child  = crudlet.clean(crudlet.child(db, { a: 1 }));
 
     child("insert", { b: 2 }).once("data", function(data) {
       expect(data.a).to.be(1);

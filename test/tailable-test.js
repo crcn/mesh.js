@@ -11,7 +11,7 @@ describe(__filename + "#", function() {
       return _([properties]);
     };
 
-    db = crudlet.tailable(db);
+    db = crudlet.clean(crudlet.tailable(db));
 
     db("tail").on("data", function(operation) {
       expect(operation.name).to.be("insert");

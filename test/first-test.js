@@ -11,12 +11,12 @@ describe(__filename + "#", function() {
 
     var startTime = Date.now();
 
-    var db = function(name, properties) {
+    var db = function() {
       i++;
-      return _([properties]);
+      return _([1]);
     };
 
-    var dbs = crudlet.first(db, db);
+    var dbs = crudlet.clean(crudlet.first(db, db));
     dbs("load").on("end", function() {
       expect(i).to.be(1);
       next();

@@ -74,12 +74,12 @@ pubdb("tail").pipe(crud.open(db));
 var peopleDb = crud.child(db, { collection: "people" });
 
 // insert some people
-peopleDb("insert", {
+peopleDb(crudlet.operation("insert", {
   data: [
     { name: "Gordon Ramsay" },
     { name: "Ben Stiller"   }
   ]
-}).on("data", function() {
+})).on("data", function() {
   // handle data here
 });
 ```
@@ -108,10 +108,10 @@ Runs a new operation.
 var localStorage = require("crudlet-local-storage");
 
 var localdb = localStorage();
-localdb("insert", {
+localdb(crudlet.operation("insert", {
   collection: "people",
   data: { name: "Arnold Schwarzenegger" }
-}).on("data", function() {
+})).on("data", function() {
   // handle data here
 });
 ```
@@ -169,12 +169,29 @@ pubdb("tail").on("data", function(operation) {
 ```
 -->
 
+#### db crud.clean(db)
+
+Makes it so that you can simply call `db(operationName, options)` instead of passing in the operation
+each time.
+
+```javascript
+var db = crud.clean(localStorage());
+
+// enables this
+db("insert", {
+  collection: { name: "Jorge" }
+});
+
+// also accepts this
+db(crud.operation("insert"));
+```
+
 #### db crud.child(db, options)
 
 Creates a new child database. `options` is essentially just added to each operation performed.
 
 ```javascript
-var peopleDb = crud.child(db, { collection: "people" });
+var peopleDb = crud.clean(crud.child(db, { collection: "people" }));
 
 // insert a new person into the people collection
 peopleDb("insert", {
@@ -189,7 +206,7 @@ Makes the db tailable. This simply allows you to listen for any operations invok
 `reject` is an array of operations to ignore. Default is `[load]`.
 
 ```javascript
-var db = crud.tailable(localdb);
+var db = crud.clean(crud.tailable(localdb));
 db("tail", function() {
 
 });
@@ -209,7 +226,7 @@ Combines databases and executes operations in parallel.
 <!-- note about emitting data multiple times -->
 
 ```javascript
-var db = crud.parallel(localdb, httpdb);
+var db = crud.clean(crud.parallel(localdb, httpdb));
 
 // execute "load" on localdb at the same time
 db("load").on("data", function() {
@@ -226,7 +243,7 @@ Combines databases and executes operations in sequence.
 <!-- note about emitting data multiple times -->
 
 ```javascript
-var db = crud.parallel(localdb, httpdb);
+var db = crud.clean(crud.parallel(localdb, httpdb));
 
 // load data from localdb first, then move to httpdb
 db("load").on("data", function() {
@@ -239,7 +256,7 @@ db("load").on("data", function() {
 Runs dbs in sequence, but stops when a result is emitted from a database.
 
 ```javascript
-var db = crud.first(localStorage(), http());
+var db = crud.clean(crud.first(localStorage(), http()));
 
 // load data from local storage if it exists, or continue
 // to http storage
@@ -254,7 +271,7 @@ Accepts only the provided operations.
 
 ```javascript
 // main DB - api server
-var httpdb  = crud.tailable(http());
+var httpdb  = crud.clean(crud.tailable(http()));
 
 // temporary cache
 var localdb = localStorage();
@@ -292,14 +309,14 @@ function createDatabase(options) {
   // create database here
 
   // return fn that executes operations
-  return function (operationName, options) {
+  return function (operation) {
     var writable = stream.writable();
 
     // this is important so that data can be piped to other things
     process.nextTick(function() {
 
       // collection MUST exist
-      if (!options.collection) return writable.reader.emit("error", new Error("missing collection"));
+      if (!operation.collection) return writable.reader.emit("error", new Error("missing collection"));
 
       // perform task here
 
@@ -357,7 +374,7 @@ Updates an item in the database. Doesn't return any values.
   - `multi` - `true` to update multiple items. `false` is default.
 
 ```javascript
-var peopleDb = crud.child(db, { collection: "people" });
+var peopleDb = crud.clean(crud.child(db, { collection: "people" }));
 
 peopleDb("update", {
   query: { name: "jake" },
@@ -382,7 +399,7 @@ Updates an item if it exists. Inserts an item if it doesn't.
   - `collection` - db collection
 
 ```javascript
-var peopleDb = crud.child(db, { collection: "people" });
+var peopleDb = crud.clean(crud.child(db, { collection: "people" }));
 
 // insert
 peopleDb("upsert", {
@@ -409,7 +426,7 @@ Loads one or many items from the database.
 
 ```javascript
 
-var peopleDb = crud.child(db, { collection: "people" });
+var peopleDb = crud.clean(crud.child(db, { collection: "people" }));
 
 // load one item
 peopleDb("load", {

@@ -8,8 +8,8 @@ describe(__filename + "#", function() {
   it("can write a stream of operations", function(next) {
     var results = [];
 
-    function db(name, properties) {
-      return _([properties]);
+    function db(operation) {
+      return _([operation]);
     }
 
     var stream = crudlet.open(db);
