@@ -40,7 +40,7 @@ var examples = [];
 server.use(staticMiddleware);
 
 fs.readdirSync(__dirname + "/../").filter(function(name) {
-  return !/^(_|\.)/.test(name);
+  return /^live-/.test(name)
 }).forEach(function(name) {
 
   var dirname =  __dirname + "/../" + name;

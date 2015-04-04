@@ -10,7 +10,7 @@ describe(__filename + "#", function() {
       return _([properties]);
     };
 
-    db = crudlet.reject(db, "a", "b");
+    db = crudlet.reject("a", "b", db);
     db("c").pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(1);
       db("d").pipe(_.pipeline(_.collect)).on("data", function(items) {
@@ -25,7 +25,7 @@ describe(__filename + "#", function() {
       return _([properties]);
     };
 
-    db = crudlet.reject(db, "a", "b");
+    db = crudlet.reject("a", "b", db);
     db("a").pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(0);
       db("a").pipe(_.pipeline(_.collect)).on("data", function(items) {

@@ -1,4 +1,13 @@
+Crudlet is a fancy-ass (FA) event bus system for
 
+<!--
+
+a standard for communicating with db operations - allows you to roll them all
+up into one thing. Show examples
+
+Doesn't attempt to unify stuff - just allows you to add options specific to a db
+
+-->
 
 [![Build Status](https://travis-ci.org/mojo-js/crudlet.js.svg)](https://travis-ci.org/mojo-js/crudlet.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/crudlet.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/crudlet.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/crudlet.js.svg)](https://david-dm.org/mojo-js/crudlet.js) [![Join the chat at https://gitter.im/mojo-js/crudlet.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/crudlet.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -239,7 +248,7 @@ db("load", { collection: "people" }).on("data", function() {
 });
 ```
 
-#### db crud.accept(db[, ...operationNames])
+#### db crud.accept([...operationNames, ]db)
 
 Accepts only the provided operations.
 
@@ -252,17 +261,16 @@ var localdb = localStorage();
 
 // main DB - get cached data from local storage before
 // checking the server
-var db      = crud.first(crud.accept(localdb, "load"), httpdb);
+var db      = crud.first(crud.accept("load", localdb), httpdb);
 
 // pipe all persistence operations back to local storage
 httpdb("tail").pipe(crud.open(localdb));
 ```
 
 
-#### db crud.reject(db[, ...operationNames])
+#### db crud.reject([...operationNames, ]db)
 
 Runs all operations except the ones provided.
-
 
 <!--#### db crud.intercept()
 
