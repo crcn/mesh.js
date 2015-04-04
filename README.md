@@ -1,5 +1,3 @@
-Crudlet is a fancy-ass (FA) event bus system for
-
 <!--
 
 a standard for communicating with db operations - allows you to roll them all
@@ -169,13 +167,13 @@ pubdb("tail").on("data", function(operation) {
 ```
 -->
 
-#### db crud.clean(db)
+#### db crud.top(db)
 
-Makes it so that you can simply call `db(operationName, options)` instead of passing in the operation
+`to operation` - Makes it so that you can simply call `db(operationName, options)` instead of passing in the operation
 each time.
 
 ```javascript
-var db = crud.clean(localStorage());
+var db = crud.top(localStorage());
 
 // enables this
 db("insert", {
@@ -191,7 +189,7 @@ db(crud.operation("insert"));
 Creates a new child database. `options` is essentially just added to each operation performed.
 
 ```javascript
-var peopleDb = crud.clean(crud.child(db, { collection: "people" }));
+var peopleDb = crud.top(crud.child(db, { collection: "people" }));
 
 // insert a new person into the people collection
 peopleDb("insert", {
@@ -206,7 +204,7 @@ Makes the db tailable. This simply allows you to listen for any operations invok
 `reject` is an array of operations to ignore. Default is `[load]`.
 
 ```javascript
-var db = crud.clean(crud.tailable(localdb));
+var db = crud.top(crud.tailable(localdb));
 db("tail", function() {
 
 });

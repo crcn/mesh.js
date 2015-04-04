@@ -12,6 +12,6 @@ module.exports = function() {
 
   // return the collections
   return {
-    examplesDb: crudlet.child(db, { collection: "examples" })
+    examplesDb: crudlet.top(crudlet.child(db, { collection: "examples" }))
   };
 }

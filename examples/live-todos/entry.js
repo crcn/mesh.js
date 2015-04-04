@@ -14,10 +14,10 @@ var db = crud.tailable(localStorage());
 var todosDb = crud.child(db, { collection: "todos" });
 
 // sync remote stuff with the local db
-iodb("tail").pipe(crud.open(db));
+iodb(crud.op("tail")).pipe(crud.open(db));
 
 // sync local db with remote stuff
-db("tail").pipe(crud.open(iodb));
+db(crud.op("tail")).pipe(crud.open(iodb));
 
 // the template
 var tpl = pc.template(
@@ -33,28 +33,28 @@ var tpl = pc.template(
 // the view controller
 var view = tpl.view({
   addTodo: function(text) {
-    todosDb("insert", {
+    todosDb(crud.op("insert", {
       data: { text: text, uid: Date.now() }
-    });
+    }));
 
     this.todoText = "";
   },
   removeTodo: function(todo) {
-    todosDb("remove", {
+    todosDb(crud.op("remove", {
       query: { uid: todo.uid }
-    });
+    }));
   }
 });
 
 // reloads data in the view controller
 function setData() {
-  todosDb("load", { multi: true }).
+  todosDb(crud.op("load", { multi: true })).
   pipe(_.pipeline(_.collect)).
   on("data", view.set.bind(view, "todos"));
 }
 
 // wait for operations on local storage, then refresh todos
-db("tail").on("data", setData);
+db(crud.op("tail")).on("data", setData);
 
 // load todos initially
 setData();
