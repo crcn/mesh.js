@@ -15,6 +15,7 @@ Crudlet is a tiny (11kb), [streamable](https://nodejs.org/api/stream.html) inter
 
 - Works with any library, or framework.
 - Works on any platform.
+- Works nicely with other stream-based libraries such as [highland](http://highlandjs.org/).
 - Isomorphic. Easily use different databases for different platforms.
 - Easily testable. Stub out any database for a fake one.
 - Simple design. Use it for many other things such as an event bus, message-queue service, etc.
