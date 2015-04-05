@@ -11,6 +11,14 @@ Doesn't attempt to unify stuff - just allows you to add options specific to a db
 
 Crudlet is a tiny (11kb), [streamable](https://nodejs.org/api/stream.html) interface for data stores. It allows you to easily implement advanced features such as offline-mode, realtime data, caching, rollbacks, and more with just a few lines of code.
 
+#### Cool bits
+
+- Works with any library, or framework.
+- Works on any platform.
+- Isomorphic. Easily use different databases for different platforms.
+- Easily testable. Stub out any database for a fake one.
+- Simple design. Use it for many other things such as an event bus.
+
 <!--#### Why?
 
 - **Decoupled**. Crudlet allows you to decouple any store (even your own API) from your front-end / backend application.
