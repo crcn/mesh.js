@@ -40,7 +40,7 @@ npm install crudlet
 
 - [collaborative todos](http://crudlet.herokuapp.com/#/todos)
 
-#### Example
+#### Realtime Example
 
 Below is an example of a realtime DB that uses [pubnub](https://github.com/mojo-js/crudlet-pubnub), and [local storage](https://github.com/mojo-js/crudlet-local-storage).
 
@@ -81,8 +81,10 @@ peopleDb(crud.op("insert", {
 });
 ```
 
-Here's another example of how you might use Crudlet with an API:
+#### client caching + HTTP API
 
+Here's a basic example of how you might implement client-side caching in tandem
+with an API server:
 
 ```javascript
 var crud   = require("crud");
@@ -150,7 +152,24 @@ db(crud.op("insert", {
   collection: "people"
 }));
 
-
+// Also note that you can easily stuff server-generated stuff in the memory
+// on initial page load. Here's a basic example:
+crud.open(mdb).
+on("end", initialzeAppHere).
+write(crud.op("insert", {
+  collection: "people",
+  data: [
+    { text: "Jake Jefferds" },
+    { text: "Amanda Kishins" }
+  ]
+})).
+end(crud.op("insert"), {
+  collection: "todos",
+  data: [
+    { text: "take out trash" },
+    { text: "walk dog" }
+  ]
+})
 ```
 
 #### [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable) db(operationName, options)
