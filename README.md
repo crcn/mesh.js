@@ -15,7 +15,7 @@ Crudlet is a tiny (11kb), [streamable](https://nodejs.org/api/stream.html) inter
 
 - Works with any library, or framework.
 - Works on any platform.
-- Works nicely with other stream-based libraries such as [highland](http://highlandjs.org/).
+- Works nicely with other stream-based libraries such as [highland](http://highlandjs.org/).git add
 - Isomorphic. Easily use different databases for different platforms.
 - Easily testable. Stub out any database for a fake one.
 - Simple design. Use it for many other things such as an event bus, message-queue service, etc.
@@ -77,8 +77,8 @@ var pubdb   = pubnub({
 // all operations to localstorage, and pubnub
 var db = crud.parallel(localdb, pubdb);
 
-// tail all operations send to pubnub back into the database. Note
-// that remote calls won't get re-published to pubnub
+// tail all operations from pubnub to the local DB. Note
+// that remote operations don't get re-sent to pubnub.
 pubdb(crud.op("tail")).pipe(crud.open(db));
 
 // create a child database - collection will get passed to each operation
