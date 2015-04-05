@@ -21,12 +21,19 @@ Questions:
 - What can it do?
 
 
-
+ack
 Pitches:
 
 
-Crudlet is a common interface for data stores. It allows you to easily implement advanced features
-such as offline mode, rollbacks, realtime data, with just a few lines of code.
+Crudlet is a streamable interface for synchronizing data sources. It allows you to easily implement advanced features
+such as offline mode, realtime data, and other stuff with just a few lines of code.
 
 
-Crudlet, is a common, streamable interface for data stores. It allows you to easily implement advanced
+Crudlet, is a common, streamable interface for sa. It allows you to easily implement advanced
+
+
+Crudlet is a streamable interface for synchronizing data sources.
+
+### Why?
+
+Crudlet provides a common, streamable interface for data stores.  

@@ -2,25 +2,19 @@ Crudlet is a streamable interface for data st
 
 [![Build Status](https://travis-ci.org/mojo-js/crudlet.js.svg)](https://travis-ci.org/mojo-js/crudlet.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/crudlet.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/crudlet.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/crudlet.js.svg)](https://david-dm.org/mojo-js/crudlet.js) [![Join the chat at https://gitter.im/mojo-js/crudlet.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/crudlet.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-
-Crudlet is a tiny (11kb), [streamable](https://nodejs.org/api/stream.html) interface for data stores and APIs. It allows you to easily implement advanced features such as offline-mode, realtime data, caching, rollbacks, and more with just a few lines of code.
+Crudlet is a [streamable](https://nodejs.org/api/stream.html) interface for synchronizing data sources. It allows you to easily implement advanced features such as offline mode, realtime data, and other stuff with just a few lines of code.
 
 #### Cool bits
 
 - Works with any library, or framework.
 - Works on any platform.
-- Works nicely with other stream-based libraries such as [highland](http://highlandjs.org/).git add
+- Tiny (11kb).
+- Works nicely with other stream-based libraries such as [highland](http://highlandjs.org/).
 - Isomorphic. Easily use different databases for different platforms.
 - Easily testable. Stub out any database for a fake one.
 - Simple design. Use it for many other things such as an event bus, message-queue service, etc.
 
-<!--#### Why?
 
-- **Decoupled**. Crudlet allows you to decouple any store (even your own API) from your front-end / backend application.
-- **Interoperable**. Use Crudlet with just about any library, or framework.
-- **Isomorphic**. Easily use your application code on multiple platforms (client & server-side). Just swap out the database adapter.
-- **Testable**. Crudlet makes it super easy to stub-out any data store for testing purposes.
--->
 
 #### Installation
 
