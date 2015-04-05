@@ -17,7 +17,7 @@ var cache = localStorage({ ttl: 1000 * 60 });
 var api   = http({ prefix: "/api" });
 
 // pipe all persistence operations to the cache
-api(crud.op("tail")).pie(crud.open(cache));
+api(crud.op("tail")).pipe(crud.open(cache));
 
 // the DB we'll use, return the first result returned, and
 // only pass 'load' operations to the cache
