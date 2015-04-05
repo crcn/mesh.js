@@ -25,6 +25,12 @@ Crudlet is a tiny (11kb), [streamable](https://nodejs.org/api/stream.html) inter
 npm install crudlet
 ```
 
+Or via bower:
+
+```
+bower install crudlet
+```
+
 #### Adapters
 
 - [pubnub](http://github.com/mojo-js/crudlet-pubnub) - [pubnub](http://www.pubnub.com/) sync adapter
