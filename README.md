@@ -81,7 +81,7 @@ peopleDb(crud.op("insert", {
 });
 ```
 
-#### client caching + HTTP API
+#### Client caching + HTTP API Example
 
 Here's a basic example of how you might implement client-side caching in tandem
 with an API server:
