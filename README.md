@@ -53,6 +53,7 @@ db(crud.op("insert", {
 
 #### Highlights
 
+- Streamable interface.
 - Works with any library, or framework.
 - Works on any platform.
 - Tiny (11kb).
