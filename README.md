@@ -1,8 +1,57 @@
 [![Build Status](https://travis-ci.org/mojo-js/crudlet.js.svg)](https://travis-ci.org/mojo-js/crudlet.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/crudlet.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/crudlet.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/crudlet.js.svg)](https://david-dm.org/mojo-js/crudlet.js) [![Join the chat at https://gitter.im/mojo-js/crudlet.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/crudlet.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Crudlet is a [streamable](https://nodejs.org/api/stream.html) interface for synchronizing data sources. It allows you to easily implement advanced features such as offline mode, realtime data, and other stuff with just a few lines of code.
 
-#### Cool bits
+Crudlet is a universal interface for communicating with data sources whether it's your API, mongodb, pubnub, webrtc, socket.io, redis, or local storage. Easily build sophisticated features such as offline-mode, realtime data, rollbacks, and more with little effort.
+
+Crudlet is entirely customizable, and doesn't make assumptions about how a data source works. It's actually more-so a pattern that encourages you to interact with data a certain way, so you can easily build your own API adapter that's interoperable with all the other Crudlet plugins.
+
+Here's a basic example of how you might implement an API that caches temporarily to local storage:
+
+```javascript
+var crud         = require("crudlet");
+var http         = require("crudlet-http");
+var localStorage = require("crudlet-local-storage");
+
+// local storage cache - keep stuff for one minute max
+var cache = localStorage({ ttl: 1000 * 60 });
+var api   = http({ prefix: "/api" });
+
+// pipe all persistence operations to the cache
+api(crud.op("tail")).pie(crud.open(cache));
+
+// the DB we'll use, return the first result returned, and
+// only pass 'load' operations to the cache
+var db    = crud.first(crud.accept("load", cache), api);
+
+
+db(crud.op("insert", {
+  collection: "people"
+
+  // path is automatically resolved from the collection param,
+  // but you can easily override it.
+  path: "/people",
+
+  // POST is resolved from the operation name, but it's
+  // also overrideabl
+  method: "POST",
+
+  data: { name: "john" }
+})).on("data", function(personData) {
+
+  // load the person saved. This should result in a cache
+  // hit for local storage. Also note that the HTTP path & method
+  // will automatically get resolved.
+  db(crud.op("load", {
+    collection: "people",
+    query: { name: person.name }
+  })).
+  on("data", function(personData) {
+    // do stuff with data
+  });
+});
+```
+
+#### Highlights
 
 - Works with any library, or framework.
 - Works on any platform.
@@ -11,8 +60,6 @@ Crudlet is a [streamable](https://nodejs.org/api/stream.html) interface for sync
 - Isomorphic. Easily use different databases for different platforms.
 - Easily testable. Stub out any database for a fake one.
 - Simple design. Use it for many other things such as an event bus, message-queue service, etc.
-
-
 
 #### Installation
 
@@ -79,99 +126,6 @@ peopleDb(crud.op("insert", {
 })).on("data", function() {
   // handle data here
 });
-```
-
-#### Client caching + HTTP API Example
-
-Here's a basic example of how you might implement client-side caching in tandem
-with an API server:
-
-```javascript
-var crud   = require("crud");
-var memory = require("crudlet-memory");
-var http   = require("crudlet-http");
-var _      = require("highland");
-
-var httpdb = http({
-
-  // api server is http://127.0.0.1/api/PATH
-  prefix: "/api"
-});
-
-// temporarily holds data - keep stuff only for 1 minute
-var mdb = memory({ ttl: 1000 * 60 });
-
-// actual db we'll use - hit the memory DB first (cache)
-// then move onto the http API
-var db = crud.tailable(crud.first(crud.accept("load", mdb), httpdb));
-
-// pipe all create/update/remove operations to the memory db
-db(crud.op("pipe")).pipe(crud.open(mdb));
-
-var todosDb = crud.child(db, {
-  collection: "todos",
-  path: function(operation) {
-
-    var collectionPath  = "/" + operation.collection;
-    var modelPath       = collectionPath + "/" + operation.data.uid;
-
-    return {
-      "load"   : operation.multi ? collectionPath : modelPath,
-      "update" : modelPath,
-      "insert" : collectionPath,
-      "remove" : modelPath
-    }[operation.name];
-  }
-});
-
-
-// persists data only to HTTP api - should emit only one evwnt
-todosDb(crud.op("insert", { data: { text: "clean car" }})).on("data", function() {
-
-  // at this point, data should be persisted in the memory DB - loading
-  // todosDB here would cause a cache hit
-  todosDb(crud.op("load", { multi: true })).
-  pipe(_.pipeline(_.collect)).
-  on("data", function() {
-
-  });
-});
-
-// note that you can also do something like this:
-db(crud.op("insert", {
-
-  // data to insert
-  data: { name: "bob" },
-
-  // override path here
-  path: "/people",
-
-  // override method resolution here
-  method: "POST",
-
-  // specify this to make sure the data is persisted to the
-  // proper temporary DB
-  collection: "people"
-}));
-
-// Also note that you can easily stuff server-generated stuff in the memory
-// on initial page load. Here's a basic example:
-crud.open(mdb).
-on("end", initialzeAppHere).
-write(crud.op("insert", {
-  collection: "people",
-  data: [
-    { text: "Jake Jefferds" },
-    { text: "Amanda Kishins" }
-  ]
-})).
-end(crud.op("insert"), {
-  collection: "todos",
-  data: [
-    { text: "take out trash" },
-    { text: "walk dog" }
-  ]
-})
 ```
 
 #### [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable) db(operationName, options)
