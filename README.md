@@ -9,16 +9,17 @@ Doesn't attempt to unify stuff - just allows you to add options specific to a db
 
 [![Build Status](https://travis-ci.org/mojo-js/crudlet.js.svg)](https://travis-ci.org/mojo-js/crudlet.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/crudlet.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/crudlet.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/crudlet.js.svg)](https://david-dm.org/mojo-js/crudlet.js) [![Join the chat at https://gitter.im/mojo-js/crudlet.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/crudlet.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Crudlet is a [streamable](https://nodejs.org/api/stream.html) interface for data stores that works on any platform.
+Crudlet is a tiny (11kb), [streamable](https://nodejs.org/api/stream.html) interface for data stores that works on any platform.
 
-#### Why?
+Crudlet abstracts your service layer, and allows you to easily implement advanced features such as offline-mode, realtime data, caching, rollbacks, and more with just a few lines of code.
+
+<!--#### Why?
 
 - **Decoupled**. Crudlet allows you to decouple any store (even your own API) from your front-end / backend application.
 - **Interoperable**. Use Crudlet with just about any library, or framework.
-- **Tiny**. Crudlet is only 11kb minified.
 - **Isomorphic**. Easily use your application code on multiple platforms (client & server-side). Just swap out the database adapter.
-- **Testable**. Crudlet makes it super easy to stub-out any data store for testing purposes. Super useful especially for server-side apps (e.g: stubbing-out mongodb).
-- **Extensible**. Easily add offline-mode & peer-to-peer (realtime) with just a few lines of code.
+- **Testable**. Crudlet makes it super easy to stub-out any data store for testing purposes.
+-->
 
 #### Installation
 
