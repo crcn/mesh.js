@@ -117,8 +117,8 @@ var todosDb = crud.child(db, {
 
     return {
       "load"   : operation.multi ? collectionPath : modelPath,
-      "put"    : modelPath,
-      "post"   : collectionPath,
+      "update" : modelPath,
+      "insert" : collectionPath,
       "remove" : modelPath
     }[operation.name];
   }
