@@ -6,6 +6,7 @@ Questions:
     - but it's streamable
   - use as a database abstraction layer
   - use as a realtime system
+  - abstracts your service layer
 - Why?
   - abstract service layer so that app is not coupled
   - more flexibil
@@ -16,5 +17,13 @@ Questions:
   - isomorphic front-ends. Faster initial load times.
   - realtime data
   - event bus system
-- What can it be used for?
+  - rollback data
 - What can it do?
+
+
+
+Pitches:
+
+
+Crudlet is a common interface for data stores. It allows you to easily implement advanced features
+such as offline mode, rollbacks, realtime data, with just a few lines of code.

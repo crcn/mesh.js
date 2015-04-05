@@ -66,13 +66,13 @@ var db = crud.parallel(localdb, pubdb);
 
 // tail all operations send to pubnub back into the database. Note
 // that remote calls won't get re-published to pubnub
-pubdb("tail").pipe(crud.open(db));
+pubdb(crud.op("tail")).pipe(crud.open(db));
 
 // create a child database - collection will get passed to each operation
 var peopleDb = crud.child(db, { collection: "people" });
 
 // insert some people
-peopleDb(crudlet.operation("insert", {
+peopleDb(crud.op("insert", {
   data: [
     { name: "Gordon Ramsay" },
     { name: "Ben Stiller"   }
@@ -82,19 +82,77 @@ peopleDb(crudlet.operation("insert", {
 });
 ```
 
-<!--
-#### More Examples
+Here's another example of how you might use Crudlet with an API:
 
-Use SAME DB for same app
 
-- realtime todos (local storage + pubnub)
-- distributed event bus (server + client + socket.io)
-- offline-mode (save queries)
-- TTL on local storage + http
-- file sharing
-- chatroom
--->
+```javascript
+var crud   = require("crud");
+var memory = require("crudlet-memory");
+var http   = require("crudlet-http");
+var _      = require("highland");
 
+var httpdb = http({
+
+  // api server is http://127.0.0.1/api/PATH
+  prefix: "/api"
+});
+
+// temporarily holds data - keep stuff only for 1 minute
+var mdb = memory({ ttl: 1000 * 60 });
+
+// actual db we'll use - hit the memory DB first (cache)
+// then move onto the http API
+var db = crud.tailable(crud.first(crud.accept("load", mdb), httpdb));
+
+// pipe all create/update/remove operations to the memory db
+db(crud.op("pipe")).pipe(crud.open(mdb));
+
+var todosDb = crud.child(db, {
+  collection: "todos",
+  path: function(operation) {
+
+    var collectionPath  = "/" + operation.collection;
+    var modelPath       = collectionPath + "/" + (operation.query.uid || operation.data.uid);
+
+    return {
+      "load"   : operation.multi ? collectionPath : modelPath,
+      "put"    : modelPath,
+      "post"   : collectionPath,
+      "remove" : modelPath
+    }[operation.name];
+  }
+});
+
+
+// persists data only to HTTP api - should emit only one evwnt
+todosDb(crud.op("insert", { data: { text: "clean car" }})).on("data", function() {
+
+  // at this point, data should be persisted in the memory DB - loading
+  // todosDB here would cause a cache hit
+  todosDb(crud.op("load", { multi: true })).pipe(_.pipeline(_.collect)).on("data", function() {
+
+  });
+});
+
+// note that you can also do something like this:
+db(crud.op("insert", {
+
+  // data to insert
+  data: { name: "bob" },
+
+  // override path here
+  path: "/people",
+
+  // override method resolution here
+  method: "POST",
+
+  // specify this to make sure the data is persisted to the
+  // proper temporary DB
+  collection: "people"
+}));
+
+
+```
 
 #### [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable) db(operationName, options)
 
