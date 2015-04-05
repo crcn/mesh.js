@@ -113,7 +113,7 @@ var todosDb = crud.child(db, {
   path: function(operation) {
 
     var collectionPath  = "/" + operation.collection;
-    var modelPath       = collectionPath + "/" + (operation.query.uid || operation.data.uid);
+    var modelPath       = collectionPath + "/" + operation.data.uid;
 
     return {
       "load"   : operation.multi ? collectionPath : modelPath,
@@ -130,7 +130,9 @@ todosDb(crud.op("insert", { data: { text: "clean car" }})).on("data", function()
 
   // at this point, data should be persisted in the memory DB - loading
   // todosDB here would cause a cache hit
-  todosDb(crud.op("load", { multi: true })).pipe(_.pipeline(_.collect)).on("data", function() {
+  todosDb(crud.op("load", { multi: true })).
+  pipe(_.pipeline(_.collect)).
+  on("data", function() {
 
   });
 });
