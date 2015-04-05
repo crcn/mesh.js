@@ -27,3 +27,6 @@ Pitches:
 
 Crudlet is a common interface for data stores. It allows you to easily implement advanced features
 such as offline mode, rollbacks, realtime data, with just a few lines of code.
+
+
+Crudlet, is a common, streamable interface for data stores. It allows you to easily implement advanced

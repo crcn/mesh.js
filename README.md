@@ -9,8 +9,7 @@ Doesn't attempt to unify stuff - just allows you to add options specific to a db
 
 [![Build Status](https://travis-ci.org/mojo-js/crudlet.js.svg)](https://travis-ci.org/mojo-js/crudlet.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/crudlet.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/crudlet.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/crudlet.js.svg)](https://david-dm.org/mojo-js/crudlet.js) [![Join the chat at https://gitter.im/mojo-js/crudlet.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/crudlet.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Crudlet is a universal, [streamable](https://nodejs.org/api/stream.html) interface for data stores that works on any platform. Basically you
-can use just about any database (or even your API) without it being coupled to your application.
+Crudlet is a [streamable](https://nodejs.org/api/stream.html) interface for data stores that works on any platform.
 
 #### Why?
 
