@@ -3,7 +3,7 @@
 
 Crudlet is a universal interface for communicating with data sources whether it's your API, mongodb, pubnub, webrtc, socket.io, redis, or local storage. Easily build sophisticated features such as offline-mode, realtime data, rollbacks, and more with little effort.
 
-Crudlet is entirely customizable, and doesn't make assumptions about how a data source works. It's actually more-so a pattern that encourages you to interact with data a certain way, so you can easily build your own API adapter that's interoperable with all the other Crudlet plugins.
+Crudlet is entirely customizable, and doesn't make assumptions about how a data source works. You can easily build your own API adapter that's interoperable with all the other Crudlet plugins.
 
 Here's a basic example of how you might implement an API that caches temporarily to local storage:
 
