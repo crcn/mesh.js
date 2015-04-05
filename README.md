@@ -9,9 +9,7 @@ Doesn't attempt to unify stuff - just allows you to add options specific to a db
 
 [![Build Status](https://travis-ci.org/mojo-js/crudlet.js.svg)](https://travis-ci.org/mojo-js/crudlet.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/crudlet.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/crudlet.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/crudlet.js.svg)](https://david-dm.org/mojo-js/crudlet.js) [![Join the chat at https://gitter.im/mojo-js/crudlet.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/crudlet.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Crudlet is a tiny (11kb), [streamable](https://nodejs.org/api/stream.html) interface for data stores.
-
-Crudlet abstracts your service layer, and allows you to easily implement advanced features such as offline-mode, realtime data, caching, rollbacks, and more with just a few lines of code.
+Crudlet is a tiny (11kb), [streamable](https://nodejs.org/api/stream.html) interface for data stores. Itallows you to easily implement advanced features such as offline-mode, realtime data, caching, rollbacks, and more with just a few lines of code.
 
 <!--#### Why?
 
