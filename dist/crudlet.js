@@ -8,27 +8,30 @@ module.exports = {
   sequence  : require("./sequence"),
   first     : require("./first"),
   operation : require("./operation"),
+  op        : require("./operation"),
   delta     : require("./delta"),
   child     : require("./child"),
   stream    : require("./open"),
   open      : require("./open"),
   tailable  : require("./tailable"),
   accept    : require("./accept"),
-  reject    : require("./reject")
+  reject    : require("./reject"),
+  clean     : require("./top"),
+  top       : require("./top")
 };
 
-},{"./accept":2,"./child":3,"./delta":4,"./first":5,"./open":6,"./operation":7,"./parallel":8,"./reject":9,"./sequence":10,"./tailable":11}],2:[function(require,module,exports){
+},{"./accept":2,"./child":3,"./delta":4,"./first":5,"./open":6,"./operation":7,"./parallel":8,"./reject":9,"./sequence":10,"./tailable":11,"./top":12}],2:[function(require,module,exports){
 (function (process){
 var stream = require("obj-stream");
 
-module.exports = function(db) {
+module.exports = function() {
 
   var args   = Array.prototype.slice.call(arguments);
   var db     = args.pop();
   var accept = args;
 
-  return function(operationName, options) {
-    if (!!~accept.indexOf(operationName)) return db(operationName, options);
+  return function(operation) {
+    if (!!~accept.indexOf(operation.name)) return db.apply(this, arguments);
     var writable = stream.writable();
     process.nextTick(function() {
       writable.end();
@@ -38,17 +41,17 @@ module.exports = function(db) {
 };
 
 }).call(this,require('_process'))
-},{"_process":13,"obj-stream":14}],3:[function(require,module,exports){
+},{"_process":14,"obj-stream":15}],3:[function(require,module,exports){
 var createOperation = require("./operation");
 var extend          = require("xtend/mutable");
 
 module.exports = function(db, options) {
-  return function(name, properties) {
-    return db(name, extend({}, properties, options));
+  return function(operation) {
+    return db(extend({}, operation, options));
   };
 };
 
-},{"./operation":7,"xtend/mutable":21}],4:[function(require,module,exports){
+},{"./operation":7,"xtend/mutable":22}],4:[function(require,module,exports){
 var through = require("obj-stream").through;
 
 module.exports = function() {
@@ -70,7 +73,7 @@ module.exports = function() {
   });
 };
 
-},{"obj-stream":14}],5:[function(require,module,exports){
+},{"obj-stream":15}],5:[function(require,module,exports){
 (function (process){
 var Writable = require("obj-stream").Writable;
 
@@ -79,7 +82,7 @@ var Writable = require("obj-stream").Writable;
 
 module.exports = function() {
   var dbs = Array.prototype.slice.apply(arguments);
-  return function(name, properties) {
+  return function(operation) {
     var i = 0;
 
     var stream = new Writable();
@@ -90,7 +93,7 @@ module.exports = function() {
         if (i >= dbs.length) return stream.end();
         var db = dbs[i++];
         var found = false;
-        db(name, properties).on("data", function(data) {
+        db(operation).on("data", function(data) {
           found = true;
           stream.write(data);
         }).on("end", function() {
@@ -109,19 +112,19 @@ module.exports = function() {
 };
 
 }).call(this,require('_process'))
-},{"_process":13,"obj-stream":14}],6:[function(require,module,exports){
+},{"_process":14,"obj-stream":15}],6:[function(require,module,exports){
 var through = require("obj-stream").through;
 
 module.exports = function(db) {
   return through(function(operation, next) {
     var self = this;
-    db(operation.name, operation).on("data", function(data) {
+    db(operation).on("data", function(data) {
       self.push(data);
     }).on("end", next);
   });
 };
 
-},{"obj-stream":14}],7:[function(require,module,exports){
+},{"obj-stream":15}],7:[function(require,module,exports){
 var extend = require("xtend/mutable");
 
 /**
@@ -140,7 +143,7 @@ module.exports = function(name, options) {
   return new Operation(name, options);
 };
 
-},{"xtend/mutable":21}],8:[function(require,module,exports){
+},{"xtend/mutable":22}],8:[function(require,module,exports){
 (function (process){
 var Writable = require("obj-stream").Writable;
 
@@ -149,7 +152,7 @@ var Writable = require("obj-stream").Writable;
 
 module.exports = function() {
   var dbs = Array.prototype.slice.apply(arguments);
-  return function(name, properties) {
+  return function(operation) {
     var i = 0;
     var self = this;
 
@@ -157,7 +160,7 @@ module.exports = function() {
 
     process.nextTick(function() {
       dbs.forEach(function(db) {
-        db(name, properties).on("data", function(data) {
+        db(operation).on("data", function(data) {
           stream.write(data);
         }).on("end", function() {
           if (++i >= dbs.length) {
@@ -172,18 +175,18 @@ module.exports = function() {
 };
 
 }).call(this,require('_process'))
-},{"_process":13,"obj-stream":14}],9:[function(require,module,exports){
+},{"_process":14,"obj-stream":15}],9:[function(require,module,exports){
 (function (process){
 var stream = require("obj-stream");
 
-module.exports = function(db) {
+module.exports = function() {
 
   var args   = Array.prototype.slice.call(arguments);
   var db     = args.pop();
   var reject = args;
 
-  return function(operationName, options) {
-    if (!~reject.indexOf(operationName)) return db(operationName, options);
+  return function(operation) {
+    if (!~reject.indexOf(operation.name)) return db(operation);
     var writable = stream.writable();
     process.nextTick(function() {
       writable.end();
@@ -193,7 +196,7 @@ module.exports = function(db) {
 };
 
 }).call(this,require('_process'))
-},{"_process":13,"obj-stream":14}],10:[function(require,module,exports){
+},{"_process":14,"obj-stream":15}],10:[function(require,module,exports){
 (function (process){
 var Writable = require("obj-stream").Writable;
 
@@ -202,7 +205,7 @@ var Writable = require("obj-stream").Writable;
 
 module.exports = function() {
   var dbs = Array.prototype.slice.apply(arguments);
-  return function(name, properties) {
+  return function(operation) {
     var i = 0;
 
     var stream = new Writable();
@@ -211,7 +214,7 @@ module.exports = function() {
       function run() {
         if (i >= dbs.length) return stream.end();
         var db = dbs[i++];
-        db(name, properties).on("data", function(data) {
+        db(operation).on("data", function(data) {
           stream.write(data);
         }).on("end", run);
       }
@@ -223,33 +226,46 @@ module.exports = function() {
 };
 
 }).call(this,require('_process'))
-},{"_process":13,"obj-stream":14}],11:[function(require,module,exports){
-var Stream       = require("obj-stream").Stream;
-var operation    = require("./operation");
+},{"_process":14,"obj-stream":15}],11:[function(require,module,exports){
+var Stream  = require("obj-stream").Stream;
 
 module.exports = function(db, reject) {
   if (!reject) reject = ["load"];
   var tails = [];
 
-  return function(name, properties) {
+  return function(operation) {
     var stream;
-    if (name === "tail") {
+    if (operation.name === "tail") {
       stream = new Stream();
       tails.push(stream);
     } else {
       var self = this;
-      stream = db(name, properties);
+      stream = db(operation);
       stream.on("data", function() { });
       stream.on("end", function() {
-        if (~reject.indexOf(name)) return;
-        for (var i = tails.length; i--;) tails[i].emit("data", operation(name, properties));
+        if (~reject.indexOf(operation.name)) return;
+        for (var i = tails.length; i--;) tails[i].emit("data", operation);
       });
     }
     return stream;
   };
 };
 
-},{"./operation":7,"obj-stream":14}],12:[function(require,module,exports){
+},{"obj-stream":15}],12:[function(require,module,exports){
+var operation = require("./operation");
+
+module.exports = function(db) {
+  return function(operationName, options) {
+
+    if (typeof operationName === "object") {
+      return db(operationName);
+    }
+
+    return db(operation(operationName, options));
+  };
+};
+
+},{"./operation":7}],13:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -552,7 +568,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -612,7 +628,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 var Readable = require("./readable");
 var Writable = require("./writable");
 var Stream   = require("./stream");
@@ -629,7 +645,7 @@ exports.stream = Stream;
 
 exports.through = through;
 
-},{"./readable":16,"./stream":17,"./through":18,"./writable":19}],15:[function(require,module,exports){
+},{"./readable":17,"./stream":18,"./through":19,"./writable":20}],16:[function(require,module,exports){
 module.exports = function(src, dst, ops) {
 
   var listeners = [];
@@ -700,7 +716,7 @@ module.exports = function(src, dst, ops) {
   return dst;
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 var protoclass   = require("protoclass");
 var EventEmitter = require("events").EventEmitter;
 var pipe         = require("./pipe");
@@ -760,7 +776,7 @@ protoclass(EventEmitter, Readable, {
 
 module.exports = Readable;
 
-},{"./pipe":15,"events":12,"protoclass":20}],17:[function(require,module,exports){
+},{"./pipe":16,"events":13,"protoclass":21}],18:[function(require,module,exports){
 var protoclass = require("protoclass");
 var Writer     = require("./writable");
 
@@ -852,7 +868,7 @@ protoclass(Stream, {
 
 module.exports = Stream;
 
-},{"./writable":19,"protoclass":20}],18:[function(require,module,exports){
+},{"./writable":20,"protoclass":21}],19:[function(require,module,exports){
 var protoclass = require("protoclass");
 var Readable   = require("./readable");
 var Stream     = require("./stream");
@@ -915,7 +931,7 @@ module.exports = function(write, end) {
   return stream;
 };
 
-},{"./readable":16,"./stream":17,"./writable":19,"protoclass":20}],19:[function(require,module,exports){
+},{"./readable":17,"./stream":18,"./writable":20,"protoclass":21}],20:[function(require,module,exports){
 var protoclass   = require("protoclass");
 var EventEmitter = require("events").EventEmitter;
 var Reader       = require("./readable");
@@ -1025,7 +1041,7 @@ protoclass(EventEmitter, Writable, {
 
 module.exports = Writable;
 
-},{"./readable":16,"events":12,"protoclass":20}],20:[function(require,module,exports){
+},{"./readable":17,"events":13,"protoclass":21}],21:[function(require,module,exports){
 function _copy (to, from) {
 
   for (var i = 0, n = from.length; i < n; i++) {
@@ -1101,7 +1117,7 @@ protoclass.setup = function (child) {
 
 
 module.exports = protoclass;
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = extend
 
 function extend(target) {
