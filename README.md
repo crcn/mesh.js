@@ -274,7 +274,7 @@ Combines databases and executes operations in sequence.
 <!-- note about emitting data multiple times -->
 
 ```javascript
-var db = crud.top(crud.parallel(localdb, httpdb));
+var db = crud.top(crud.sequence(localdb, httpdb));
 
 // load data from localdb first, then move to httpdb
 db("load").on("data", function() {
