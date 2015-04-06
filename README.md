@@ -83,6 +83,7 @@ bower install crudlet
 - [memory](http://github.com/mojo-js/crudlet-memory) - another in-memory database
 - [local-storage](http://github.com/mojo-js/crudlet-local-storage) - local storage database
 - [http](http://github.com/mojo-js/crudlet-http) - HTTP adapter
+- [mognodb](http://github.com/mojo-js/crudlet-mongodb) - Mongodb Adapter (server-side)
 
 #### Examples
 
