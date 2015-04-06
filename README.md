@@ -1,16 +1,16 @@
-[![Build Status](https://travis-ci.org/mojo-js/crudlet.js.svg)](https://travis-ci.org/mojo-js/crudlet.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/crudlet.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/crudlet.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/crudlet.js.svg)](https://david-dm.org/mojo-js/crudlet.js) [![Join the chat at https://gitter.im/mojo-js/crudlet.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/crudlet.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/mojo-js/mesh.js.svg)](https://travis-ci.org/mojo-js/mesh.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/mesh.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/mesh.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/mesh.js.svg)](https://david-dm.org/mojo-js/mesh.js) [![Join the chat at https://gitter.im/mojo-js/mesh.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/mesh.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
-Crudlet is a universal interface for communicating with data sources whether it's your API, mongodb, pubnub, webrtc, socket.io, redis, or local storage. Easily build sophisticated features such as offline-mode, realtime data, rollbacks, and more with little effort.
+mesh is a universal interface for communicating with data sources whether it's your API, mongodb, pubnub, webrtc, socket.io, redis, or local storage. Easily build sophisticated features such as offline-mode, realtime data, rollbacks, and more with little effort.
 
-Crudlet is entirely customizable, and doesn't make assumptions about how a data source works. You can easily build your own API adapter that's interoperable with all the other Crudlet plugins.
+mesh is entirely customizable, and doesn't make assumptions about how a data source works. You can easily build your own API adapter that's interoperable with all the other mesh plugins.
 
 Here's a basic example of how you might implement an API that caches temporarily to local storage:
 
 ```javascript
-var crud = require("crudlet");
-var http = require("crudlet-http");
-var localStorage = require("crudlet-local-storage");
+var mesh = require("mesh");
+var http = require("mesh-http");
+var localStorage = require("mesh-local-storage");
 
 // local storage cache - keep stuff for one minute max
 var cache = localStorage({
@@ -21,14 +21,14 @@ var api = http({
 });
 
 // pipe all persistence operations to the cache
-api(crud.op("tail")).pipe(crud.open(cache));
+api(mesh.op("tail")).pipe(mesh.open(cache));
 
 // the DB we'll use, return the first result returned, and
 // only pass 'load' operations to the cache
-var db = crud.first(crud.accept("load", cache), api);
+var db = mesh.first(mesh.accept("load", cache), api);
 
 
-db(crud.op("insert", {
+db(mesh.op("insert", {
 	collection: "people"
 
 	// path is automatically resolved from the collection param,
@@ -47,7 +47,7 @@ db(crud.op("insert", {
 	// load the person saved. This should result in a cache
 	// hit for local storage. Also note that the HTTP path & method
 	// will automatically get resolved.
-	db(crud.op("load", {
+	db(mesh.op("load", {
 		collection: "people",
 		query: {
 			name: person.name
@@ -73,41 +73,41 @@ db(crud.op("insert", {
 #### Installation
 
 ```
-npm install crudlet
+npm install mesh
 ```
 
 Or via bower:
 
 ```
-bower install crudlet
+bower install mesh
 ```
 
 #### Adapters
 
-- [pubnub](http://github.com/mojo-js/crudlet-pubnub) - [pubnub](http://www.pubnub.com/) sync adapter
-- [socket.io](http://github.com/mojo-js/crudlet-socket.io) - [socket.io](http://socket.io/) sync adapter
-- [webrtc](http://github.com/mojo-js/crudlet-webrtc) - [webrtc](http://www.webrtc.org/) sync adapter
-- [loki](http://github.com/mojo-js/crudlet-loki) - [loki](http://lokijs.org/#/) in-memory database
-- [memory](http://github.com/mojo-js/crudlet-memory) - another in-memory database
-- [local-storage](http://github.com/mojo-js/crudlet-local-storage) - local storage database
-- [http](http://github.com/mojo-js/crudlet-http) - HTTP adapter
-- [mongodb](http://github.com/mojo-js/crudlet-mongodb) - Mongodb Adapter (server-side)
+- [pubnub](http://github.com/mojo-js/mesh-pubnub) - [pubnub](http://www.pubnub.com/) sync adapter
+- [socket.io](http://github.com/mojo-js/mesh-socket.io) - [socket.io](http://socket.io/) sync adapter
+- [webrtc](http://github.com/mojo-js/mesh-webrtc) - [webrtc](http://www.webrtc.org/) sync adapter
+- [loki](http://github.com/mojo-js/mesh-loki) - [loki](http://lokijs.org/#/) in-memory database
+- [memory](http://github.com/mojo-js/mesh-memory) - another in-memory database
+- [local-storage](http://github.com/mojo-js/mesh-local-storage) - local storage database
+- [http](http://github.com/mojo-js/mesh-http) - HTTP adapter
+- [mongodb](http://github.com/mojo-js/mesh-mongodb) - Mongodb Adapter (server-side)
 
 #### Examples
 
-- [collaborative todos](http://crudlet.herokuapp.com/#/todos)
-- [api + models](https://github.com/mojo-js/crudlet-http#http--caplet-example)
-- [web worker DB](http://crudlet.herokuapp.com/#/live-web-workers)
+- [collaborative todos](http://mesh.herokuapp.com/#/todos)
+- [api + models](https://github.com/mojo-js/mesh-http#http--caplet-example)
+- [web worker DB](http://mesh.herokuapp.com/#/live-web-workers)
 
 
 #### Realtime Example
 
-Below is an example of a realtime DB that uses [pubnub](https://github.com/mojo-js/crudlet-pubnub), and [local storage](https://github.com/mojo-js/crudlet-local-storage).
+Below is an example of a realtime DB that uses [pubnub](https://github.com/mojo-js/mesh-pubnub), and [local storage](https://github.com/mojo-js/mesh-local-storage).
 
 ```javascript
-var crud = require("crudlet");
-var pubnub = require("crudlet-pubnub");
-var localStorage = require("crudlet-local-storage");
+var mesh = require("mesh");
+var pubnub = require("mesh-pubnub");
+var localStorage = require("mesh-local-storage");
 
 // store data locally on the users machine
 var localdb = localStorage();
@@ -121,19 +121,19 @@ var pubdb = pubnub({
 
 // the actual DB we're going to use. Pass
 // all operations to localstorage, and pubnub
-var db = crud.parallel(localdb, pubdb);
+var db = mesh.parallel(localdb, pubdb);
 
 // tail all operations from pubnub to the local DB. Note
 // that remote operations don't get re-sent to pubnub.
-pubdb(crud.op("tail")).pipe(crud.open(db));
+pubdb(mesh.op("tail")).pipe(mesh.open(db));
 
 // create a child database - collection will get passed to each operation
-var peopleDb = crud.child(db, {
+var peopleDb = mesh.child(db, {
 	collection: "people"
 });
 
 // insert some people
-peopleDb(crud.op("insert", {
+peopleDb(mesh.op("insert", {
 	data: [
     {	name: "Gordon Ramsay" },
     {	name: "Ben Stiller" }
@@ -150,10 +150,10 @@ Runs a new operation.
 > Note that the supported operations & required options may change depending on the data store you're using.
 
 ```javascript
-var localStorage = require("crudlet-local-storage");
+var localStorage = require("mesh-local-storage");
 
 var localdb = localStorage();
-localdb(crudlet.operation("insert", {
+localdb(mesh.operation("insert", {
 	collection: "people",
 	data: { name: "Arnold Schwarzenegger" }
 })).on("data", function() {
@@ -161,24 +161,24 @@ localdb(crudlet.operation("insert", {
 });
 ```
 
-#### [stream.Stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) crud.open(db)
+#### [stream.Stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) mesh.open(db)
 
 Creates a new operation stream.
 
 ```javascript
-var operationStream = crud.open(db);
+var operationStream = mesh.open(db);
 
 // emitted when the operation is performed
 operationStream.on("data", function() {
 
 });
 
-operationStream.write(crud.operation("insert", {
+operationStream.write(mesh.operation("insert", {
 	collection: "people",
 	data: { name: "Sandra Bullock" }
 }));
 
-operationStream.write(crud.operation("remove", {
+operationStream.write(mesh.operation("remove", {
 	collection: "people",
 	query: { name: "Jeff Goldbloom" }
 }));
@@ -186,26 +186,26 @@ operationStream.write(crud.operation("remove", {
 
 #### operation db.operation(name, option)
 
-creates a new operation which can be written to a database stream. See `crud.open(db)`.
+creates a new operation which can be written to a database stream. See `mesh.open(db)`.
 
 ```javascript
-crud.open(db).write(crud.operation("insert", {
+mesh.open(db).write(mesh.operation("insert", {
 	collection: "friends",
 	data: { name: "Blakers" }
 }));
 ```
 
-#### operation crud.op(name, options)
+#### operation mesh.op(name, options)
 
-shorthand for `crud.operation(name options)`.
+shorthand for `mesh.operation(name options)`.
 
-#### db crud.top(db)
+#### db mesh.top(db)
 
 `to operation` - Makes it so that you can simply call `db(operationName, options)` instead of passing in the operation
 each time.
 
 ```javascript
-var db = crud.top(localStorage());
+var db = mesh.top(localStorage());
 
 // enables this
 db("insert", {
@@ -214,15 +214,15 @@ db("insert", {
 });
 
 // also accepts this
-db(crud.operation("insert"));
+db(mesh.operation("insert"));
 ```
 
-#### db crud.child(db, options)
+#### db mesh.child(db, options)
 
 Creates a new child database. `options` is essentially just added to each operation performed.
 
 ```javascript
-var peopleDb = crud.top(crud.child(db, { collection: "people" }));
+var peopleDb = mesh.top(mesh.child(db, { collection: "people" }));
 
 // insert a new person into the people collection
 peopleDb("insert", {
@@ -230,19 +230,19 @@ peopleDb("insert", {
 });
 ```
 
-#### db crud.tailable(db, reject)
+#### db mesh.tailable(db, reject)
 
 Makes the db tailable. This simply allows you to listen for any operations invoked on a db such as `create`, `update`, `remove`, and `load`.
 
 `reject` is an array of operations to ignore. Default is `[load]`.
 
 ```javascript
-var db = crud.tailable(localdb);
+var db = mesh.tailable(localdb);
 db("tail", function() {
 
 });
 
-var peopleDb = crud.top(crud.child(db, { collection: "people" }));
+var peopleDb = mesh.top(mesh.child(db, { collection: "people" }));
 
 peopleDb("insert", { data: { name: "Donkey" }}); // trigger tail
 peopleDb("remove", { query: { name: "Donkey" }}); // trigger tail
@@ -250,31 +250,31 @@ peopleDb("update", { query: { name: "Donkey" }, data: { name: "Donkay" }}); // t
 peopleDb("load", { query: { name: "Donkey" }}); // ignored by tail
 ```
 
-#### db crud.parallel(...dbs)
+#### db mesh.parallel(...dbs)
 
 Combines databases and executes operations in parallel.
 
 <!-- note about emitting data multiple times -->
 
 ```javascript
-var db = crud.parallel(localdb, httpdb);
+var db = mesh.parallel(localdb, httpdb);
 
 // execute "load" on localdb at the same time
-db(crud.op("load")).on("data", function() {
+db(mesh.op("load")).on("data", function() {
   // Note that his will get called TWICE
 }).on("end", function() {
   // called when operation is executed on all dbs
 });
 ```
 
-#### db crud.sequence(...dbs)
+#### db mesh.sequence(...dbs)
 
 Combines databases and executes operations in sequence.
 
 <!-- note about emitting data multiple times -->
 
 ```javascript
-var db = crud.top(crud.sequence(localdb, httpdb));
+var db = mesh.top(mesh.sequence(localdb, httpdb));
 
 // load data from localdb first, then move to httpdb
 db("load").on("data", function() {
@@ -282,12 +282,12 @@ db("load").on("data", function() {
 });
 ```
 
-#### db crud.first(...dbs)
+#### db mesh.first(...dbs)
 
 Runs dbs in sequence, but stops when a result is emitted from a database.
 
 ```javascript
-var db = crud.top(crud.first(localStorage(), http()));
+var db = mesh.top(mesh.first(localStorage(), http()));
 
 // load data from local storage if it exists, or continue
 // to http storage
@@ -296,31 +296,31 @@ db("load", { collection: "people" }).on("data", function() {
 });
 ```
 
-#### db crud.accept([...operationNames, ]db)
+#### db mesh.accept([...operationNames, ]db)
 
 Accepts only the provided operations.
 
 ```javascript
 // main DB - api server
-var httpdb = crud.tailable(http());
+var httpdb = mesh.tailable(http());
 
 // temporary cache
 var localdb = localStorage();
 
 // main DB - get cached data from local storage before
 // checking the server
-var db = crud.first(crud.accept("load", localdb), httpdb);
+var db = mesh.first(mesh.accept("load", localdb), httpdb);
 
 // pipe all persistence operations back to local storage
-httpdb(crud.op("tail")).pipe(crud.open(localdb));
+httpdb(mesh.op("tail")).pipe(mesh.open(localdb));
 ```
 
 
-#### db crud.reject([...operationNames, ]db)
+#### db mesh.reject([...operationNames, ]db)
 
 Runs all operations except the ones provided.
 
-<!--#### db crud.intercept()
+<!--#### db mesh.intercept()
 
 Intercepts an operation based on the given test-->
 
@@ -375,7 +375,7 @@ Insert a new item in the database. Note that `data` is emitted for each item ins
 
 ```javascript
 var _ = require("highland");
-var peopleDb = crud.top(crud.child(db, { collection: "people" }));
+var peopleDb = mesh.top(mesh.child(db, { collection: "people" }));
 
 // insert one item
 peopleDb("insert", {
@@ -405,7 +405,7 @@ Updates an item in the database. Doesn't return any values.
   - `multi` - `true` to update multiple items. `false` is default.
 
 ```javascript
-var peopleDb = crud.top(crud.child(db, {
+var peopleDb = mesh.top(mesh.child(db, {
 	collection: "people"
 }));
 
@@ -432,7 +432,7 @@ Updates an item if it exists. Inserts an item if it doesn't.
   - `collection` - db collection
 
 ```javascript
-var peopleDb = crud.top(crud.child(db, {
+var peopleDb = mesh.top(mesh.child(db, {
 	collection: "people"
 }));
 
@@ -467,7 +467,7 @@ Loads one or many items from the database.
 
 ```javascript
 
-var peopleDb = crud.top(crud.child(db, { collection: "people" }));
+var peopleDb = mesh.top(mesh.child(db, { collection: "people" }));
 
 // load one item
 peopleDb("load", {

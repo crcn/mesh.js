@@ -1,4 +1,4 @@
-var crudlet = require("../");
+var meshlet = require("../");
 var expect  = require("expect.js");
 var through = require("through2");
 
@@ -14,7 +14,7 @@ describe(__filename + "#", function() {
 
     var stream = db1();
 
-    var c = stream.pipe(crudlet.delta());
+    var c = stream.pipe(meshlet.delta());
 
     c.once("data", function(data) {
       expect(data.name).to.be("abba");
@@ -26,9 +26,9 @@ describe(__filename + "#", function() {
         });
         stream.end();
       });
-      stream.write(crudlet.operation("update", { data: { age: 19 }}));
+      stream.write(meshlet.operation("update", { data: { age: 19 }}));
     });
 
-    stream.write(crudlet.operation("update", { data: { name: "abba" }}));
+    stream.write(meshlet.operation("update", { data: { name: "abba" }}));
   });
 });

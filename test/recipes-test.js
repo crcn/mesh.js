@@ -1,4 +1,4 @@
-var crudlet = require("../");
+var meshlet = require("../");
 var expect  = require("expect.js");
 var through = require("through2");
 var _       = require("highland");

@@ -1,4 +1,4 @@
-var crudlet = require("../");
+var meshlet = require("../");
 var expect  = require("expect.js");
 var through = require("through2");
 var _       = require("highland");
@@ -29,7 +29,7 @@ describe(__filename + "#", function() {
       }));
     };
 
-    var db3 = crudlet.parallel(db1, db2);
+    var db3 = meshlet.parallel(db1, db2);
     db3("insert").on("data", function() {
       j++;
     }).on("end", function() {

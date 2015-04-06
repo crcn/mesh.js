@@ -1,10 +1,10 @@
 var pc   = require("paperclip");
-var crud = require("../..");
+var mesh = require("../..");
 var _    = require("highland");
 
 module.exports = function(app, element) {
 
-  var todosDb = crud.child(app.db, { collection: "todos" });
+  var todosDb = mesh.child(app.db, { collection: "todos" });
 
   // the template
   var tpl = pc.template(
@@ -20,14 +20,14 @@ module.exports = function(app, element) {
   // the view controller
   var view = tpl.view({
     addTodo: function(text) {
-      todosDb(crud.op("insert", {
+      todosDb(mesh.op("insert", {
         data: { text: text, uid: Date.now() }
       }));
 
       this.todoText = "";
     },
     removeTodo: function(todo) {
-      todosDb(crud.op("remove", {
+      todosDb(mesh.op("remove", {
         query: { uid: todo.uid }
       }));
     }
@@ -35,13 +35,13 @@ module.exports = function(app, element) {
 
   // reloads data in the view controller
   function update() {
-    todosDb(crud.op("load", { multi: true })).
+    todosDb(mesh.op("load", { multi: true })).
     pipe(_.pipeline(_.collect)).
     on("data", view.set.bind(view, "todos"));
   }
 
   // wait for operations on local storage, then refresh todos
-  todosDb(crud.op("tail")).on("data", update);
+  todosDb(mesh.op("tail")).on("data", update);
 
   // load todos initially
   update();

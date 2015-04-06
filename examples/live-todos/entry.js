@@ -1,26 +1,26 @@
-var crud         = require("../..")
-var localStorage = require("crudlet-local-storage");
-var io           = require("crudlet-socket.io");
+var mesh         = require("../..")
+var localStorage = require("mesh-local-storage");
+var io           = require("mesh-socket.io");
 var pc           = require("paperclip");
 var _            = require("highland");
-var memory         = require("crudlet-memory");
+var memory         = require("mesh-memory");
 
 var iodb = io({
   host: "http://" + location.host,
   channel: "live-todos"
 });
 
-var db = crud.tailable(localStorage({
-  storageKey: "crudlet"
+var db = mesh.tailable(localStorage({
+  storageKey: "mesh"
 }));
 
-var todosDb = crud.child(db, { collection: "todos" });
+var todosDb = mesh.child(db, { collection: "todos" });
 
 // sync remote stuff with the local db
-iodb(crud.op("tail")).pipe(crud.open(db));
+iodb(mesh.op("tail")).pipe(mesh.open(db));
 
 // sync local db with remote stuff
-db(crud.op("tail")).pipe(crud.open(iodb));
+db(mesh.op("tail")).pipe(mesh.open(iodb));
 
 // the template
 var tpl = pc.template(
@@ -36,14 +36,14 @@ var tpl = pc.template(
 // the view controller
 var view = tpl.view({
   addTodo: function(text) {
-    todosDb(crud.op("insert", {
+    todosDb(mesh.op("insert", {
       data: { text: text, uid: Date.now() }
     }));
 
     this.todoText = "";
   },
   removeTodo: function(todo) {
-    todosDb(crud.op("remove", {
+    todosDb(mesh.op("remove", {
       query: { uid: todo.uid }
     }));
   }
@@ -51,13 +51,13 @@ var view = tpl.view({
 
 // reloads data in the view controller
 function setData() {
-  todosDb(crud.op("load", { multi: true })).
+  todosDb(mesh.op("load", { multi: true })).
   pipe(_.pipeline(_.collect)).
   on("data", view.set.bind(view, "todos"));
 }
 
 // wait for operations on local storage, then refresh todos
-db(crud.op("tail")).on("data", setData);
+db(mesh.op("tail")).on("data", setData);
 
 // load todos initially
 setData();
