@@ -1,5 +1,5 @@
 {
-  "name": "crudlet",
+  "name": "mesh",
   "version": "1.0.3",
   "description": "reactive data store library",
   "main": "./lib/index.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/crcn/crudlet.js.git"
+    "url": "https://github.com/mesh/mesh.js.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/crcn/crudlet.js/issues"
+    "url": "https://github.com/mesh/mesh.js/issues"
   },
-  "homepage": "https://github.com/crcn/crudlet.js",
+  "homepage": "https://github.com/mesh/crudlet.js",
   "devDependencies": {
     "browser-sync": "^2.5.2",
     "browserify": "^9.0.4",
