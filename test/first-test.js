@@ -1,4 +1,4 @@
-var crudlet = require("../");
+var meshlet = require("../");
 var expect  = require("expect.js");
 var through = require("through2");
 var _       = require("highland");
@@ -16,7 +16,7 @@ describe(__filename + "#", function() {
       return _([1]);
     };
 
-    var dbs = crudlet.clean(crudlet.first(db, db));
+    var dbs = meshlet.clean(meshlet.first(db, db));
     dbs("load").on("end", function() {
       expect(i).to.be(1);
       next();

@@ -1,7 +1,7 @@
 var cluster = require("fourk")();
-var crud    = require("../..");
+var mesh    = require("../..");
 var stream  = require("obj-stream");
-var loki    = require("crudlet-loki");
+var loki    = require("meshlet-loki");
 
 if (cluster.isMaster) {
 
@@ -31,10 +31,10 @@ if (cluster.isMaster) {
     return writable.reader;
   }
 } else {
-  var db = crud.tailable(loki());
+  var db = mesh.tailable(loki());
 
   cluster.on("operation", function(operation) {
-    crud.open(db).on("data", function(data) {
+    mesh.open(db).on("data", function(data) {
       cluster.emit("data", { data: data, _id: operation._id });
     }).on("end", function() {
       cluster.emit("end", { _id: operation._id });

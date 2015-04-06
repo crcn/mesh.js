@@ -14,7 +14,7 @@ module.exports = React.createClass({
       {
         this.state.app.currentExampleUID ?
           <div>
-            <a href={"https://github.com/mojo-js/crudlet.js/tree/master/examples/live-" + this.state.app.currentExampleUID }>
+            <a href={"https://github.com/mojo-js/meshlet.js/tree/master/examples/live-" + this.state.app.currentExampleUID }>
               View {this.state.app.currentExampleUID} source
             </a>
             <iframe src={"/" + this.state.app.currentExampleUID}>

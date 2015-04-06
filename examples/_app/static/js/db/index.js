@@ -1,5 +1,5 @@
-var http = require("crudlet-http");
-var crudlet = require("../../../../..");
+var http = require("meshlet-http");
+var meshlet = require("../../../../..");
 
 module.exports = function() {
 
@@ -12,6 +12,6 @@ module.exports = function() {
 
   // return the collections
   return {
-    examplesDb: crudlet.top(crudlet.child(db, { collection: "examples" }))
+    examplesDb: meshlet.top(meshlet.child(db, { collection: "examples" }))
   };
 }

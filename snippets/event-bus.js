@@ -1,10 +1,10 @@
-var db = crud.parallel(
-  crud.accept(function(operation) {
+var db = mesh.parallel(
+  mesh.accept(function(operation) {
 
   }, "broadcast"),
 
   // swap args
-  crud.reject(function(operation) {
+  mesh.reject(function(operation) {
 
   }, "broadcast")
 );

@@ -1,4 +1,4 @@
-var crudlet = require("../");
+var meshlet = require("../");
 var through = require("through2");
 var expect  = require("expect.js");
 var _       = require("highland");
@@ -11,7 +11,7 @@ describe(__filename + "#", function() {
       return _([operation]);
     }
 
-    var child  = crudlet.clean(crudlet.child(db, { a: 1 }));
+    var child  = meshlet.clean(meshlet.child(db, { a: 1 }));
 
     child("insert", { b: 2 }).once("data", function(data) {
       expect(data.a).to.be(1);

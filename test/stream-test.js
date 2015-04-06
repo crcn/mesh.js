@@ -1,4 +1,4 @@
-var crudlet = require("../");
+var meshlet = require("../");
 var through = require("through2");
 var expect  = require("expect.js");
 var _ = require("highland");
@@ -12,7 +12,7 @@ describe(__filename + "#", function() {
       return _([operation]);
     }
 
-    var stream = crudlet.open(db);
+    var stream = meshlet.open(db);
     stream.on("data", function(data) {
       results.push(data);
     });
@@ -24,8 +24,8 @@ describe(__filename + "#", function() {
       next();
     });
 
-    stream.write(crudlet.operation("insert"));
-    stream.write(crudlet.operation("load"));
-    stream.end(crudlet.operation("remove"));
+    stream.write(meshlet.operation("insert"));
+    stream.write(meshlet.operation("load"));
+    stream.end(meshlet.operation("remove"));
   });
 });
