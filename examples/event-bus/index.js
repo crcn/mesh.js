@@ -1,0 +1,1 @@
+var crud = require("crudlet");

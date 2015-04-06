@@ -88,6 +88,9 @@ bower install crudlet
 #### Examples
 
 - [collaborative todos](http://crudlet.herokuapp.com/#/todos)
+- [api + models](https://github.com/mojo-js/crudlet-http#http--caplet-example)
+- [web worker DB](http://crudlet.herokuapp.com/#/live-web-workers)
+
 
 #### Realtime Example
 
