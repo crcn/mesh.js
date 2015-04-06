@@ -8,46 +8,54 @@ Crudlet is entirely customizable, and doesn't make assumptions about how a data 
 Here's a basic example of how you might implement an API that caches temporarily to local storage:
 
 ```javascript
-var crud         = require("crudlet");
-var http         = require("crudlet-http");
+var crud = require("crudlet");
+var http = require("crudlet-http");
 var localStorage = require("crudlet-local-storage");
 
 // local storage cache - keep stuff for one minute max
-var cache = localStorage({ ttl: 1000 * 60 });
-var api   = http({ prefix: "/api" });
+var cache = localStorage({
+	ttl: 1000 * 60
+});
+var api = http({
+	prefix: "/api"
+});
 
 // pipe all persistence operations to the cache
 api(crud.op("tail")).pipe(crud.open(cache));
 
 // the DB we'll use, return the first result returned, and
 // only pass 'load' operations to the cache
-var db    = crud.first(crud.accept("load", cache), api);
+var db = crud.first(crud.accept("load", cache), api);
 
 
 db(crud.op("insert", {
-  collection: "people"
+	collection: "people"
 
-  // path is automatically resolved from the collection param,
-  // but you can easily override it.
-  path: "/people",
+	// path is automatically resolved from the collection param,
+	// but you can easily override it.
+	path: "/people",
 
-  // POST is resolved from the operation name, but it's
-  // also overridable
-  method: "POST",
+	// POST is resolved from the operation name, but it's
+	// also overridable
+	method: "POST",
 
-  data: { name: "john" }
+	data: {
+		name: "john"
+	}
 })).on("data", function(personData) {
 
-  // load the person saved. This should result in a cache
-  // hit for local storage. Also note that the HTTP path & method
-  // will automatically get resolved.
-  db(crud.op("load", {
-    collection: "people",
-    query: { name: person.name }
-  })).
-  on("data", function(personData) {
-    // do stuff with data
-  });
+	// load the person saved. This should result in a cache
+	// hit for local storage. Also note that the HTTP path & method
+	// will automatically get resolved.
+	db(crud.op("load", {
+		collection: "people",
+		query: {
+			name: person.name
+		}
+	})).
+	on("data", function(personData) {
+		// do stuff with data
+	});
 });
 ```
 
@@ -97,18 +105,18 @@ bower install crudlet
 Below is an example of a realtime DB that uses [pubnub](https://github.com/mojo-js/crudlet-pubnub), and [local storage](https://github.com/mojo-js/crudlet-local-storage).
 
 ```javascript
-var crud          = require("crudlet");
-var pubnub        = require("crudlet-pubnub");
-var localStorage  = require("crudlet-local-storage");
+var crud = require("crudlet");
+var pubnub = require("crudlet-pubnub");
+var localStorage = require("crudlet-local-storage");
 
 // store data locally on the users machine
 var localdb = localStorage();
 
 // pubnub adapter for sending operations to other connected clients
-var pubdb   = pubnub({
-  publishKey   : "publish key",
-  subscribeKey : "subscribe key",
-  channel      : "chatroom"
+var pubdb = pubnub({
+	publishKey: "publish key",
+	subscribeKey: "subscribe key",
+	channel: "chatroom"
 });
 
 // the actual DB we're going to use. Pass
@@ -120,16 +128,18 @@ var db = crud.parallel(localdb, pubdb);
 pubdb(crud.op("tail")).pipe(crud.open(db));
 
 // create a child database - collection will get passed to each operation
-var peopleDb = crud.child(db, { collection: "people" });
+var peopleDb = crud.child(db, {
+	collection: "people"
+});
 
 // insert some people
 peopleDb(crud.op("insert", {
-  data: [
-    { name: "Gordon Ramsay" },
-    { name: "Ben Stiller"   }
+	data: [
+    {	name: "Gordon Ramsay" },
+    {	name: "Ben Stiller" }
   ]
 })).on("data", function() {
-  // handle data here
+	// handle data here
 });
 ```
 
@@ -144,10 +154,10 @@ var localStorage = require("crudlet-local-storage");
 
 var localdb = localStorage();
 localdb(crudlet.operation("insert", {
-  collection: "people",
-  data: { name: "Arnold Schwarzenegger" }
+	collection: "people",
+	data: { name: "Arnold Schwarzenegger" }
 })).on("data", function() {
-  // handle data here
+	// handle data here
 });
 ```
 
@@ -164,13 +174,13 @@ operationStream.on("data", function() {
 });
 
 operationStream.write(crud.operation("insert", {
-  collection: "people",
-  data: { name: "Sandra Bullock" }
+	collection: "people",
+	data: { name: "Sandra Bullock" }
 }));
 
 operationStream.write(crud.operation("remove", {
-  collection: "people",
-  query: { name: "Jeff Goldbloom" }
+	collection: "people",
+	query: { name: "Jeff Goldbloom" }
 }));
 ```
 
@@ -180,8 +190,8 @@ creates a new operation which can be written to a database stream. See `crud.ope
 
 ```javascript
 crud.open(db).write(crud.operation("insert", {
-  collection: "friends",
-  data: { name: "Blakers" }
+	collection: "friends",
+	data: { name: "Blakers" }
 }));
 ```
 
@@ -199,8 +209,8 @@ var db = crud.top(localStorage());
 
 // enables this
 db("insert", {
-  collection: "people",
-  data: { name: "Jorge" }
+	collection: "people",
+	data: { name: "Jorge" }
 });
 
 // also accepts this
@@ -292,14 +302,14 @@ Accepts only the provided operations.
 
 ```javascript
 // main DB - api server
-var httpdb  = crud.tailable(http());
+var httpdb = crud.tailable(http());
 
 // temporary cache
 var localdb = localStorage();
 
 // main DB - get cached data from local storage before
 // checking the server
-var db      = crud.first(crud.accept("load", localdb), httpdb);
+var db = crud.first(crud.accept("load", localdb), httpdb);
 
 // pipe all persistence operations back to local storage
 httpdb(crud.op("tail")).pipe(crud.open(localdb));
@@ -327,29 +337,29 @@ var stream = require("obj-stream");
 
 function createDatabase(options) {
 
-  // create database here
+	// create database here
 
-  // return fn that executes operations
-  return function (operation) {
-    var writable = stream.writable();
+	// return fn that executes operations
+	return function(operation) {
+		var writable = stream.writable();
 
-    // this is important so that data can be piped to other things
-    process.nextTick(function() {
+		// this is important so that data can be piped to other things
+		process.nextTick(function() {
 
-      // collection MUST exist
-      if (!operation.collection) return writable.reader.emit("error", new Error("missing collection"));
+			// collection MUST exist
+			if (!operation.collection) return writable.reader.emit("error", new Error("missing collection"));
 
-      // perform task here
+			// perform task here
 
-      // write data from insert/load
-      writable.write(data);
+			// write data from insert/load
+			writable.write(data);
 
-      // must call end operation when complete
-      writable.end();
-    });
+			// must call end operation when complete
+			writable.end();
+		});
 
-    return writable.reader;
-  };
+		return writable.reader;
+	};
 }
 ```
 
@@ -395,18 +405,20 @@ Updates an item in the database. Doesn't return any values.
   - `multi` - `true` to update multiple items. `false` is default.
 
 ```javascript
-var peopleDb = crud.top(crud.child(db, { collection: "people" }));
+var peopleDb = crud.top(crud.child(db, {
+	collection: "people"
+}));
 
 peopleDb("update", {
-  query: { name: "jake" },
-  data : { age: 17 }
+	query: { name: "jake"	},
+	data: { age: 17 }
 });
 
 // update multiple items
 peopleDb("update", {
-  multi: true,
-  query: { name: "joe" },
-  data : { age: 17 }
+	multi: true,
+	query: { name: "joe" },
+	data: {	age: 17 }
 });
 ```
 
@@ -420,19 +432,27 @@ Updates an item if it exists. Inserts an item if it doesn't.
   - `collection` - db collection
 
 ```javascript
-var peopleDb = crud.top(crud.child(db, { collection: "people" }));
+var peopleDb = crud.top(crud.child(db, {
+	collection: "people"
+}));
 
 // insert
 peopleDb("upsert", {
-  query: { name: "jake" },
-  data : { name: "jake", age: 17 }
+	query: { name: "jake" },
+	data: {
+		name: "jake",
+		age: 17
+	}
 }).on("end", function() {
 
-  // update
-  peopleDb("upsert", {
-    query: { name: "jake" },
-    data : { name: "jake", age: 18 }
-  })
+	// update
+	peopleDb("upsert", {
+		query: { name: "jake" },
+		data: {
+			name: "jake",
+			age: 18
+		}
+	})
 });
 ```
 
