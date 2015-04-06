@@ -32,7 +32,7 @@ db(crud.op("insert", {
   path: "/people",
 
   // POST is resolved from the operation name, but it's
-  // also overrideabl
+  // also overridable
   method: "POST",
 
   data: { name: "john" }
@@ -196,7 +196,8 @@ var db = crud.top(localStorage());
 
 // enables this
 db("insert", {
-  collection: { name: "Jorge" }
+  collection: "people",
+  data: { name: "Jorge" }
 });
 
 // also accepts this
