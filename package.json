@@ -9,25 +9,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mesh/mesh.js.git"
+    "url": "https://github.com/mojo-js/mesh.js.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mesh/mesh.js/issues"
+    "url": "https://github.com/mojo-js/mesh.js/issues"
   },
-  "homepage": "https://github.com/mesh/crudlet.js",
+  "homepage": "https://github.com/mojo-js/mesh.js",
   "devDependencies": {
     "browser-sync": "^2.5.2",
     "browserify": "^9.0.4",
     "browserify-middleware": "^5.0.2",
     "caplet": "0.0.38",
-    "crudlet-http": "1.0.x",
-    "crudlet-local-storage": "1.0.x",
-    "crudlet-loki": "1.0.x",
-    "crudlet-memory": "1.0.x",
-    "crudlet-pubnub": "1.0.x",
-    "crudlet-socket.io": "1.0.x",
+    "mesh-http": "1.0.x",
+    "mesh-local-storage": "1.0.x",
+    "mesh-loki": "1.0.x",
+    "mesh-memory": "1.0.x",
+    "mesh-pubnub": "1.0.x",
+    "mesh-socket.io": "1.0.x",
     "expect.js": "^0.3.1",
     "express": "^4.12.3",
     "famous": "^0.3.5",
