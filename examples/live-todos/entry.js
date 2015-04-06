@@ -7,7 +7,7 @@ var memory         = require("crudlet-memory");
 
 var iodb = io({
   host: "http://" + location.host,
-  channel: "todos"
+  channel: "live-todos"
 });
 
 var db = crud.tailable(localStorage({
