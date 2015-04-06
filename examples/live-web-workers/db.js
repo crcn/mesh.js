@@ -1,7 +1,7 @@
 var cluster = require("fourk")();
 var mesh    = require("../..");
 var stream  = require("obj-stream");
-var loki    = require("meshlet-loki");
+var loki    = require("mesh-loki");
 
 if (cluster.isMaster) {
 

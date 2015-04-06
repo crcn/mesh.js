@@ -1,4 +1,4 @@
-var meshlet = require("../");
+var mesh = require("../");
 var through = require("through2");
 var expect  = require("expect.js");
 var _ = require("highland");
@@ -12,7 +12,7 @@ describe(__filename + "#", function() {
       return _([operation]);
     }
 
-    var stream = meshlet.open(db);
+    var stream = mesh.open(db);
     stream.on("data", function(data) {
       results.push(data);
     });
@@ -24,8 +24,8 @@ describe(__filename + "#", function() {
       next();
     });
 
-    stream.write(meshlet.operation("insert"));
-    stream.write(meshlet.operation("load"));
-    stream.end(meshlet.operation("remove"));
+    stream.write(mesh.operation("insert"));
+    stream.write(mesh.operation("load"));
+    stream.end(mesh.operation("remove"));
   });
 });

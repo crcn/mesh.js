@@ -1,4 +1,4 @@
-var meshlet = require("../");
+var mesh = require("../");
 var expect  = require("expect.js");
 var through = require("through2");
 
@@ -14,7 +14,7 @@ describe(__filename + "#", function() {
 
     var stream = db1();
 
-    var c = stream.pipe(meshlet.delta());
+    var c = stream.pipe(mesh.delta());
 
     c.once("data", function(data) {
       expect(data.name).to.be("abba");
@@ -26,9 +26,9 @@ describe(__filename + "#", function() {
         });
         stream.end();
       });
-      stream.write(meshlet.operation("update", { data: { age: 19 }}));
+      stream.write(mesh.operation("update", { data: { age: 19 }}));
     });
 
-    stream.write(meshlet.operation("update", { data: { name: "abba" }}));
+    stream.write(mesh.operation("update", { data: { name: "abba" }}));
   });
 });

@@ -1,5 +1,5 @@
-var http = require("meshlet-http");
-var meshlet = require("../../../../..");
+var http = require("mesh-http");
+var mesh = require("../../../../..");
 
 module.exports = function() {
 
@@ -12,6 +12,6 @@ module.exports = function() {
 
   // return the collections
   return {
-    examplesDb: meshlet.top(meshlet.child(db, { collection: "examples" }))
+    examplesDb: mesh.top(mesh.child(db, { collection: "examples" }))
   };
 }
