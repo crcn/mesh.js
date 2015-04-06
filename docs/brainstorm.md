@@ -25,28 +25,28 @@ ack
 Pitches:
 
 
-meshlet is a streamable interface for synchronizing data sources. It allows you to easily implement advanced features
+mesh is a streamable interface for synchronizing data sources. It allows you to easily implement advanced features
 such as offline mode, realtime data, and other stuff with just a few lines of code.
 
 
-meshlet, is a common, streamable interface for sa. It allows you to easily implement advanced
+mesh, is a common, streamable interface for sa. It allows you to easily implement advanced
 
 
-meshlet is a streamable interface for synchronizing data sources.
+mesh is a streamable interface for synchronizing data sources.
 
 ### Why?
 
 
-meshlet is a universal interface for communicating with data sources whether it's your API, mongodb, pubnub, webrtc, socket.io, redis, or local storage. Easily build sophisticated features such as offline-mode, realtime data, rollbacks, and more with little effort.
+mesh is a universal interface for communicating with data sources whether it's your API, mongodb, pubnub, webrtc, socket.io, redis, or local storage. Easily build sophisticated features such as offline-mode, realtime data, rollbacks, and more with little effort.
 
-meshlet is entirely customizable, and doesn't make assumptions about how a data source works. It's actually more-so a pattern that encourages you to interact with data a certain way, so you can easily build your own API adapter that's interoperable with all the other meshlet plugins.
+mesh is entirely customizable, and doesn't make assumptions about how a data source works. It's actually more-so a pattern that encourages you to interact with data a certain way, so you can easily build your own API adapter that's interoperable with all the other mesh plugins.
 
 Here's a basic example of how you might implement an API that caches temporarily to local storage:
 
 ```javascript
-var mesh         = require("meshlet");
-var http         = require("meshlet-http");
-var localStorage = require("meshlet-local-storage");
+var mesh         = require("mesh");
+var http         = require("mesh-http");
+var localStorage = require("mesh-local-storage");
 
 // local storage cache - keep stuff for one minute max
 var cache = localStorage({ ttl: 1000 * 60 });

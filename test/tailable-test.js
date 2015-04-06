@@ -1,4 +1,4 @@
-var meshlet = require("../");
+var mesh = require("../");
 var through = require("through2");
 var expect  = require("expect.js");
 var _ = require("highland");
@@ -11,7 +11,7 @@ describe(__filename + "#", function() {
       return _([properties]);
     };
 
-    db = meshlet.clean(meshlet.tailable(db));
+    db = mesh.clean(mesh.tailable(db));
 
     db("tail").on("data", function(operation) {
       expect(operation.name).to.be("insert");

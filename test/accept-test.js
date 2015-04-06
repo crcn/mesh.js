@@ -1,4 +1,4 @@
-var meshlet = require("../");
+var mesh = require("../");
 var expect  = require("expect.js");
 var _       = require("highland");
 
@@ -10,7 +10,7 @@ describe(__filename + "#", function() {
       return _([operation]);
     };
 
-    db = meshlet.clean(meshlet.accept("a", "b", db));
+    db = mesh.clean(mesh.accept("a", "b", db));
     db("a").pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(1);
       db("b").pipe(_.pipeline(_.collect)).on("data", function(items) {
@@ -25,7 +25,7 @@ describe(__filename + "#", function() {
       return _([operation]);
     };
 
-    db = meshlet.clean(meshlet.accept("a", "b", db));
+    db = mesh.clean(mesh.accept("a", "b", db));
     db("c").pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(0);
       next();

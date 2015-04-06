@@ -1,4 +1,4 @@
-var meshlet = require("../");
+var mesh = require("../");
 var expect  = require("expect.js");
 var through = require("through2");
 var _       = require("highland");
@@ -6,14 +6,14 @@ var ss      = require("obj-stream");
 
 describe(__filename + "#", function() {
 
-  it("passes a new operation to the database in the meshlet", function(next) {
+  it("passes a new operation to the database in the mesh", function(next) {
 
     function db(operation) {
       expect(operation.data).to.be("a");
       return _([]);
     }
 
-    meshlet.clean(db)("insert", { data: "a" }).on("data", function() { }).on("end", next);
+    mesh.clean(db)("insert", { data: "a" }).on("data", function() { }).on("end", next);
   });
 
   it("can write data to the stream", function(next) {
@@ -21,7 +21,7 @@ describe(__filename + "#", function() {
       return _([{a:1}]);
     }
 
-    meshlet.clean(db)("insert").on("data", function(data) {
+    mesh.clean(db)("insert").on("data", function(data) {
       expect(data.a).to.be(1);
     }).on("end", next);
   });
@@ -35,7 +35,7 @@ describe(__filename + "#", function() {
       return writer.reader;
     }
 
-    db(meshlet.operation("insert")).once("error", function(err) {
+    db(mesh.operation("insert")).once("error", function(err) {
       expect(err.message).to.be("abba");
       next();
     });
