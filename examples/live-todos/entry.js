@@ -10,7 +10,10 @@ var iodb = io({
   channel: "todos"
 });
 
-var db = crud.tailable(localStorage());
+var db = crud.tailable(localStorage({
+  storageKey: "crudlet"
+}));
+
 var todosDb = crud.child(db, { collection: "todos" });
 
 // sync remote stuff with the local db
