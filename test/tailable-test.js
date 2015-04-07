@@ -8,7 +8,7 @@ describe(__filename + "#", function() {
   it("can tail a db", function(next) {
 
     var db = function(name, properties) {
-      return _([properties]);
+      return _([]);
     };
 
     db = mesh.clean(mesh.tailable(db));
@@ -18,6 +18,6 @@ describe(__filename + "#", function() {
       next();
     });
 
-    db("insert");
+    db(mesh.op("insert"));
   });
 });

@@ -1,5 +1,4 @@
 var mesh    = require("../..");
-var memory  = require("mesh-memory");
 var io      = require("mesh-socket.io");
 
 var iodb = io({
@@ -7,11 +6,8 @@ var iodb = io({
   channel: "live-scribble"
 });
 
-var memdb = mesh.tailable(memory());
-memdb(mesh.op("tail")).pipe(mesh.open(iodb));
-iodb(mesh.op("tail")).pipe(mesh.open(memdb));
-
-var db       = memdb;
+// make it tailable locally
+var db       = mesh.tailable(iodb);
 
 var dbs = {
   points: mesh.child(db, { collection: "points" })
