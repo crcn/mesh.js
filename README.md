@@ -98,6 +98,7 @@ bower install mesh
 - [collaborative todos](http://mesh.herokuapp.com/#/todos)
 - [api + models](https://github.com/mojo-js/mesh-http#http--caplet-example)
 - [web worker DB](http://mesh.herokuapp.com/#/live-web-workers)
+- [collaborative drawing](http://mesh.herokuapp.com/#/todos)
 
 
 #### Realtime Example
