@@ -335,6 +335,23 @@ mesh.run(peopleDb, "insert", { data: { name: "blarg"}}, function(err, insertedIt
 });
 ```
 
+#### mesh.wrapCallback(callback)
+
+wraps a callback as a db handler
+
+```javascript
+var dispatch = mesh.parallel(
+	mesh.accept("load", mesh.wrapCallback(function(operation, next) {
+		// do stuff
+	})),
+	mesh.accept("showPopup", mesh.wrapCallback(function(operation, next) {
+		document.body.appendChild(operation.element);
+	}))
+);
+
+dispatch(crud.op("showPopup", { element: document.createTextNode("Hello!") }));
+```
+
 ### Building a custom database
 
 Building a custom database is pretty easy. All you need to do
