@@ -79,6 +79,11 @@ db(mesh.op("insert", {
 		- offline-mode (fully operational with CRUD)
 		- realtime data
 		- mongodb queries server-side/client-side with socket.io
+- Adapters
+	- RPC adapter
+	- ReactJS
+	- AngularJS Adapter
+	- EmberJS
 
 #### Installation
 
