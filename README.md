@@ -346,6 +346,7 @@ var dispatch = mesh.parallel(
 	})),
 	mesh.accept("showPopup", mesh.wrapCallback(function(operation, next) {
 		document.body.appendChild(operation.element);
+		next();
 	}))
 );
 
