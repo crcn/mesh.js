@@ -70,6 +70,16 @@ db(mesh.op("insert", {
 - Easily testable. Stub out any database for a fake one.
 - Simple design. Use it for many other things such as an event bus, message-queue service, etc.
 
+#### Roadmap
+
+- Examples
+	- [MeteorJS](http://meteor.com/) clone with ReactJS
+		- latency compensation
+		- same views & models on the front-end & backend
+		- offline-mode (fully operational with CRUD)
+		- realtime data
+		- mongodb queries server-side/client-side with socket.io
+
 #### Installation
 
 ```
