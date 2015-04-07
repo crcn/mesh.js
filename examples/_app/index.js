@@ -73,7 +73,12 @@ var ioserver = io(server.listen(port));
 ioserver.use(iowc());
 
 ioserver.on("connection", function(connection) {
+
   connection.on("*", function (message) {
     connection.broadcast.emit(message.data[0], message.data[1]);
+  });
+
+  connection.on("close", function() {
+    console.log("D");
   });
 });

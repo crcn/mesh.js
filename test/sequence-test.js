@@ -30,7 +30,7 @@ describe(__filename + "#", function() {
     };
 
     var db3 = mesh.sequence(db1, db2);
-    db3("insert").on("data", function() {
+    db3(mesh.op("insert")).on("data", function() {
       j++;
     }).on("end", function() {
       expect(i).to.be(2);

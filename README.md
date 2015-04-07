@@ -325,6 +325,16 @@ Runs all operations except the ones provided.
 
 Intercepts an operation based on the given test-->
 
+#### mesh.run(db, operationName, options, onRun)
+
+Runs a database operation
+
+```javascript
+mesh.run(peopleDb, "insert", { data: { name: "blarg"}}, function(err, insertedItem) {
+	// handle result here
+});
+```
+
 ### Building a custom database
 
 Building a custom database is pretty easy. All you need to do

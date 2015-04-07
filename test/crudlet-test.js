@@ -16,6 +16,20 @@ describe(__filename + "#", function() {
     mesh.clean(db)("insert", { data: "a" }).on("data", function() { }).on("end", next);
   });
 
+  it("can properly handle errors", function(next) {
+    function db(operation) {
+      var stream = ss.writable();
+      process.nextTick(function() {
+        stream.reader.emit("error", new Error("err"));
+      });
+      return stream.reader;
+    }
+
+    db(mesh.op("insert")).pipe(_.pipeline(_.collect)).on("error", function() {
+      next();
+    });
+  });
+
   it("can write data to the stream", function(next) {
     function db(operation) {
       return _([{a:1}]);
