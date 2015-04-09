@@ -34,4 +34,19 @@ describe(__filename + "#", function() {
       });
     });
   });
+
+  it("reject functions for the first arg", function(next) {
+
+    var db = mesh.wrapCallback(function(operation, next) {
+      next(void 0, { name: "a" });
+    });
+
+    db = mesh.reject(function(operation) {
+      return operation.name === "a";
+    }, db);
+
+    db(mesh.op("b")).on("data", function() {
+      next();
+    });
+  });
 });

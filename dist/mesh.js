@@ -52,12 +52,22 @@ var _async   = require("./_async");
 
 module.exports = function() {
 
-  var args   = Array.prototype.slice.call(arguments);
+  var args   = Array.prototype.slice.call(arguments).map(function(a) {
+    var toa = typeof a;
+    if (toa === "string") return function(b) {
+      return a === b.name;
+    };
+
+    if (toa === "function") return a;
+  });
+
   var db     = args.pop();
   var accept = args;
 
   return function(operation) {
-    if (!!~accept.indexOf(operation.name)) return db.apply(this, arguments);
+    for (var i = accept.length; i--;) {
+      if (accept[i](operation)) return db.apply(this, arguments);
+    }
     return _async(function(writable) {
       writable.end();
     });
@@ -189,19 +199,31 @@ module.exports = function() {
 
 },{"./_async":2,"obj-stream":19}],11:[function(require,module,exports){
 var stream = require("obj-stream");
-var _async = require("./_async");
+var _async   = require("./_async");
 
 module.exports = function() {
 
-  var args   = Array.prototype.slice.call(arguments);
+  var args   = Array.prototype.slice.call(arguments).map(function(a) {
+    var toa = typeof a;
+    if (toa === "string") return function(b) {
+      return a === b.name;
+    };
+
+    if (toa === "function") return a;
+  });
+
   var db     = args.pop();
   var reject = args;
 
   return function(operation) {
-    if (!~reject.indexOf(operation.name)) return db(operation);
-    return _async(function(writable) {
-      writable.end();
-    });
+
+    for (var i = reject.length; i--;) {
+      if (reject[i](operation)) return _async(function(writable) {
+        writable.end();
+      });
+    }
+
+    return db.apply(this, arguments);
   };
 };
 

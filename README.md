@@ -312,7 +312,7 @@ db("load", { collection: "people" }).on("data", function() {
 });
 ```
 
-#### db mesh.accept([...operationNames, ]db)
+#### db mesh.accept([...filter, ]db)
 
 Accepts only the provided operations.
 
@@ -329,10 +329,18 @@ var db = mesh.first(mesh.accept("load", localdb), httpdb);
 
 // pipe all persistence operations back to local storage
 httpdb(mesh.op("tail")).pipe(mesh.open(localdb));
+
 ```
 
+you can also provide functions to filter ops:
 
-#### db mesh.reject([...operationNames, ]db)
+```javascript
+var db = mesh.accept(function(operation) {
+  return operation.name === "blah"
+}, db);
+```
+
+#### db mesh.reject([...filter, ]db)
 
 Runs all operations except the ones provided.
 
