@@ -2,13 +2,34 @@ var mesh   = require("../..");
 var local = require("mesh-local-storage");
 
 var clone = require("clone");
+var caplet = require("caplet");
+var meshlet = require("meshlet");
 var Engine = require("famous/core/Engine");
 var Surface = require("famous/core/Surface");
 var Modifier = require("famous/core/Modifier");
 var Transform = require("famous/core/Transform");
 var TransitionableTransform = require("famous/transitions/TransitionableTransform");
 
-var db = mesh.tailable(local());
+var db = mesh.tailable(local({
+  idProperty: "uid",
+  storageKey: "famous"
+}));
+
+var dbs = {
+  balls: mesh.child(db, { collection: "balls" })
+};
+
+var Ball = caplet.createModelClass({
+  _db: dbs.balls,
+  mixins: [meshlet.mixins.model]
+});
+
+var model = Ball({
+  data: {
+    uid: "ball2",
+    active: false
+  }
+});
 
 var leftHalf = document.createElement('div');
 var rightHalf = document.createElement('div');
@@ -29,7 +50,7 @@ Object.keys(contexts).map(function(k) {
   var ball = new Surface({
     size: [200, 200],
     properties: {
-      backgroundColor: "#ff0000",
+      backgroundColor: "#990000",
       borderRadius: "50%",
     },
   });
@@ -47,7 +68,8 @@ Object.keys(contexts).map(function(k) {
 
   ball.active = false;
   ball.on('click', function() {
-    db(mesh.op("insert", { collection: 'balls', data: !ball.active }));
+    model.set("active", !model.active);
+    model.save();
   });
 
   contexts[k].add(mod).add(ball);
@@ -57,11 +79,12 @@ Object.keys(contexts).map(function(k) {
   });
 });
 
-db(mesh.op("tail")).on("data", function(op) {
-  if (op.name === "insert") {
-    states.map(function(s) {
-      s.surface.active = op.data;
-      s.surface.move();
-    });
-  }
-});
+function changePos() {
+  states.forEach(function(s) {
+    s.surface.active = model.active;
+    s.surface.move();
+  });
+}
+
+caplet.watchProperty(model, "active", changePos);
+model.load();
