@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/mojo-js/mesh.js.svg)](https://travis-ci.org/mojo-js/mesh.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/mesh.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/mesh.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/mesh.js.svg)](https://david-dm.org/mojo-js/mesh.js) [![Join the chat at https://gitter.im/mojo-js/mesh.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/mesh.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
-Mesh is a universal interface for communicating with data sources whether it's your API, mongodb, pubnub, webrtc, socket.io, redis, or local storage. Easily build sophisticated features such as offline-mode, realtime data, rollbacks, and more with little effort.
+Mesh is a universal interface for communicating with data sources whether it's your API, mongobus, pubnub, webrtc, socket.io, redis, or local storage. Easily build sophisticated features such as offline-mode, realtime data, rollbacks, and more with little effort.
 
 Mesh is entirely customizable, and doesn't make assumptions about how a data source works. You can easily build your own API adapter that's interoperable with all the other mesh plugins.
 
@@ -25,10 +25,10 @@ api(mesh.op("tail")).pipe(mesh.open(cache));
 
 // the DB we'll use, return the first result returned, and
 // only pass 'load' operations to the cache
-var db = mesh.first(mesh.accept("load", cache), api);
+var bus = mesh.first(mesh.accept("load", cache), api);
 
 
-db(mesh.op("insert", {
+bus(mesh.op("insert", {
 	collection: "people"
 
 	// path is automatically resolved from the collection param,
@@ -47,7 +47,7 @@ db(mesh.op("insert", {
 	// load the person saved. This should result in a cache
 	// hit for local storage. Also note that the HTTP path & method
 	// will automatically get resolved.
-	db(mesh.op("load", {
+	bus(mesh.op("load", {
 		collection: "people",
 		query: {
 			name: person.name
@@ -66,8 +66,8 @@ db(mesh.op("insert", {
 - Works on any platform.
 - Tiny (11kb).
 - Works nicely with other stream-based libraries such as [highland](http://highlandjs.org/).
-- Isomorphic. Easily use different databases for different platforms.
-- Easily testable. Stub out any database for a fake one.
+- Isomorphic. Easily use different data sources for different platforms.
+- Easily testable. Stub out any data source for a fake one.
 - Simple design. Use it for many other things such as an event bus, message-queue service, etc.
 
 #### Roadmap
@@ -78,7 +78,7 @@ db(mesh.op("insert", {
 		- same views & models on the front-end & backend
 		- offline-mode (fully operational with CRUD)
 		- realtime data
-		- mongodb queries server-side/client-side with socket.io
+		- mongobus queries server-side/client-side with socket.io
 - Adapters
 	- RPC adapter
 	- ReactJS
@@ -102,11 +102,11 @@ bower install mesh
 - [pubnub](http://github.com/mojo-js/mesh-pubnub) - [pubnub](http://www.pubnub.com/) sync adapter
 - [socket.io](http://github.com/mojo-js/mesh-socket.io) - [socket.io](http://socket.io/) sync adapter
 - [webrtc](http://github.com/mojo-js/mesh-webrtc) - [webrtc](http://www.webrtc.org/) sync adapter
-- [loki](http://github.com/mojo-js/mesh-loki) - [loki](http://lokijs.org/#/) in-memory database
-- [memory](http://github.com/mojo-js/mesh-memory) - another in-memory database
-- [local-storage](http://github.com/mojo-js/mesh-local-storage) - local storage database
+- [loki](http://github.com/mojo-js/mesh-loki) - [loki](http://lokijs.org/#/) in-memory data source
+- [memory](http://github.com/mojo-js/mesh-memory) - another in-memory data source
+- [local-storage](http://github.com/mojo-js/mesh-local-storage) - local storage data source
 - [http](http://github.com/mojo-js/mesh-http) - HTTP adapter
-- [mongodb](http://github.com/mojo-js/mesh-mongodb) - Mongodb Adapter (server-side)
+- [mongobus](http://github.com/mojo-js/mesh-mongobus) - Mongobus Adapter (server-side)
 
 #### Examples
 
@@ -126,10 +126,10 @@ var pubnub = require("mesh-pubnub");
 var localStorage = require("mesh-local-storage");
 
 // store data locally on the users machine
-var localdb = localStorage();
+var localBus = localStorage();
 
 // pubnub adapter for sending operations to other connected clients
-var pubdb = pubnub({
+var pubBus = pubnub({
 	publishKey: "publish key",
 	subscribeKey: "subscribe key",
 	channel: "chatroom"
@@ -137,19 +137,19 @@ var pubdb = pubnub({
 
 // the actual DB we're going to use. Pass
 // all operations to localstorage, and pubnub
-var db = mesh.parallel(localdb, pubdb);
+var bus = mesh.parallel(localBus, pubBus);
 
 // tail all operations from pubnub to the local DB. Note
 // that remote operations don't get re-sent to pubnub.
-pubdb(mesh.op("tail")).pipe(mesh.open(db));
+pubbus(mesh.op("tail")).pipe(mesh.open(bus));
 
-// create a child database - collection will get passed to each operation
-var peopleDb = mesh.child(db, {
+// create a child data source - collection will get passed to each operation
+var peopleBus = mesh.child(bus, {
 	collection: "people"
 });
 
 // insert some people
-peopleDb(mesh.op("insert", {
+peopleBus(mesh.op("insert", {
 	data: [
     {	name: "Gordon Ramsay" },
     {	name: "Ben Stiller" }
@@ -159,7 +159,7 @@ peopleDb(mesh.op("insert", {
 });
 ```
 
-#### [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable) db(operationName, options)
+#### [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable) bus(operation)
 
 Runs a new operation.
 
@@ -168,8 +168,8 @@ Runs a new operation.
 ```javascript
 var localStorage = require("mesh-local-storage");
 
-var localdb = localStorage();
-localdb(mesh.operation("insert", {
+var localBus = localStorage();
+localBus(mesh.operation("insert", {
 	collection: "people",
 	data: { name: "Arnold Schwarzenegger" }
 })).on("data", function() {
@@ -177,12 +177,12 @@ localdb(mesh.operation("insert", {
 });
 ```
 
-#### [stream.Stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) mesh.open(db)
+#### [stream.Stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) mesh.open(bus)
 
 Creates a new operation stream.
 
 ```javascript
-var operationStream = mesh.open(db);
+var operationStream = mesh.open(bus);
 
 // emitted when the operation is performed
 operationStream.on("data", function() {
@@ -196,16 +196,16 @@ operationStream.write(mesh.operation("insert", {
 
 operationStream.write(mesh.operation("remove", {
 	collection: "people",
-	query: { name: "Jeff Goldbloom" }
+	query: { name: "Jeff Golbusloom" }
 }));
 ```
 
-#### operation db.operation(name, option)
+#### operation bus.operation(name, option)
 
-creates a new operation which can be written to a database stream. See `mesh.open(db)`.
+creates a new operation which can be written to a data source stream. See `mesh.open(bus)`.
 
 ```javascript
-mesh.open(db).write(mesh.operation("insert", {
+mesh.open(bus).write(mesh.operation("insert", {
 	collection: "friends",
 	data: { name: "Blakers" }
 }));
@@ -215,155 +215,158 @@ mesh.open(db).write(mesh.operation("insert", {
 
 shorthand for `mesh.operation(name options)`.
 
-#### db mesh.top(db)
+#### bus mesh.top(bus)
 
-`to operation` - Makes it so that you can simply call `db(operationName, options)` instead of passing in the operation
+`to operation` - Makes it so that you can simply call `bus(operationName, options)` instead of passing in the operation
 each time.
 
 ```javascript
-var db = mesh.top(localStorage());
+var bus = mesh.top(localStorage());
 
 // enables this
-db("insert", {
+bus("insert", {
 	collection: "people",
 	data: { name: "Jorge" }
 });
 
 // also accepts this
-db(mesh.operation("insert"));
+bus(mesh.operation("insert"));
 ```
 
-#### db mesh.child(db, options)
+#### bus mesh.child(bus, options)
 
-Creates a new child database. `options` is essentially just added to each operation performed.
+Creates a new child data source. `options` is essentially just added to each operation performed.
 
 ```javascript
-var peopleDb = mesh.top(mesh.child(db, { collection: "people" }));
+var peopleBus = mesh.top(mesh.child(bus, { collection: "people" }));
 
 // insert a new person into the people collection
-peopleDb("insert", {
+peopleBus("insert", {
   data: { name: "Shrek" }
 });
 ```
 
-#### db mesh.tailable(db, reject)
+#### bus mesh.tailable(bus, reject)
 
-Makes the db tailable. This simply allows you to listen for any operations invoked on a db such as `create`, `update`, `remove`, and `load`.
+Makes the bus tailable. This simply allows you to listen for any operations invoked on a bus such as `create`, `update`, `remove`, and `load`.
 
 `reject` is an array of operations to ignore. Default is `[load]`.
 
 ```javascript
-var db = mesh.tailable(localdb);
-db("tail", function() {
+var bus = mesh.tailable(localbus);
 
-});
+bus(mesh.op("tail", function() {
 
-var peopleDb = mesh.top(mesh.child(db, { collection: "people" }));
+}));
 
-peopleDb("insert", { data: { name: "Donkey" }}); // trigger tail
-peopleDb("remove", { query: { name: "Donkey" }}); // trigger tail
-peopleDb("update", { query: { name: "Donkey" }, data: { name: "Donkay" }}); // trigger tail
-peopleDb("load", { query: { name: "Donkey" }}); // ignored by tail
+var peopleBus = mesh.child(bus, { collection: "people" });
+
+mesh
+	.open(peopleBus)
+	.write(mesh.op("insert", { data: { name: "Donkey" }})) // trigger tail
+	.write(mesh.op("remove", { query: { name: "Donkey" }})) // trigger tail
+	.write(mesh.op("update", { query: { name: "Donkey" }, data: { name: "Donkay" }})) // trigger tail
+	.write(mesh.op("load", { query: { name: "Donkey" }})) // ignored by tail
+	.end();
 ```
 
-#### db mesh.parallel(...dbs)
+#### bus mesh.parallel(...buss)
 
-Combines databases and executes operations in parallel.
+Combines data sources and executes operations in parallel.
 
 <!-- note about emitting data multiple times -->
 
 ```javascript
-var db = mesh.parallel(localdb, httpdb);
+var bus = mesh.parallel(localbus, httpBus);
 
-// execute "load" on localdb at the same time
-db(mesh.op("load")).on("data", function() {
+// execute "load" on localbus at the same time
+bus(mesh.op("load")).on("data", function() {
   // Note that his will get called TWICE
 }).on("end", function() {
-  // called when operation is executed on all dbs
+  // called when operation is executed on all buss
 });
 ```
 
-#### db mesh.sequence(...dbs)
+#### bus mesh.sequence(...buss)
 
-Combines databases and executes operations in sequence.
+Combines data sources and executes operations in sequence.
 
 <!-- note about emitting data multiple times -->
 
 ```javascript
-var db = mesh.top(mesh.sequence(localdb, httpdb));
+var bus = mesh.top(mesh.sequence(localBus, httpBus));
 
-// load data from localdb first, then move to httpdb
-db("load").on("data", function() {
+// load data from localbus first, then move to httpbus
+bus("load").on("data", function() {
   // Note that his will get called TWICE
 });
 ```
 
-#### db mesh.first(...dbs)
+#### bus mesh.first(...buss)
 
-Runs dbs in sequence, but stops when a result is emitted from a database.
+Runs buss in sequence, but stops when a result is emitted from a data source.
 
 ```javascript
-var db = mesh.top(mesh.first(localStorage(), http()));
+var bus = mesh.first(localStorage(), http());
 
 // load data from local storage if it exists, or continue
 // to http storage
-db("load", { collection: "people" }).on("data", function() {
+bus(mesh.op("load", { collection: "people" })).on("data", function() {
 
 });
 ```
 
-#### db mesh.accept([...filter, ]db)
+#### bus mesh.accept([...filter, ]bus)
 
 Accepts only the provided operations.
 
 ```javascript
 // main DB - api server
-var httpdb = mesh.tailable(http());
+var httpBus = mesh.tailable(http());
 
 // temporary cache
-var localdb = localStorage();
+var localBus = localStorage();
 
 // main DB - get cached data from local storage before
 // checking the server
-var db = mesh.first(mesh.accept("load", localdb), httpdb);
+var bus = mesh.first(mesh.accept("load", localBus), httpBus);
 
 // pipe all persistence operations back to local storage
-httpdb(mesh.op("tail")).pipe(mesh.open(localdb));
-
+httpbus(mesh.op("tail")).pipe(mesh.open(localBus));
 ```
 
 you can also provide functions to filter ops:
 
 ```javascript
-var db = mesh.accept(function(operation) {
+var bus = mesh.accept(function(operation) {
   return operation.name === "blah"
-}, db);
+}, bus);
 ```
 
-#### db mesh.reject([...filter, ]db)
+#### bus mesh.reject([...filter, ]bus)
 
 Runs all operations except the ones provided.
 
-<!--#### db mesh.intercept()
+<!--#### bus mesh.intercept()
 
 Intercepts an operation based on the given test-->
 
-#### mesh.run(db, operationName, options, onRun)
+#### mesh.run(bus, operationName, options, onRun)
 
-Runs a database operation
+Runs a data source operation
 
 ```javascript
-mesh.run(peopleDb, "insert", { data: { name: "blarg"}}, function(err, insertedItem) {
+mesh.run(peopleBus, "insert", { data: { name: "blarg"}}, function(err, insertedItem) {
 	// handle result here
 });
 ```
 
 #### mesh.wrapCallback(callback)
 
-wraps a callback as a db handler
+wraps a callback as a bus handler
 
 ```javascript
-var dispatch = mesh.parallel(
+var bus = mesh.parallel(
 	mesh.accept("load", mesh.wrapCallback(function(operation, next) {
 		// do stuff
 	})),
@@ -373,23 +376,23 @@ var dispatch = mesh.parallel(
 	}))
 );
 
-dispatch(crud.op("showPopup", { element: document.createTextNode("Hello!") }));
+bus(mesh.op("showPopup", { element: document.createTextNode("Hello!") }));
 ```
 
-### Building a custom database
+### Building a custom bus adapter
 
-Building a custom database is pretty easy. All you need to do
-is return a stream when `db(opName, options)` is called.
+Building a custom data source is pretty easy. All you need to do
+is return a stream when `bus(opName, options)` is called.
 
-Here's some scaffolding for a custom db:
+Here's some scaffolding for a custom bus:
 
 ```javascript
 // slimmed down version of node streams.
 var stream = require("obj-stream");
 
-function createDatabase(options) {
+function createBus(options) {
 
-	// create database here
+	// create adapter here
 
 	// return fn that executes operations
 	return function(operation) {
@@ -415,28 +418,28 @@ function createDatabase(options) {
 }
 ```
 
-> Keep in mind that there are a few conventions you should follow when writing custom database adapters. These conventions are here to ensure that databases are interoperable with each other.
+> Keep in mind that there are a few conventions you should follow when writing custom adapters. These conventions are here to ensure that they're are interoperable with each other.
 
-#### db(insert, options)
+#### bus(insert, options)
 
-Insert a new item in the database. Note that `data` is emitted for each item inserted in the database.
+Insert a new item in the data source. Note that `data` is emitted for each item inserted in the data source.
 
-- `options` - db options
+- `options` - bus options
   - `data` - data to insert. Accepts 1 or many items
-  - `collection` - collection to insert (optional for dbs that don't have it)
+  - `collection` - collection to insert (optional for buss that don't have it)
 
 ```javascript
 var _ = require("highland");
-var peopleDb = mesh.top(mesh.child(db, { collection: "people" }));
+var peopleBus = mesh.top(mesh.child(bus, { collection: "people" }));
 
 // insert one item
-peopleDb("insert", {
+peopleBus("insert", {
   data: { name: "jeff" }
 });
 
 // insert many items & collect the results in 1
 // array
-peopleDb("insert", {
+peopleBus("insert", {
   data: [
     { name: "Joe" },
     { name: "Rogan" }
@@ -446,50 +449,50 @@ peopleDb("insert", {
 });
 ```
 
-#### db(update, options)
+#### bus(update, options)
 
-Updates an item in the database. Doesn't return any values.
+Updates an item in the data source. Doesn't return any values.
 
 - `options`
   - `query` - search query for items to update
   - `data`  - data to merge with
-  - `collection` - db collection
+  - `collection` - bus collection
   - `multi` - `true` to update multiple items. `false` is default.
 
 ```javascript
-var peopleDb = mesh.top(mesh.child(db, {
+var peopleBus = mesh.top(mesh.child(bus, {
 	collection: "people"
 }));
 
-peopleDb("update", {
+peopleBus("update", {
 	query: { name: "jake"	},
 	data: { age: 17 }
 });
 
 // update multiple items
-peopleDb("update", {
+peopleBus("update", {
 	multi: true,
 	query: { name: "joe" },
 	data: {	age: 17 }
 });
 ```
 
-#### db(upsert, options)
+#### bus(upsert, options)
 
 Updates an item if it exists. Inserts an item if it doesn't.
 
 - `options`
   - `query` - search query for items to update
   - `data`  - data to merge or insert
-  - `collection` - db collection
+  - `collection` - bus collection
 
 ```javascript
-var peopleDb = mesh.top(mesh.child(db, {
+var peopleBus = mesh.top(mesh.child(bus, {
 	collection: "people"
 }));
 
 // insert
-peopleDb("upsert", {
+peopleBus("upsert", {
 	query: { name: "jake" },
 	data: {
 		name: "jake",
@@ -498,7 +501,7 @@ peopleDb("upsert", {
 }).on("end", function() {
 
 	// update
-	peopleDb("upsert", {
+	peopleBus("upsert", {
 		query: { name: "jake" },
 		data: {
 			name: "jake",
@@ -508,21 +511,21 @@ peopleDb("upsert", {
 });
 ```
 
-#### db(load, options)
+#### bus(load, options)
 
-Loads one or many items from the database.
+Loads one or many items from the data source.
 
 - `options`
   - `query` - search query for items
-  - `collection` - db collection
+  - `collection` - bus collection
   - `multi` - `true` if loading multiple. `false` is default.
 
 ```javascript
 
-var peopleDb = mesh.top(mesh.child(db, { collection: "people" }));
+var peopleBus = mesh.top(mesh.child(bus, { collection: "people" }));
 
 // load one item
-peopleDb("load", {
+peopleBus("load", {
   query: { name: "tina" }
 }).on("data", function() {
   // handle
@@ -530,7 +533,7 @@ peopleDb("load", {
 
 
 // load many items
-peopleDb("load", {
+peopleBus("load", {
   multi: true,
   query: { name: "tina" }
 }).pipe(_.pipeline(_.collect)).on("data", function(people) {
@@ -538,9 +541,9 @@ peopleDb("load", {
 });
 ```
 
-#### db(remove, options)
+#### bus(remove, options)
 
-Removes an item from the database.
+Removes an item from the data source.
 
 - `options`
   - `query` - query to search
@@ -550,14 +553,14 @@ Removes an item from the database.
 ```javascript
 
 // remove one item
-db("remove", {
+bus("remove", {
   collection: "people",
   query: { name: "batman" }
 });
 
 
 // remove all instances where age = 54
-db("remove", {
+bus("remove", {
   collection: "people",
   query: { age: 54 },
   multi: true
