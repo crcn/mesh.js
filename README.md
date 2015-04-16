@@ -144,9 +144,9 @@ var bus = mesh.parallel(localBus, pubBus);
 pubbus(mesh.op("tail")).pipe(mesh.open(bus));
 
 // create a child data source - collection will get passed to each operation
-var peopleBus = mesh.child(bus, {
+var peopleBus = mesh.attach({
 	collection: "people"
-});
+}, bus);
 
 // insert some people
 peopleBus(mesh.op("insert", {
@@ -233,17 +233,17 @@ bus("insert", {
 bus(mesh.operation("insert"));
 ```
 
-#### bus mesh.child(bus, options)
+#### bus mesh.attach(options, bus)
 
-Creates a new child data source. `options` is essentially just added to each operation performed.
+Attaches `options` to each operation.
 
 ```javascript
-var peopleBus = mesh.top(mesh.child(bus, { collection: "people" }));
+var peopleBus = mesh.attach({ collection: "people" }, bus);
 
 // insert a new person into the people collection
-peopleBus("insert", {
+peopleBus(mesh.op("insert", {
   data: { name: "Shrek" }
-});
+}));
 ```
 
 #### bus mesh.tailable(bus, reject)
@@ -259,7 +259,7 @@ bus(mesh.op("tail", function() {
 
 }));
 
-var peopleBus = mesh.child(bus, { collection: "people" });
+var peopleBus = mesh.attach({ collection: "people" }, bus);
 
 mesh
 	.open(peopleBus)
@@ -270,7 +270,7 @@ mesh
 	.end();
 ```
 
-#### group mesh.parallel(...buss)
+#### group mesh.parallel(...busses)
 
 Combines data sources and executes operations in parallel.
 
@@ -283,11 +283,11 @@ var bus = mesh.parallel(localbus, httpBus);
 bus(mesh.op("load")).on("data", function() {
   // Note that his will get called TWICE
 }).on("end", function() {
-  // called when operation is executed on all buss
+  // called when operation is executed on all busses
 });
 ```
 
-#### group mesh.sequence(...buss)
+#### group mesh.sequence(...busses)
 
 Combines data sources and executes operations in sequence.
 
@@ -502,11 +502,11 @@ Insert a new item in the data source. Note that `data` is emitted for each item 
 
 - `options` - bus options
   - `data` - data to insert. Accepts 1 or many items
-  - `collection` - collection to insert (optional for buss that don't have it)
+  - `collection` - collection to insert (optional for busses that don't have it)
 
 ```javascript
 var _ = require("highland");
-var peopleBus = mesh.top(mesh.child(bus, { collection: "people" }));
+var peopleBus = mesh.top(mesh.attach({ collection: "people" }, bus));
 
 // insert one item
 peopleBus("insert", {
@@ -536,9 +536,9 @@ Updates an item in the data source. Doesn't return any values.
   - `multi` - `true` to update multiple items. `false` is default.
 
 ```javascript
-var peopleBus = mesh.top(mesh.child(bus, {
+var peopleBus = mesh.top(mesh.attach({
 	collection: "people"
-}));
+}, bus));
 
 peopleBus("update", {
 	query: { name: "jake"	},
@@ -563,9 +563,9 @@ Updates an item if it exists. Inserts an item if it doesn't.
   - `collection` - bus collection
 
 ```javascript
-var peopleBus = mesh.top(mesh.child(bus, {
+var peopleBus = mesh.top(mesh.attach({
 	collection: "people"
-}));
+}, bus));
 
 // insert
 peopleBus("upsert", {
@@ -598,7 +598,7 @@ Loads one or many items from the data source.
 
 ```javascript
 
-var peopleBus = mesh.top(mesh.child(bus, { collection: "people" }));
+var peopleBus = mesh.top(mesh.attach({ collection: "people" }, bus));
 
 // load one item
 peopleBus("load", {
