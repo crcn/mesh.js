@@ -344,9 +344,14 @@ bus(mesh.op("race!")).on("data", function(data) {
 
 A group of buses that are run in parallel or sequence.
 
-#### group.add(...busses)
+#### group.add(...busses[, priority])
 
-Adds a new bus to the group. For example:
+Adds a new bus to the group.
+
+- `busses` - busses to add
+- `priority` - priority for buses. `0` is high priority. `-Infinity` is highest priority.
+
+For example:
 
 ```javascript
 var mesh = require("mesh");
