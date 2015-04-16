@@ -78,7 +78,7 @@ module.exports = function(items, each, complete) {
 },{}],5:[function(require,module,exports){
 
 module.exports = function(targetBus) {
-  return function(/*...busses*/) {
+  return function(/* ...busses */) {
 
     var busses = [];
     var sorted = [];
@@ -98,7 +98,7 @@ module.exports = function(targetBus) {
       return targetBus(operation, busses);
     }
 
-    function add(/*...*/ busses, priority) {
+    function add(/* ..busses, priority */) {
 
       var busses   = Array.prototype.slice.call(arguments);
       var priority = typeof busses[busses.length - 1] === "number" ? busses.pop() : void 0;
@@ -160,7 +160,7 @@ var _group      = require("./_group");
  */
 
 module.exports = function(iterator) {
-  return  _group(function(operation, busses) {
+  return _group(function(operation, busses) {
     return _async(function(stream) {
 
       var found = false;
@@ -174,7 +174,7 @@ module.exports = function(iterator) {
           if (found) {
             stream.end();
           } else {
-           next();
+            next();
           }
         });
       }, function() {
@@ -182,7 +182,7 @@ module.exports = function(iterator) {
       });
     });
   });
-}
+};
 
 },{"./_async":2,"./_eachSeries":4,"./_group":5,"obj-stream":25}],8:[function(require,module,exports){
 module.exports = function(data) {
