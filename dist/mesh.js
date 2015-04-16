@@ -116,7 +116,7 @@ module.exports = function(targetBus) {
     function remove(bus) {
       var i = busses.indexOf(bus);
 
-      if (~i) {
+      if (!!~i) {
         busses.splice(i, 1);
         sorted.splice(i, 1);
         return true;
@@ -415,9 +415,15 @@ module.exports = function(callback) {
       callback(operation, function(err, data) {
         if (err) return writer.reader.emit("error", err);
 
-        _toArray(data).forEach(function(data) {
-          writer.write(data);
-        });
+        var items = _toArray(data);
+
+        if (operation.multi) {
+          items.forEach(function(data) {
+            writer.write(data);
+          });
+        } else if (!!items.length) {
+          writer.write(items[0]);
+        }
 
         writer.end();
       });
