@@ -253,7 +253,7 @@ Makes the bus tailable. This simply allows you to listen for any operations invo
 `reject` is an array of operations to ignore. Default is `[load]`.
 
 ```javascript
-var bus = mesh.tailable(localbus);
+var bus = mesh.tailablest (localbus);
 
 bus(mesh.op("tail", function() {
 
@@ -322,11 +322,11 @@ Runs all busses in parallel, but only emits data from the fastest one.
 
 ```javascript
 
-var busA = mesh.wrapCallback(function(operation, next) {
+var busA = mesh.wrap(function(operation, next) {
 	setTimeout(next, 1, void 0, 'faster');
 });
 
-var busB = mesh.wrapCallback(function(operation, next) {
+var busB = mesh.wrap(function(operation, next) {
 	setTimeout(next, 1, void 0, 'slower');
 });
 
@@ -364,7 +364,7 @@ var router = mesh.race();
 // register the HTTP router
 bus.add(router);
 
-var redirect = mesh.wrapCallback(function(operation, next) {
+var redirect = mesh.wrap(function(operation, next) {
 	location.hash = operation.pathname;
 	next();
 });
@@ -427,22 +427,32 @@ mesh.run(peopleBus, "insert", { data: { name: "blarg"}}, function(err, insertedI
 });
 ```
 
-#### mesh.wrapCallback(callback)
+#### mesh.wrap(callback)
 
 wraps a callback as a bus handler
 
 ```javascript
 var bus = mesh.parallel(
-	mesh.accept("load", mesh.wrapCallback(function(operation, next) {
+	mesh.accept("load", mesh.wrap(function(operation, next) {
 		// do stuff
 	})),
-	mesh.accept("showPopup", mesh.wrapCallback(function(operation, next) {
+	mesh.accept("showPopup", mesh.wrap(function(operation, next) {
 		document.body.appendChild(operation.element);
 		next();
 	}))
 );
 
 bus(mesh.op("showPopup", { element: document.createTextNode("Hello!") }));
+```
+
+#### bus mesh.limit(count, bus)
+
+Limits the number of operations that can be executed at a time.
+
+```javascript
+var bus = mesh.limit(1, memory());
+bus(mesh.op("insert", { name: "joe" }))
+bus(mesh.op("load", { name: "joe" })); // will return joe record because of limit
 ```
 
 ### Building a custom bus adapter
