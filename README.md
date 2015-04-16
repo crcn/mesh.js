@@ -200,7 +200,7 @@ operationStream.write(mesh.operation("remove", {
 }));
 ```
 
-#### operation bus.operation(name, option)
+#### operation mesh.operation(name, option)
 
 creates a new operation which can be written to a data source stream. See `mesh.open(bus)`.
 
