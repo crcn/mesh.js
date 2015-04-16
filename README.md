@@ -451,8 +451,8 @@ Limits the number of operations that can be executed at a time.
 
 ```javascript
 var bus = mesh.limit(1, memory());
-bus(mesh.op("insert", { name: "joe" }))
-bus(mesh.op("load", { name: "joe" })); // will return joe record because of limit
+bus(mesh.op("insert", { data: { name: "joe" } }));
+bus(mesh.op("load", { query: { name: "joe" } })); // will return joe record because of limit
 ```
 
 ### Building a custom bus adapter
