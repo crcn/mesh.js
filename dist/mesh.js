@@ -78,12 +78,12 @@ module.exports = function(items, each, complete) {
 },{}],5:[function(require,module,exports){
 
 module.exports = function(targetBus) {
-  return function() {
+  return function(/*...busses*/) {
 
     var busses = [];
     var sorted = [];
 
-    Array.prototype.slice.call(arguments).forEach(add);
+    add.apply(void 0, Array.prototype.slice.call(arguments));
 
     function sort() {
       sorted = sorted.sort(function(a, b) {
@@ -98,11 +98,16 @@ module.exports = function(targetBus) {
       return targetBus(operation, busses);
     }
 
-    function add(bus, priority) {
+    function add(/*...*/ busses, priority) {
 
-      sorted.push({
-        bus      : bus,
-        priority : priority || busses.length
+      var busses   = Array.prototype.slice.call(arguments);
+      var priority = typeof busses[busses.length - 1] === "number" ? busses.pop() : void 0;
+
+      busses.forEach(function(bus) {
+        sorted.push({
+          bus      : bus,
+          priority : priority || sorted.length
+        });
       });
 
       sort();
