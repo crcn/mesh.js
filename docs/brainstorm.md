@@ -4,7 +4,7 @@ Questions:
   - reactive streaming data store library
   - more-so a fancy-ass event-bus system
     - but it's streamable
-  - use as a database abstraction layer
+  - use as a data source abstraction layer
   - use as a realtime system
   - abstracts your service layer
 - Why?

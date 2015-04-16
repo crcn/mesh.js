@@ -6,7 +6,7 @@ var ss      = require("obj-stream");
 
 describe(__filename + "#", function() {
 
-  it("passes a new operation to the database in the mesh", function(next) {
+  it("passes a new operation to the data source in the mesh", function(next) {
 
     function db(operation) {
       expect(operation.data).to.be("a");
