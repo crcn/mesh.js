@@ -296,7 +296,7 @@ Combines data sources and executes operations in sequence.
 ```javascript
 var bus = mesh.top(mesh.sequence(localBus, httpBus));
 
-// load data from localbus first, then move to httpbus
+// load data from localbus first, then move to httpBus
 bus("load").on("data", function() {
   // Note that his will get called TWICE
 });
@@ -398,7 +398,7 @@ var localBus = localStorage();
 var bus = mesh.fallback(mesh.accept("load", localBus), httpBus);
 
 // pipe all persistence operations back to local storage
-httpbus(mesh.op("tail")).pipe(mesh.open(localBus));
+httpBus(mesh.op("tail")).pipe(mesh.open(localBus));
 ```
 
 you can also provide functions to filter ops:
