@@ -25,7 +25,7 @@ api(mesh.op("tail")).pipe(mesh.open(cache));
 
 // the DB we'll use, return the first result returned, and
 // only pass 'load' operations to the cache
-var bus = mesh.first(mesh.accept("load", cache), api);
+var bus = mesh.fallback(mesh.accept("load", cache), api);
 
 
 bus(mesh.op("insert", {
@@ -270,7 +270,7 @@ mesh
 	.end();
 ```
 
-#### bus mesh.parallel(...buss)
+#### group mesh.parallel(...buss)
 
 Combines data sources and executes operations in parallel.
 
@@ -287,7 +287,7 @@ bus(mesh.op("load")).on("data", function() {
 });
 ```
 
-#### bus mesh.sequence(...buss)
+#### group mesh.sequence(...buss)
 
 Combines data sources and executes operations in sequence.
 
@@ -302,12 +302,12 @@ bus("load").on("data", function() {
 });
 ```
 
-#### bus mesh.first(...buss)
+#### group mesh.fallback(...busses)
 
-Runs buss in sequence, but stops when a result is emitted from a data source.
+Runs busses in sequence, but stops when a result is emitted from a data source.
 
 ```javascript
-var bus = mesh.first(localStorage(), http());
+var bus = mesh.fallback(localStorage(), http());
 
 // load data from local storage if it exists, or continue
 // to http storage
@@ -315,6 +315,67 @@ bus(mesh.op("load", { collection: "people" })).on("data", function() {
 
 });
 ```
+
+#### group mesh.race(...busses)
+
+Runs all busses in parallel, but only emits data from the fastest one.
+
+```javascript
+
+var busA = mesh.wrapCallback(function(operation, next) {
+	setTimeout(next, 1, void 0, 'faster');
+});
+
+var busB = mesh.wrapCallback(function(operation, next) {
+	setTimeout(next, 1, void 0, 'slower');
+});
+
+
+var bus = mesh.race(busA, busB);
+
+// load data from local storage if it exists, or continue
+// to http storage
+bus(mesh.op("race!")).on("data", function(data) {
+	console.log(data); // faster
+});
+```
+
+#### group(operation)
+
+A group of buses that are run in parallel or sequence.
+
+#### group.add(...busses)
+
+Adds a new bus to the group. For example:
+
+```javascript
+var mesh = require("mesh");
+
+// global event bus used in the app.
+var bus = mesh.parallel();
+
+var router = mesh.race();
+
+// register the HTTP router
+bus.add(router);
+
+var redirect = mesh.wrapCallback(function(operation, next) {
+	location.hash = operation.pathname;
+	next();
+});
+
+router.add(
+	mesh.accept(mesh.op("redirect", { pathname: "/home" }), redirect),
+	mesh.accept(mesh.op("redirect", { pathname: "/contact" }), redirect)
+);
+
+// redirect to the home page
+bus(mesh.op("redirect", { pathname: "/home" }));
+```
+
+#### group.remove(bus)
+
+removes a bus from the group
 
 #### bus mesh.accept([...filter, ]bus)
 
@@ -329,7 +390,7 @@ var localBus = localStorage();
 
 // main DB - get cached data from local storage before
 // checking the server
-var bus = mesh.first(mesh.accept("load", localBus), httpBus);
+var bus = mesh.fallback(mesh.accept("load", localBus), httpBus);
 
 // pipe all persistence operations back to local storage
 httpbus(mesh.op("tail")).pipe(mesh.open(localBus));
