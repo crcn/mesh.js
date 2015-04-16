@@ -6,14 +6,14 @@ describe(__filename + "#", function() {
 
   it("can accept operations", function(next) {
 
-    var db = function(operation) {
+    var bus = function(operation) {
       return _([operation]);
     };
 
-    db = mesh.clean(mesh.accept("a", "b", db));
-    db("a").pipe(_.pipeline(_.collect)).on("data", function(items) {
+    bus = mesh.clean(mesh.accept("a", "b", bus));
+    bus("a").pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(1);
-      db("b").pipe(_.pipeline(_.collect)).on("data", function(items) {
+      bus("b").pipe(_.pipeline(_.collect)).on("data", function(items) {
         expect(items.length).to.be(1);
         next();
       });
@@ -21,12 +21,12 @@ describe(__filename + "#", function() {
   });
 
   it("can reject operations", function(next) {
-    var db = function() {
+    var bus = function() {
       return _([operation]);
     };
 
-    db = mesh.clean(mesh.accept("a", "b", db));
-    db("c").pipe(_.pipeline(_.collect)).on("data", function(items) {
+    bus = mesh.clean(mesh.accept("a", "b", bus));
+    bus("c").pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(0);
       next();
     });
@@ -34,15 +34,15 @@ describe(__filename + "#", function() {
 
   it("accepts functions for the first arg", function(next) {
 
-    var db = mesh.wrapCallback(function(operation, next) {
+    var bus = mesh.wrapCallback(function(operation, next) {
       next(void 0, { name: "a" });
     });
 
-    db = mesh.accept(function(operation) {
+    bus = mesh.accept(function(operation) {
       return operation.name === "a";
-    }, db);
+    }, bus);
 
-    db(mesh.op("a")).on("data", function() {
+    bus(mesh.op("a")).on("data", function() {
       next();
     });
   });

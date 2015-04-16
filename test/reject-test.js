@@ -6,14 +6,14 @@ describe(__filename + "#", function() {
 
   it("can accept operations", function(next) {
 
-    var db = function(name, properties) {
+    var bus = function(name, properties) {
       return _([properties]);
     };
 
-    db = mesh.clean(mesh.reject("a", "b", db));
-    db("c").pipe(_.pipeline(_.collect)).on("data", function(items) {
+    bus = mesh.clean(mesh.reject("a", "b", bus));
+    bus("c").pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(1);
-      db("d").pipe(_.pipeline(_.collect)).on("data", function(items) {
+      bus("d").pipe(_.pipeline(_.collect)).on("data", function(items) {
         expect(items.length).to.be(1);
         next();
       });
@@ -21,14 +21,14 @@ describe(__filename + "#", function() {
   });
 
   it("can reject operations", function(next) {
-    var db = function(name, properties) {
+    var bus = function(name, properties) {
       return _([properties]);
     };
 
-    db = mesh.clean(mesh.reject("a", "b", db));
-    db("a").pipe(_.pipeline(_.collect)).on("data", function(items) {
+    bus = mesh.clean(mesh.reject("a", "b", bus));
+    bus("a").pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(0);
-      db("a").pipe(_.pipeline(_.collect)).on("data", function(items) {
+      bus("a").pipe(_.pipeline(_.collect)).on("data", function(items) {
         expect(items.length).to.be(0);
         next();
       });
@@ -37,15 +37,15 @@ describe(__filename + "#", function() {
 
   it("reject functions for the first arg", function(next) {
 
-    var db = mesh.wrapCallback(function(operation, next) {
+    var bus = mesh.wrapCallback(function(operation, next) {
       next(void 0, { name: "a" });
     });
 
-    db = mesh.reject(function(operation) {
+    bus = mesh.reject(function(operation) {
       return operation.name === "a";
-    }, db);
+    }, bus);
 
-    db(mesh.op("b")).on("data", function() {
+    bus(mesh.op("b")).on("data", function() {
       next();
     });
   });

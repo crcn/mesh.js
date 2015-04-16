@@ -11,12 +11,12 @@ describe(__filename + "#", function() {
 
     var startTime = Date.now();
 
-    var db = function() {
+    var bus = function() {
       i++;
       return _([1]);
     };
 
-    var dbs = mesh.clean(mesh.first(db, db));
+    var dbs = mesh.clean(mesh.first(bus, bus));
     dbs("load").on("end", function() {
       expect(i).to.be(1);
       next();

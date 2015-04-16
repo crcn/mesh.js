@@ -8,11 +8,11 @@ describe(__filename + "#", function() {
   it("can write a stream of operations", function(next) {
     var results = [];
 
-    function db(operation) {
+    function bus(operation) {
       return _([operation]);
     }
 
-    var stream = mesh.open(db);
+    var stream = mesh.open(bus);
     stream.on("data", function(data) {
       results.push(data);
     });

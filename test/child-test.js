@@ -7,11 +7,11 @@ describe(__filename + "#", function() {
 
   it("can be created", function(next) {
 
-    function db(operation) {
+    function bus(operation) {
       return _([operation]);
     }
 
-    var child  = mesh.clean(mesh.child(db, { a: 1 }));
+    var child  = mesh.clean(mesh.child(bus, { a: 1 }));
 
     child("insert", { b: 2 }).once("data", function(data) {
       expect(data.a).to.be(1);

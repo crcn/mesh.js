@@ -5,19 +5,19 @@ var _ = require("highland");
 
 describe(__filename + "#", function() {
 
-  it("can tail a db", function(next) {
+  it("can tail a bus", function(next) {
 
-    var db = function(name, properties) {
+    var bus = function(name, properties) {
       return _([]);
     };
 
-    db = mesh.clean(mesh.tailable(db));
+    bus = mesh.clean(mesh.tailable(bus));
 
-    db("tail").on("data", function(operation) {
+    bus("tail").on("data", function(operation) {
       expect(operation.name).to.be("insert");
       next();
     });
 
-    db(mesh.op("insert"));
+    bus(mesh.op("insert"));
   });
 });

@@ -7,11 +7,11 @@ describe(__filename + "#", function() {
 
   it("can map data to another value", function(next) {
 
-    function db(name, props) {
+    function bus(name, props) {
       return _([{ name: "a" }, { name: "b" }]);
     }
 
-    db().
+    bus().
     pipe(_.pipeline(
       _.map(function(d) { return d.name; }),
       _.collect
