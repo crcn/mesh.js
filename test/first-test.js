@@ -4,7 +4,7 @@ var through = require("through2");
 var _       = require("highland");
 
 describe(__filename + "#", function() {
-  xit("can be run", function(next) {
+  it("can be run", function(next) {
 
     var i = 0;
     var j = 0;
@@ -16,7 +16,7 @@ describe(__filename + "#", function() {
       return _([1]);
     };
 
-    var bus = mesh.clean(mesh.first(bus, bus));
+    bus = mesh.clean(mesh.first(bus, bus));
     bus("load").on("end", function() {
       expect(i).to.be(1);
       next();
@@ -35,11 +35,9 @@ describe(__filename + "#", function() {
       next(void 0, 2);
     })));
 
-
     bus.add(mesh.accept("a", mesh.wrapCallback(function(operation, next) {
       next(void 0, 2);
     })));
-
 
     bus(mesh.op("a")).on("data", function(data) {
       expect(data).to.be(1);
