@@ -26,21 +26,4 @@ describe(__filename + "#", function() {
         next();
       });
   });
-
-  it("can map to a default value", function(next) {
-
-    var bus = mesh.wrap(function(operation, next) {
-      next(void 0, operation.name);
-    });
-
-    bus = mesh.map(bus, { a: 1 });
-
-    bus(mesh.op("hello"))
-      .pipe(_.pipeline(_.collect))
-      .on("data", function(data) {
-        expect(data.length).to.be(1);
-        expect(data[0].a).to.be(1);
-        next();
-      });
-  });
 });
