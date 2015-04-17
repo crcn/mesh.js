@@ -38,5 +38,10 @@ describe(__filename + "#", function() {
       expect(data).to.be("load");
       next();
     });
-  })
+  });
+
+  it("can run without any args", function(next) {
+    var bus = mesh.fallback();
+    bus(mesh.op("insert")).on("end", next);
+  });
 });

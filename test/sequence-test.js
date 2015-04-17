@@ -38,4 +38,9 @@ describe(__filename + "#", function() {
       next();
     });
   });
+
+  it("can run without any args", function(next) {
+    var bus = mesh.sequence();
+    bus(mesh.op("insert")).on("end", next);
+  });
 });

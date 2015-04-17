@@ -66,6 +66,8 @@ module.exports = function(items, each, complete) {
       if (++i == items.length) return done();
     });
   });
+
+  if(!items.length) done();
 };
 
 },{}],4:[function(require,module,exports){
