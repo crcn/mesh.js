@@ -449,6 +449,18 @@ var bus = mesh.parallel(
 bus(mesh.op("showPopup", { element: document.createTextNode("Hello!") }));
 ```
 
+#### mesh.stream(callback)
+
+creates a stream
+
+```javascript
+var bus = mesh.stream(function(operation, stream) {
+	stream.end("blah");
+});
+
+bus(mesh.op("showPopup"));
+```
+
 #### bus mesh.limit(count, bus)
 
 Limits the number of operations that can be executed at a time.
