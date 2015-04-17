@@ -20,4 +20,48 @@ describe(__filename + "#", function() {
 
     bus(mesh.op("insert"));
   });
+
+  it("emits multiple operations", function(next) {
+
+    var bus = mesh.wrap(function(operation, next) {
+      next(void 0, operation.name);
+    });
+
+    bus = mesh.tailable(mesh.limit(1, bus));
+    var i = 0;
+
+    var tail = bus(mesh.op("tail")).on("data", function() {
+      i++;
+    });
+
+    bus(mesh.op("hello2"));
+    bus(mesh.op("hello2"));
+    bus(mesh.op("hello2")).on("end", function() {
+      expect(i).to.be(3);
+      next();
+    });
+  });
+
+  it("can end a tail", function(next) {
+
+    var bus = mesh.wrap(function(operation, next) {
+      next(void 0, operation.name);
+    });
+
+    bus = mesh.tailable(mesh.limit(1, bus));
+    var i = 0;
+
+    var tail = bus(mesh.op("tail")).on("data", function() {
+      i++;
+    });
+    tail.end();
+
+    bus(mesh.op("hello")).on("end", tail.end.bind(tail));
+    bus(mesh.op("hello2"));
+    bus(mesh.op("hello2"));
+    bus(mesh.op("hello2")).on("end", function() {
+      expect(i).to.be(1);
+      next();
+    });
+  });
 });

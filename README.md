@@ -20,6 +20,9 @@ var api = http({
 	prefix: "/api"
 });
 
+// make it tailable
+api = mesh.sequence(api, mesh.tail);
+
 // pipe all persistence operations to the cache
 api(mesh.op("tail")).pipe(mesh.open(cache));
 
