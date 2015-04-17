@@ -174,7 +174,10 @@ module.exports = function(iterator) {
             next();
           }
         });
-        stream.once("end", bs.end.bind(bs));
+
+        if (bs.writable) {
+          stream.once("end", bs.end.bind(bs));
+        }
       }, function() {
         stream.end();
       });

@@ -1,6 +1,6 @@
 var mesh = require("../");
 var expect  = require("expect.js");
-var through = require("through2");
+var stream  = require("obj-stream");
 var _       = require("highland");
 
 describe(__filename + "#", function() {
@@ -22,4 +22,21 @@ describe(__filename + "#", function() {
       next();
     });
   });
+
+  it("works with readable stream", function(next) {
+    function bus(operation) {
+      var writable = stream.writable();
+      process.nextTick(function() {
+        writable.end(operation.name);
+      });
+      return writable.reader;
+    }
+
+    var bus = mesh.fallback(bus, bus);
+
+    bus(mesh.op("load")).on("data", function(data) {
+      expect(data).to.be("load");
+      next();
+    });
+  })
 });
