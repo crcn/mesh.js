@@ -129,22 +129,18 @@ var pubnub = require("mesh-pubnub");
 var localStorage = require("mesh-local-storage");
 
 // store data locally on the users machine
-var localBus = localStorage();
+var localBus = mesh.tailable(localStorage());
 
-// pubnub adapter for sending operations to other connected clients
+// pubnub adapter - second param requires a bus - passes
+// remote ops to it
 var pubBus = pubnub({
 	publishKey: "publish key",
 	subscribeKey: "subscribe key",
 	channel: "chatroom"
-});
+}, localBus);
 
-// the actual DB we're going to use. Pass
-// all operations to localstorage, and pubnub
-var bus = mesh.parallel(localBus, pubBus);
-
-// tail all operations from pubnub to the local DB. Note
-// that remote operations don't get re-sent to pubnub.
-pubbus(mesh.op("tail")).pipe(mesh.open(bus));
+// pipe all persistence operations to pubnub - reject load
+localBus(mesh.op("tail")).pipe(mesh.open(mesh.reject("load", pubBus)));
 
 // create a child data source - collection will get passed to each operation
 var peopleBus = mesh.attach({
@@ -515,33 +511,26 @@ Here's some scaffolding for a custom bus:
 
 ```javascript
 // slimmed down version of node streams.
-var stream = require("obj-stream");
+var mesh = require("mesh");
 
 function createBus(options) {
 
 	// create adapter here
 
 	// return fn that executes operations
-	return function(operation) {
-		var writable = stream.writable();
+	return mesh.stream(function(operation, duplex) {
 
-		// this is important so that data can be piped to other things
-		process.nextTick(function() {
+		// collection MUST exist
+		if (!operation.collection) return duplex.emit("error", new Error("missing collection"));
 
-			// collection MUST exist
-			if (!operation.collection) return writable.reader.emit("error", new Error("missing collection"));
+		// perform task here
 
-			// perform task here
+		// write data from insert/load
+		duplex.write(data);
 
-			// write data from insert/load
-			writable.write(data);
-
-			// must call end operation when complete
-			writable.end();
-		});
-
-		return writable.reader;
-	};
+		// must call end operation when complete
+		duplex.end();
+	});
 }
 ```
 
