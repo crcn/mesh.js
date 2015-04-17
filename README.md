@@ -355,6 +355,7 @@ For example:
 
 ```javascript
 var mesh = require("mesh");
+var sift = require("sift");
 
 // global event bus used in the app.
 var bus = mesh.parallel();
@@ -370,8 +371,8 @@ var redirect = mesh.wrap(function(operation, next) {
 });
 
 router.add(
-	mesh.accept(mesh.op("redirect", { pathname: "/home" }), redirect),
-	mesh.accept(mesh.op("redirect", { pathname: "/contact" }), redirect)
+	mesh.accept(sift(mesh.op("redirect", { pathname: "/home" })), redirect),
+	mesh.accept(sift(mesh.op("redirect", { pathname: "/contact" })), redirect)
 );
 
 // redirect to the home page
@@ -382,7 +383,7 @@ bus(mesh.op("redirect", { pathname: "/home" }));
 
 removes a bus from the group
 
-#### bus mesh.accept([...filter, ]bus)
+#### bus mesh.accept(filter, bus)
 
 Accepts only the provided operations.
 
@@ -409,7 +410,7 @@ var bus = mesh.accept(function(operation) {
 }, bus);
 ```
 
-#### bus mesh.reject([...filter, ]bus)
+#### bus mesh.reject(filter, bus)
 
 Runs all operations except the ones provided.
 

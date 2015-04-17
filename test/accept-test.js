@@ -10,13 +10,10 @@ describe(__filename + "#", function() {
       return _([operation]);
     };
 
-    bus = mesh.clean(mesh.accept("a", "b", bus));
+    bus = mesh.clean(mesh.accept("a", bus));
     bus("a").pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(1);
-      bus("b").pipe(_.pipeline(_.collect)).on("data", function(items) {
-        expect(items.length).to.be(1);
-        next();
-      });
+      next();
     });
   });
 
@@ -25,7 +22,7 @@ describe(__filename + "#", function() {
       return _([operation]);
     };
 
-    bus = mesh.clean(mesh.accept("a", "b", bus));
+    bus = mesh.clean(mesh.accept("a", bus));
     bus("c").pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(0);
       next();
@@ -44,6 +41,23 @@ describe(__filename + "#", function() {
 
     bus(mesh.op("a")).on("data", function() {
       next();
+    });
+  });
+
+  it("can accept regexp", function(next) {
+    var i = 0;
+    var bus = mesh.accept(/a|b/, mesh.wrap(function(op, next) {
+      i++;
+      next();
+    }));
+
+    bus(mesh.op("a")).on("end", function() {
+      bus(mesh.op("b")).on("end", function() {
+        bus(mesh.op("c")).on("end", function() {
+          expect(i).to.be(2);
+          next();
+        });
+      });
     });
   });
 });

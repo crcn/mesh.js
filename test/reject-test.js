@@ -10,13 +10,10 @@ describe(__filename + "#", function() {
       return _([properties]);
     };
 
-    bus = mesh.clean(mesh.reject("a", "b", bus));
+    bus = mesh.clean(mesh.reject("a" , bus));
     bus("c").pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(1);
-      bus("d").pipe(_.pipeline(_.collect)).on("data", function(items) {
-        expect(items.length).to.be(1);
-        next();
-      });
+      next();
     });
   });
 
@@ -25,13 +22,10 @@ describe(__filename + "#", function() {
       return _([properties]);
     };
 
-    bus = mesh.clean(mesh.reject("a", "b", bus));
+    bus = mesh.clean(mesh.reject("a", bus));
     bus("a").pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(0);
-      bus("a").pipe(_.pipeline(_.collect)).on("data", function(items) {
-        expect(items.length).to.be(0);
-        next();
-      });
+      next();
     });
   });
 
