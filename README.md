@@ -490,6 +490,22 @@ bus(mesh.op("hello")).on("data", function(letter) {
 });
 ```
 
+#### bus mesh.catch(bus, handler)
+
+catches all errors emitted by the bus
+
+```javascript
+var bus = mesh.wrap(function(operation, next) {
+	next(new Error("Error!"));
+});
+
+bus = mesh.catch(bus, function(err) {
+	// handle error here
+});
+
+bus(mesh.op("doSomething"));
+```
+
 ### Building a custom bus adapter
 
 Building a custom data source is pretty easy. All you need to do
