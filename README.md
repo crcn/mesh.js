@@ -245,14 +245,12 @@ peopleBus(mesh.op("insert", {
 }));
 ```
 
-#### bus mesh.tailable(bus, reject)
+#### bus mesh.tailable(bus)
 
 Makes the bus tailable. This simply allows you to listen for any operations invoked on a bus such as `create`, `update`, `remove`, and `load`.
 
-`reject` is an array of operations to ignore. Default is `[load]`.
-
 ```javascript
-var bus = mesh.tailablest (localbus);
+var bus = mesh.tailable(localbus);
 
 bus(mesh.op("tail", function() {
 
@@ -265,13 +263,15 @@ mesh
 	.write(mesh.op("insert", { data: { name: "Donkey" }})) // trigger tail
 	.write(mesh.op("remove", { query: { name: "Donkey" }})) // trigger tail
 	.write(mesh.op("update", { query: { name: "Donkey" }, data: { name: "Donkay" }})) // trigger tail
-	.write(mesh.op("load", { query: { name: "Donkey" }})) // ignored by tail
+	.write(mesh.op("load", { query: { name: "Donkey" }})) // trigger tail
 	.end();
 ```
 
-#### group mesh.parallel(...busses)
+<!-- GROUP FNS HERE -->
 
-Combines data sources and executes operations in parallel.
+#### bus mesh.parallel(...busses)
+
+Combines data sources and executes operations in parallel. Note that
 
 <!-- note about emitting data multiple times -->
 
@@ -286,7 +286,7 @@ bus(mesh.op("load")).on("data", function() {
 });
 ```
 
-#### group mesh.sequence(...busses)
+#### bus mesh.sequence(...busses)
 
 Combines data sources and executes operations in sequence.
 
@@ -301,7 +301,7 @@ bus("load").on("data", function() {
 });
 ```
 
-#### group mesh.fallback(...busses)
+#### bus mesh.fallback(...busses)
 
 Runs busses in sequence, but stops when a result is emitted from a data source.
 
@@ -315,7 +315,7 @@ bus(mesh.op("load", { collection: "people" })).on("data", function() {
 });
 ```
 
-#### group mesh.race(...busses)
+#### bus mesh.race(...busses)
 
 Runs all busses in parallel, but only emits data from the fastest one.
 
@@ -339,19 +339,7 @@ bus(mesh.op("race!")).on("data", function(data) {
 });
 ```
 
-#### group(operation)
-
-A group of buses that are run in parallel or sequence.
-
-#### group.add(...busses[, priority])
-
-Adds a new bus to the group.
-
-- `busses` - busses to add
-- `priority` - priority for buses. `0` is high priority. `-Infinity` is highest priority.
-
-For example:
-
+<!--
 ```javascript
 var mesh = require("mesh");
 var sift = require("sift");
@@ -377,10 +365,7 @@ router.add(
 // redirect to the home page
 bus(mesh.op("redirect", { pathname: "/home" }));
 ```
-
-#### group.remove(bus)
-
-removes a bus from the group
+-->
 
 #### bus mesh.accept(filter, bus)
 

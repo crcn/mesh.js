@@ -5,19 +5,44 @@ var _       = require("highland");
 
 describe(__filename + "#", function() {
 
+  it("accepts arrays", function(next) {
+
+
+    var source = [
+        mesh.wrap(function(o, n) {
+          n(void 0, 1);
+        }),
+        mesh.wrap(function(o, n) {
+          n(void 0, 2);
+        })
+    ];
+
+    var bus = mesh.parallel(source);
+
+    bus(mesh.op("a")).
+    pipe(_.pipeline(_.collect)).
+    on("data", function(data) {
+      expect(data[0]).to.be(1);
+      expect(data[1]).to.be(2);
+      next();
+    });
+  });
+
   it("can push a new event bus handler at the end", function(next) {
 
-    var bus = mesh.first(
+    var source = [
       mesh.accept("a", mesh.wrapCallback(function(operation, next) {
         next(void 0, 1);
       }))
-    );
+    ];
 
-    bus.add(mesh.accept("b", mesh.wrapCallback(function(operation, next) {
+    var bus = mesh.first(source);
+
+    source.push(mesh.accept("b", mesh.wrapCallback(function(operation, next) {
       next(void 0, 2);
     })));
 
-    bus.add(mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+    source.push(mesh.accept("a", mesh.wrapCallback(function(operation, next) {
       next(void 0, 2);
     })));
 
@@ -30,41 +55,25 @@ describe(__filename + "#", function() {
     });
   });
 
-  it("can push a new event bus handler at the beginning", function(next) {
-
-    var bus = mesh.first(
-      mesh.accept("a", mesh.wrapCallback(function(operation, next) {
-        next(void 0, 1);
-      }))
-    );
-
-    bus.add(mesh.accept("a", mesh.wrapCallback(function(operation, next) {
-      next(void 0, 2);
-    })), -Infinity);
-
-    bus(mesh.op("a")).on("data", function(data) {
-      expect(data).to.be(2);
-      next();
-    });
-  });
-
   it("can remove a bus", function(next) {
 
-    var bus = mesh.first(
+    var source = [
       mesh.accept("a", mesh.wrapCallback(function(operation, next) {
         next(void 0, 1);
       }))
-    );
+    ];
+
+    var bus = mesh.first(source);
 
     var a2 = mesh.accept("a", mesh.wrapCallback(function(operation, next) {
       next(void 0, 2);
     }));
 
-    bus.add(a2, -Infinity);
+    source.unshift(a2);
 
     bus(mesh.op("a")).on("data", function(data) {
       expect(data).to.be(2);
-      bus.remove(a2);
+      source.splice(0, 1);
       bus(mesh.op("a")).on("data", function(data) {
         expect(data).to.be(1);
         next();
@@ -73,8 +82,12 @@ describe(__filename + "#", function() {
   });
 
   it("can add multiple busses", function(next) {
-    var bus = mesh.parallel();
-    bus.add(
+
+    var source = [];
+
+    var bus = mesh.parallel(source);
+
+    source.push(
       mesh.accept("a", mesh.wrapCallback(function(operation, next) {
         next(void 0, 1);
       })),
@@ -91,5 +104,27 @@ describe(__filename + "#", function() {
       next();
     });
   });
+
+
+
+    it("can push a new event bus handler at the beginning", function(next) {
+
+      var source = [
+        mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+          next(void 0, 1);
+        }))
+      ];
+
+      var bus = mesh.first(source);
+
+      source.unshift(mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+        next(void 0, 2);
+      })));
+
+      bus(mesh.op("a")).on("data", function(data) {
+        expect(data).to.be(2);
+        next();
+      });
+    });
 
 });
