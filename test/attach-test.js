@@ -80,4 +80,17 @@ describe(__filename + "#", function() {
       next();
     });
   });
+
+  it("can attach properties from the operation into the op", function(next) {
+    var bus = mesh.wrap(function(operation, next) {
+      expect(operation.b).to.be(2);
+      next(void 0, 1);
+    });
+
+    bus = mesh.attach("a", bus);
+    var op  = mesh.op("load", { a: { b: 2 } });
+    bus(op).on("end", function() {
+      next();
+    });
+  })
 });

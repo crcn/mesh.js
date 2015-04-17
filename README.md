@@ -456,6 +456,25 @@ bus(mesh.op("insert", { data: { name: "joe" } }));
 bus(mesh.op("load", { query: { name: "joe" } })); // will return joe record because of limit
 ```
 
+#### bus mesh.map(bus, map)
+
+Maps the data emitted from bus to some other data.
+
+```javascript
+var bus = mesh.wrap(function(operation, next) {
+	next(void 0, operation.name);
+});
+
+bus = mesh.map(bus, function(data, writable) {
+	data.split("").forEach(writable.write.bind(writable));
+	writable.end();
+});
+
+bus(mesh.op("hello")).on("data", function(letter) {
+	console.log(letter); // h e l l o
+});
+```
+
 ### Building a custom bus adapter
 
 Building a custom data source is pretty easy. All you need to do

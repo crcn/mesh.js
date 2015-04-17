@@ -16,6 +16,7 @@ module.exports = {
   attach       : require("./attach"),
   stream       : require("./open"),
   run          : require("./run"),
+  map          : require("./map"),
   wrapCallback : require("./wrapCallback"),
   wrap         : require("./wrapCallback"),
   open         : require("./open"),
@@ -27,7 +28,7 @@ module.exports = {
   limit        : require("./limit")
 };
 
-},{"./accept":10,"./attach":11,"./child":12,"./delta":13,"./fallback":14,"./limit":15,"./open":16,"./operation":17,"./parallel":18,"./race":19,"./reject":20,"./run":21,"./sequence":22,"./tailable":23,"./top":24,"./wrapCallback":25}],2:[function(require,module,exports){
+},{"./accept":10,"./attach":11,"./child":12,"./delta":13,"./fallback":14,"./limit":15,"./map":16,"./open":17,"./operation":18,"./parallel":19,"./race":20,"./reject":21,"./run":22,"./sequence":23,"./tailable":24,"./top":25,"./wrapCallback":26}],2:[function(require,module,exports){
 (function (process){
 var Writable = require("obj-stream").Writable;
 
@@ -45,7 +46,7 @@ module.exports = function(fn) {
 };
 
 }).call(this,require('_process'))
-},{"_process":27,"obj-stream":28}],3:[function(require,module,exports){
+},{"_process":28,"obj-stream":29}],3:[function(require,module,exports){
 module.exports = function(items, each, complete) {
   var i = 0;
   var completed = false;
@@ -212,7 +213,7 @@ module.exports = function(iterator) {
   });
 };
 
-},{"./_async":2,"./_eachSeries":4,"./_group":6,"obj-stream":28}],9:[function(require,module,exports){
+},{"./_async":2,"./_eachSeries":4,"./_group":6,"obj-stream":29}],9:[function(require,module,exports){
 module.exports = function(data) {
   if (data == void 0) return [];
   return Object.prototype.toString.call(data) === "[object Array]" ? data : [data];
@@ -235,12 +236,19 @@ module.exports = function(accept, bus) {
   };
 };
 
-},{"./_async":2,"./_getFilter":5,"obj-stream":28}],11:[function(require,module,exports){
+},{"./_async":2,"./_getFilter":5,"obj-stream":29}],11:[function(require,module,exports){
 var createOperation = require("./operation");
 var extend          = require("xtend/mutable");
 
 // TODO - check if bus is a child. If so, grab target & options and return that instead
 module.exports = function(options, bus) {
+
+  if (typeof options === "string") {
+    var prop = options;
+    options = function(operation) {
+      return operation[prop];
+    };
+  }
 
   if (bus.__attached && typeof options !== "function") {
     options = extend({}, bus.options, options);
@@ -258,7 +266,7 @@ module.exports = function(options, bus) {
   return ret;
 };
 
-},{"./operation":17,"xtend/mutable":35}],12:[function(require,module,exports){
+},{"./operation":18,"xtend/mutable":36}],12:[function(require,module,exports){
 var createOperation = require("./operation");
 var extend          = require("xtend/mutable");
 
@@ -281,7 +289,7 @@ module.exports = function(bus, options) {
   return ret;
 };
 
-},{"./operation":17,"xtend/mutable":35}],13:[function(require,module,exports){
+},{"./operation":18,"xtend/mutable":36}],13:[function(require,module,exports){
 var through = require("obj-stream").through;
 
 module.exports = function() {
@@ -303,7 +311,7 @@ module.exports = function() {
   });
 };
 
-},{"obj-stream":28}],14:[function(require,module,exports){
+},{"obj-stream":29}],14:[function(require,module,exports){
 var _eachSeries = require("./_eachSeries");
 var _pickOne    = require("./_pickOne");
 
@@ -341,6 +349,39 @@ module.exports = function(count, bus) {
 };
 
 },{"./_async":2}],16:[function(require,module,exports){
+var stream = require("obj-stream");
+var _async = require("./_async");
+
+module.exports = function(bus, map) {
+
+  if (typeof map !== "function") {
+    var replace = map;
+    map = function(data, writable) {
+      writable.end(replace);
+    };
+  }
+
+  return function(operation) {
+    return _async(function(writable) {
+
+      var numStreams = 1;
+
+      function end() {
+        if (--numStreams > 0) return;
+        writable.end();
+      }
+
+      bus(operation).on("data", function(data) {
+        numStreams++;
+        var mapped = stream.writable();
+        mapped.reader.once("end", end).pipe(writable);
+        map(data, mapped);
+      }).on("end", end);
+    });
+  };
+};
+
+},{"./_async":2,"obj-stream":29}],17:[function(require,module,exports){
 var through = require("obj-stream").through;
 
 module.exports = function(bus) {
@@ -352,7 +393,7 @@ module.exports = function(bus) {
   });
 };
 
-},{"obj-stream":28}],17:[function(require,module,exports){
+},{"obj-stream":29}],18:[function(require,module,exports){
 var extend = require("xtend/mutable");
 
 /**
@@ -371,7 +412,7 @@ module.exports = function(name, options) {
   return new Operation(name, options);
 };
 
-},{"xtend/mutable":35}],18:[function(require,module,exports){
+},{"xtend/mutable":36}],19:[function(require,module,exports){
 var _eachParallel = require("./_eachParallel");
 var _merge        = require("./_merge");
 
@@ -380,7 +421,7 @@ var _merge        = require("./_merge");
 
 module.exports = _merge(_eachParallel);
 
-},{"./_eachParallel":3,"./_merge":7}],19:[function(require,module,exports){
+},{"./_eachParallel":3,"./_merge":7}],20:[function(require,module,exports){
 var _eachParallel = require("./_eachParallel");
 var _pickOne      = require("./_pickOne");
 
@@ -389,7 +430,7 @@ var _pickOne      = require("./_pickOne");
 
 module.exports = _pickOne(_eachParallel);
 
-},{"./_eachParallel":3,"./_pickOne":8}],20:[function(require,module,exports){
+},{"./_eachParallel":3,"./_pickOne":8}],21:[function(require,module,exports){
 var stream     = require("obj-stream");
 var _async     = require("./_async");
 var _getFilter = require("./_getFilter");
@@ -402,7 +443,7 @@ module.exports = function(reject, bus) {
   }, bus);
 };
 
-},{"./_async":2,"./_getFilter":5,"./accept":10,"obj-stream":28}],21:[function(require,module,exports){
+},{"./_async":2,"./_getFilter":5,"./accept":10,"obj-stream":29}],22:[function(require,module,exports){
 var operation = require("./operation");
 
 module.exports = function(bus, operationName, options, onRun) {
@@ -421,7 +462,7 @@ module.exports = function(bus, operationName, options, onRun) {
   });
 };
 
-},{"./operation":17}],22:[function(require,module,exports){
+},{"./operation":18}],23:[function(require,module,exports){
 var _eachSeries = require("./_eachSeries");
 var _merge      = require("./_merge");
 
@@ -430,7 +471,7 @@ var _merge      = require("./_merge");
 
 module.exports = _merge(_eachSeries);
 
-},{"./_eachSeries":4,"./_merge":7}],23:[function(require,module,exports){
+},{"./_eachSeries":4,"./_merge":7}],24:[function(require,module,exports){
 
 module.exports = function(bus, reject) {
   if (!reject) reject = ["load"];
@@ -454,7 +495,7 @@ module.exports = function(bus, reject) {
   };
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 var operation = require("./operation");
 
 module.exports = function(bus) {
@@ -468,7 +509,7 @@ module.exports = function(bus) {
   };
 };
 
-},{"./operation":17}],25:[function(require,module,exports){
+},{"./operation":18}],26:[function(require,module,exports){
 var stream   = require("obj-stream");
 var _toArray = require("./_toArray");
 var _async   = require("./_async");
@@ -495,7 +536,7 @@ module.exports = function(callback) {
   };
 };
 
-},{"./_async":2,"./_toArray":9,"obj-stream":28}],26:[function(require,module,exports){
+},{"./_async":2,"./_toArray":9,"obj-stream":29}],27:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -798,7 +839,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -858,7 +899,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 var Readable = require("./readable");
 var Writable = require("./writable");
 var Stream   = require("./stream");
@@ -875,7 +916,7 @@ exports.stream = Stream;
 
 exports.through = through;
 
-},{"./readable":30,"./stream":31,"./through":32,"./writable":33}],29:[function(require,module,exports){
+},{"./readable":31,"./stream":32,"./through":33,"./writable":34}],30:[function(require,module,exports){
 module.exports = function(src, dst, ops) {
 
   var listeners = [];
@@ -947,7 +988,7 @@ module.exports = function(src, dst, ops) {
   return dst;
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 var protoclass   = require("protoclass");
 var EventEmitter = require("events").EventEmitter;
 var pipe         = require("./pipe");
@@ -1007,7 +1048,7 @@ protoclass(EventEmitter, Readable, {
 
 module.exports = Readable;
 
-},{"./pipe":29,"events":26,"protoclass":34}],31:[function(require,module,exports){
+},{"./pipe":30,"events":27,"protoclass":35}],32:[function(require,module,exports){
 var protoclass = require("protoclass");
 var Writer     = require("./writable");
 
@@ -1099,7 +1140,7 @@ protoclass(Stream, {
 
 module.exports = Stream;
 
-},{"./writable":33,"protoclass":34}],32:[function(require,module,exports){
+},{"./writable":34,"protoclass":35}],33:[function(require,module,exports){
 var protoclass = require("protoclass");
 var Readable   = require("./readable");
 var Stream     = require("./stream");
@@ -1162,7 +1203,7 @@ module.exports = function(write, end) {
   return stream;
 };
 
-},{"./readable":30,"./stream":31,"./writable":33,"protoclass":34}],33:[function(require,module,exports){
+},{"./readable":31,"./stream":32,"./writable":34,"protoclass":35}],34:[function(require,module,exports){
 var protoclass   = require("protoclass");
 var EventEmitter = require("events").EventEmitter;
 var Reader       = require("./readable");
@@ -1199,6 +1240,7 @@ protoclass(EventEmitter, Writable, {
 
   _flowing: true,
   readable: false,
+  writable: true,
 
   /**
    */
@@ -1272,7 +1314,7 @@ protoclass(EventEmitter, Writable, {
 
 module.exports = Writable;
 
-},{"./readable":30,"events":26,"protoclass":34}],34:[function(require,module,exports){
+},{"./readable":31,"events":27,"protoclass":35}],35:[function(require,module,exports){
 function _copy (to, from) {
 
   for (var i = 0, n = from.length; i < n; i++) {
@@ -1348,7 +1390,7 @@ protoclass.setup = function (child) {
 
 
 module.exports = protoclass;
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = extend
 
 function extend(target) {
