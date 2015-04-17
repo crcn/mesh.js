@@ -9,7 +9,7 @@ describe(__filename + "#", function() {
       next(void 0, operation.name);
     });
 
-    bus = mesh.map(bus, function(data, stream) {
+    bus = mesh.map(bus, function(operation, data, stream) {
       data.split("").forEach(stream.write.bind(stream));
       stream.end();
     });
