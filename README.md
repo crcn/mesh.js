@@ -21,7 +21,7 @@ var api = http({
 });
 
 // make it tailable
-api = mesh.sequence(api, mesh.tail);
+api = mesh.tailable(api);
 
 // pipe all persistence operations to the cache
 api(mesh.op("tail")).pipe(mesh.open(cache));
