@@ -9,7 +9,7 @@ describe(__filename + "#", function() {
       return _(operation.name.split(""));
     };
 
-    bus = mesh.reduce(bus, function(pv, nv) {
+    bus = mesh.reduce(bus, function(op, pv, nv) {
       return nv + pv;
     });
 

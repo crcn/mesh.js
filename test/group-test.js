@@ -7,7 +7,6 @@ describe(__filename + "#", function() {
 
   it("accepts arrays", function(next) {
 
-
     var source = [
         mesh.wrap(function(o, n) {
           n(void 0, 1);
@@ -105,26 +104,23 @@ describe(__filename + "#", function() {
     });
   });
 
+  it("can push a new event bus handler at the beginning", function(next) {
 
+    var source = [
+      mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+        next(void 0, 1);
+      }))
+    ];
 
-    it("can push a new event bus handler at the beginning", function(next) {
+    var bus = mesh.first(source);
 
-      var source = [
-        mesh.accept("a", mesh.wrapCallback(function(operation, next) {
-          next(void 0, 1);
-        }))
-      ];
+    source.unshift(mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+      next(void 0, 2);
+    })));
 
-      var bus = mesh.first(source);
-
-      source.unshift(mesh.accept("a", mesh.wrapCallback(function(operation, next) {
-        next(void 0, 2);
-      })));
-
-      bus(mesh.op("a")).on("data", function(data) {
-        expect(data).to.be(2);
-        next();
-      });
+    bus(mesh.op("a")).on("data", function(data) {
+      expect(data).to.be(2);
+      next();
     });
-
+  });
 });

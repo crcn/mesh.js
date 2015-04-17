@@ -114,7 +114,7 @@ var _isArray = require("./_isArray");
 module.exports = function(targetBus) {
   return function(/* ... */ busses) {
 
-    var busses = _isArray(busses) ? busses : Array.prototype.slice.call(arguments);
+    busses = _isArray(busses) ? busses : Array.prototype.slice.call(arguments);
 
     return function(operation) {
       return targetBus(operation, busses);
@@ -400,28 +400,26 @@ var _pickOne      = require("./_pickOne");
 module.exports = _pickOne(_eachParallel);
 
 },{"./_eachParallel":3,"./_pickOne":9}],23:[function(require,module,exports){
-var _async = require("./_async");
+var stream = require("./stream");
 
 module.exports = function(bus, reduce) {
-  return function(operation) {
-    return _async(function(writable) {
-      var buffer;
-      bus(operation).on("data", function(data) {
+  return stream(function(operation, writable) {
+    var buffer;
+    bus(operation).on("data", function(data) {
 
-        if (!buffer) {
-          buffer = data;
-          return;
-        }
+      if (!buffer) {
+        buffer = data;
+        return;
+      }
 
-        buffer = reduce(buffer, data);
-      }).on("end", function() {
-        writable.end(buffer);
-      });
+      buffer = reduce(operation, buffer, data);
+    }).on("end", function() {
+      writable.end(buffer);
     });
-  };
+  });
 };
 
-},{"./_async":2}],24:[function(require,module,exports){
+},{"./stream":27}],24:[function(require,module,exports){
 var _getFilter = require("./_getFilter");
 var accept     = require("./accept");
 
