@@ -92,5 +92,5 @@ describe(__filename + "#", function() {
     bus(op).on("end", function() {
       next();
     });
-  })
+  });
 });

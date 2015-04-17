@@ -14,6 +14,6 @@ describe(__filename + "#", function() {
       next();
     });
 
-    bus(mesh.op("blah")).on("error", function(){});
+    bus(mesh.op("blah")).on("error", function() { });
   });
 });
