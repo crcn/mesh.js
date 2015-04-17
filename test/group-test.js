@@ -123,4 +123,20 @@ describe(__filename + "#", function() {
       next();
     });
   });
+
+  it("accepts sources as a function", function(next) {
+
+    var source = function(operation) {
+      return mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+        next(void 0, 1);
+      }))(operation);
+    };
+
+    var bus = mesh.first(source);
+
+    bus(mesh.op("a")).on("data", function(data) {
+      expect(data).to.be(1);
+      next();
+    });
+  });
 });
