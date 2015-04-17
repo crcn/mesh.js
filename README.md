@@ -145,7 +145,7 @@ localBus(mesh.op("tail")).pipe(mesh.open(mesh.reject("load", pubBus)));
 // create a child data source - collection will get passed to each operation
 var peopleBus = mesh.attach({
 	collection: "people"
-}, bus);
+}, localBus);
 
 // insert some people
 peopleBus(mesh.op("insert", {
