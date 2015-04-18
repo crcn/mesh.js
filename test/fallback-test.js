@@ -24,15 +24,15 @@ describe(__filename + "#", function() {
   });
 
   it("works with readable stream", function(next) {
-    function bus(operation) {
+    var bus = function(operation) {
       var writable = stream.writable();
       process.nextTick(function() {
         writable.end(operation.name);
       });
       return writable.reader;
-    }
+    };
 
-    var bus = mesh.fallback(bus, bus);
+    bus = mesh.fallback(bus, bus);
 
     bus(mesh.op("load")).on("data", function(data) {
       expect(data).to.be("load");
