@@ -67,7 +67,7 @@ module.exports = function(items, each, complete) {
     });
   });
 
-  if(!items.length) done();
+  if (!items.length) done();
 };
 
 },{}],4:[function(require,module,exports){
@@ -348,7 +348,7 @@ module.exports = function(bus, map) {
       bus(operation).on("data", function(data) {
         numStreams++;
         var mapped = stream.writable();
-        mapped.reader.once("end", end).pipe(writable);
+        mapped.reader.once("end", end).on("data", writable.write.bind(writable));
         map(operation, data, mapped);
       }).on("end", end);
     });

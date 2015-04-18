@@ -26,4 +26,27 @@ describe(__filename + "#", function() {
         next();
       });
   });
+
+  it("doesn't end the parent stream", function(next) {
+    var bus = mesh.stream(function(operation, stream) {
+      stream.write("ab");
+      stream.end("cd");
+    });
+
+    bus = mesh.map(bus, function(operation, data, stream) {
+      data.split("").forEach(stream.write.bind(stream));
+      stream.end();
+    });
+
+    bus(mesh.op("hello"))
+      .pipe(_.pipeline(_.collect))
+      .on("data", function(data) {
+        expect(data.length).to.be(4);
+        expect(data[0]).to.be("a");
+        expect(data[1]).to.be("b");
+        expect(data[2]).to.be("c");
+        expect(data[3]).to.be("d");
+        next();
+      });
+  });
 });
