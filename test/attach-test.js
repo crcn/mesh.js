@@ -81,6 +81,28 @@ describe(__filename + "#", function() {
     });
   });
 
+  it("can use a function to attach props", function(next) {
+    var bus = mesh.wrap(function(operation, next) {
+      expect(operation.b).to.be(1);
+      expect(operation.a).to.be(2);
+      next(void 0, 1);
+    });
+
+    bus = mesh.attach(function(operation) {
+      return {
+        b: 1
+      };
+    }, bus);
+
+    bus = mesh.attach({ a: 2 }, bus);
+
+    var op  = mesh.op("load");
+    bus(op).on("end", function() {
+      next();
+    });
+  });
+
+
   it("can attach properties from the operation into the op", function(next) {
     var bus = mesh.wrap(function(operation, next) {
       expect(operation.b).to.be(2);
