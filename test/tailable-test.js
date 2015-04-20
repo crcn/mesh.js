@@ -64,4 +64,25 @@ describe(__filename + "#", function() {
       next();
     });
   });
+
+  it("only emits operations that match the tail props", function(next) {
+
+    var bus = mesh.wrap(function(operation, next) {
+      next(void 0, operation.name);
+    });
+
+    bus = mesh.tailable(mesh.limit(1, bus));
+    var i = 0;
+
+    var tail = bus(mesh.op("tail", { collection: "blarg" })).on("data", function() {
+      i++;
+    });
+
+    bus(mesh.op("hello2", { collection: "blarg" }));
+    bus(mesh.op("hello2"));
+    bus(mesh.op("hello2", { collection: "blarg" })).on("end", function() {
+      expect(i).to.be(2);
+      next();
+    });
+  });
 });
