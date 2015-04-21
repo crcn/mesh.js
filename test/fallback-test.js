@@ -40,7 +40,7 @@ describe(__filename + "#", function() {
     });
   });
 
-  it("can run without any args", function(next) {
+  xit("can run without any args", function(next) {
     var bus = mesh.fallback();
     bus(mesh.op("insert")).on("end", next);
   });

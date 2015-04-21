@@ -71,7 +71,7 @@ describe(__filename + "#", function() {
       next(void 0, operation.name);
     });
 
-    bus = mesh.tailable(mesh.limit(1, bus));
+    bus = mesh.tailable(bus);
     var i = 0;
 
     var tail = bus(mesh.op("tail", { collection: "blarg" })).on("data", function() {
@@ -83,6 +83,31 @@ describe(__filename + "#", function() {
     bus(mesh.op("hello2", { collection: "blarg" })).on("end", function() {
       expect(i).to.be(2);
       next();
+    });
+  });
+
+  it("can accept a custom filter", function(next) {
+    var i = 0;
+
+    var bus = mesh.wrap(function(operation, next) {
+      next();
+    });
+
+    bus = mesh.tailable(bus, function(a) {
+      return function(b) {
+        return b.collection === a.collection;
+      }
+    });
+
+    bus(mesh.op("tail", { collection: "a" })).on("data", function() {
+      i++;
+    });
+
+    bus(mesh.op("insert", { collection: "a" })).on("end", function() {
+      bus(mesh.op("insert", { collection: "b" })).on("end", function() {
+        expect(i).to.be(1);
+        next();
+      });
     });
   });
 });
