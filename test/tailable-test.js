@@ -96,7 +96,7 @@ describe(__filename + "#", function() {
     bus = mesh.tailable(bus, function(a) {
       return function(b) {
         return b.collection === a.collection;
-      }
+      };
     });
 
     bus(mesh.op("tail", { collection: "a" })).on("data", function() {

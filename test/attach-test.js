@@ -102,7 +102,6 @@ describe(__filename + "#", function() {
     });
   });
 
-
   it("can attach properties from the operation into the op", function(next) {
     var bus = mesh.wrap(function(operation, next) {
       expect(operation.b).to.be(2);
