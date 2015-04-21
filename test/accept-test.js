@@ -61,7 +61,23 @@ describe(__filename + "#", function() {
     });
   });
 
-  xit("can have an 'else' bus", function(next) {
+  it("can have an 'else' bus", function(next) {
+    var abus = mesh.wrap(function(op, next) {
+      next(void 0, 'a');
+    });
 
+    var bbus = mesh.wrap(function(op, next) {
+      next(void 0, 'b');
+    });
+
+    var cbus = mesh.accept('a', abus, bbus);
+
+    cbus(mesh.op("a")).on("data", function(data) {
+      expect(data).to.be("a");
+      cbus(mesh.op("b")).on("data", function(data) {
+        expect(data).to.be("b");
+        next();
+      });
+    });
   });
 });

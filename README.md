@@ -367,7 +367,7 @@ bus(mesh.op("redirect", { pathname: "/home" }));
 ```
 -->
 
-#### bus mesh.accept(filter, bus)
+#### bus mesh.accept(filter, bus, elseBus)
 
 Accepts only the provided operations.
 
@@ -394,7 +394,7 @@ var bus = mesh.accept(function(operation) {
 }, bus);
 ```
 
-#### bus mesh.reject(filter, bus)
+#### bus mesh.reject(filter, bus, elseBus)
 
 Runs all operations except the ones provided.
 
