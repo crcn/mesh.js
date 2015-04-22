@@ -54,11 +54,10 @@ describe(__filename + "#", function() {
     var tail = bus(mesh.op("tail")).on("data", function() {
       i++;
     });
-    tail.end();
 
     bus(mesh.op("hello")).on("end", tail.end.bind(tail));
     bus(mesh.op("hello2"));
-    bus(mesh.op("hello2"));
+    bus(mesh.op("hello3"));
     bus(mesh.op("hello2")).on("end", function() {
       expect(i).to.be(1);
       next();
