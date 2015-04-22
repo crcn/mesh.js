@@ -32,7 +32,7 @@ var bus = mesh.fallback(mesh.accept("load", cache), api);
 
 
 bus(mesh.op("insert", {
-	collection: "people"
+	collection: "people",
 
 	// path is automatically resolved from the collection param,
 	// but you can easily override it.
