@@ -98,6 +98,5 @@ describe(__filename + "#", function() {
     bus(mesh.op("error")).on("error", function() {
       next();
     });
-
-  })
+  });
 });

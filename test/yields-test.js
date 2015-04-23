@@ -13,7 +13,7 @@ describe(__filename + "#", function() {
   });
 
   it("can yield multiple data", function(next) {
-    var bus = mesh.yields(void 0, [1,2]);
+    var bus = mesh.yields(void 0, [1, 2]);
     bus(mesh.op("a")).
     pipe(_.pipeline(_.collect)).
     on("data", function(data) {
@@ -37,7 +37,7 @@ describe(__filename + "#", function() {
 
   it("can return an array in a fn", function(next) {
     var bus = mesh.yields(void 0, function(op) {
-      return [1,2,3];
+      return [1, 2, 3];
     });
     bus(mesh.op("a")).
     pipe(_.pipeline(_.collect)).

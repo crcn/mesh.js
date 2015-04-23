@@ -56,6 +56,6 @@ describe(__filename + "#", function() {
       next(new Error("err"));
     });
 
-    bus(mesh.op("aa")).on("error", function(){}).on("end", next);
+    bus(mesh.op("aa")).on("error", function() { }).on("end", next);
   });
 });
