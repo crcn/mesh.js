@@ -90,4 +90,14 @@ describe(__filename + "#", function() {
       next();
     });
   });
+
+  it("can pass an error down and still work", function(next) {
+    var bus = mesh.limit(1, mesh.yields(new Error("error")));
+    bus(mesh.op("error")).on("error", function() { });
+    bus(mesh.op("error")).on("error", function() { });
+    bus(mesh.op("error")).on("error", function() {
+      next();
+    });
+
+  })
 });

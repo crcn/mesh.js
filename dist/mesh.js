@@ -153,16 +153,14 @@ module.exports = function(data) {
 };
 
 },{}],9:[function(require,module,exports){
-var _group = require("./_group");
-var _async = require("./_async");
+var _group  = require("./_group");
+var _async  = require("./_async");
 
 module.exports = function(iterator) {
   return _group(function(operation, busses) {
     return _async(function(stream) {
       iterator(busses, function(bus, complete) {
-        bus(operation).on("data", function(data) {
-          stream.write(data);
-        }).on("end", complete);
+        bus(operation).once("end", complete).pipe(stream, { end: false });
       }, function() {
         stream.end();
       });
@@ -182,6 +180,7 @@ var Writable    = require("obj-stream").Writable;
 var _async      = require("./_async");
 var _eachSeries = require("./_eachSeries");
 var _group      = require("./_group");
+var through     = require("obj-stream").through;
 
 /**
  */
@@ -195,17 +194,24 @@ module.exports = function(iterator) {
 
       iterator(busses, function(bus, next) {
         var index = ++i;
-        var bs = bus(operation).on("data", function(data) {
-          if (found && found !== index) return;
-          found = index;
-          stream.write(data);
-        }).once("end", function() {
+        var bs;
+
+        // TODO - duplex this
+
+        (bs = bus(operation)).pipe(through(function(data, next) {
+          if (!found || found === index) {
+            found = index;
+            this.push(data);
+          }
+          next();
+        })).once("end", function() {
           if (found) {
             stream.end();
           } else {
             next();
           }
-        });
+        }).pipe(stream, { end: false });
+
 
         if (bs.writable) {
           stream.once("end", bs.end.bind(bs));
@@ -361,31 +367,22 @@ module.exports = function(count, bus) {
 };
 
 },{"./stream":29}],20:[function(require,module,exports){
-var stream = require("obj-stream");
-var _async = require("./_async");
+var s  = require("obj-stream");
+var stream  = require("./stream");
+var through = s.through;
 
 module.exports = function(bus, map) {
-  return function(operation) {
-    return _async(function(writable) {
-
-      var numStreams = 1;
-
-      function end() {
-        if (--numStreams > 0) return;
-        writable.end();
-      }
-
-      bus(operation).on("data", function(data) {
-        numStreams++;
-        var mapped = stream.writable();
-        mapped.reader.once("end", end).on("data", writable.write.bind(writable));
-        map(operation, data, mapped);
-      }).on("end", end);
-    });
-  };
+  return stream(function(operation, writable) {
+    bus(operation).pipe(through(function(data, next) {
+      var mapper = s.stream();
+      mapper.pipe(writable, { end: false });
+      mapper.once("end", next);
+      map(operation, data, mapper);
+    })).on("data", function(){ }).on("end", writable.end.bind(writable));
+  });
 };
 
-},{"./_async":2,"obj-stream":36}],21:[function(require,module,exports){
+},{"./stream":29,"obj-stream":36}],21:[function(require,module,exports){
 var through = require("obj-stream").through;
 
 module.exports = function(bus) {
@@ -435,26 +432,29 @@ var _pickOne      = require("./_pickOne");
 module.exports = _pickOne(_eachParallel);
 
 },{"./_eachParallel":3,"./_pickOne":11}],25:[function(require,module,exports){
-var stream = require("./stream");
+var stream  = require("./stream");
+var through = require("obj-stream").through;
+
 
 module.exports = function(bus, reduce) {
   return stream(function(operation, writable) {
     var buffer;
-    bus(operation).on("data", function(data) {
+    bus(operation).pipe(through(function(data, next) {
 
-      if (!buffer) {
+      if (buffer) {
+        buffer = reduce(operation, buffer, data);
+      } else {
         buffer = data;
-        return;
       }
 
-      buffer = reduce(operation, buffer, data);
-    }).on("end", function() {
-      writable.end(buffer);
-    });
+      next();
+    }, function() {
+      this.push(buffer);
+    })).pipe(writable);
   });
 };
 
-},{"./stream":29}],26:[function(require,module,exports){
+},{"./stream":29,"obj-stream":36}],26:[function(require,module,exports){
 var _getFilter = require("./_getFilter");
 var accept     = require("./accept");
 
@@ -470,6 +470,8 @@ var operation = require("./operation");
 
 module.exports = function(bus, operationName, options, onRun) {
   var buffer = [];
+
+  // TODO - use through here
   bus(operation(operationName, options)).
   on("data", function(data) {
     buffer.push(data);
@@ -572,7 +574,7 @@ var stream   = require("./stream");
 module.exports = function(callback) {
   return stream(function(operation, stream) {
     callback(operation, function(err, data) {
-      if (err) return stream.emit("error", err);
+      if (err) stream.emit("error", err);
 
       var items = _toArray(data);
 
@@ -1213,6 +1215,7 @@ protoclass(Stream, {
 module.exports = Stream;
 
 },{"./writable":41,"protoclass":42}],40:[function(require,module,exports){
+(function (process){
 var protoclass = require("protoclass");
 var Readable   = require("./readable");
 var Stream     = require("./stream");
@@ -1223,6 +1226,7 @@ var Writable   = require("./writable");
 
 function Through (stream) {
   this._stream = stream;
+  this._reader = stream.reader;
 }
 
 /**
@@ -1230,7 +1234,33 @@ function Through (stream) {
 
 protoclass(Through, {
   push: function(object) {
+
+    if (!this._reader._events.data) {
+      this._waitForListener();
+    }
+
     this._stream.write(object);
+  },
+
+  /**
+   */
+
+  _waitForListener: function() {
+    if (this._waiting) return;
+    this._waiting = true;
+
+    var self = this;
+    function onListener(name) {
+      if (name === "data") {
+        self._reader.removeListener("newListener", onListener);
+        process.nextTick(function() {
+          self._reader.resume();
+        });
+      }
+    }
+
+    this._reader.on("newListener", onListener);
+    this._reader.pause();
   }
 });
 
@@ -1260,6 +1290,7 @@ module.exports = function(write, end) {
     }
 
     if (ended) {
+      if (end) end.call(through);
       dstWriter.end();
     }
   }
@@ -1275,7 +1306,8 @@ module.exports = function(write, end) {
   return stream;
 };
 
-},{"./readable":38,"./stream":39,"./writable":41,"protoclass":42}],41:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"./readable":38,"./stream":39,"./writable":41,"_process":35,"protoclass":42}],41:[function(require,module,exports){
 var protoclass   = require("protoclass");
 var EventEmitter = require("events").EventEmitter;
 var Reader       = require("./readable");

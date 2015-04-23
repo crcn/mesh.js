@@ -13,10 +13,18 @@ describe(__filename + "#", function() {
       return nv + pv;
     });
 
-    bus(mesh.op("hello", { multi: true }))
-      .on("data", function(message) {
+    var op = bus(mesh.op("hello", { multi: true }));
+
+    op.on("data", function(message) {
         expect(message).to.be("olleh");
         next();
       });
+  });
+
+  it("can handle errors", function(next) {
+    var bus = mesh.reduce(mesh.yields(new Error("err")), function() {
+
+    });
+    bus(mesh.op("a")).on("error", next.bind(void 0, void 0));
   });
 });
