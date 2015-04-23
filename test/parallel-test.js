@@ -43,4 +43,25 @@ describe(__filename + "#", function() {
     var bus = mesh.parallel();
     bus(mesh.op("insert")).on("end", next);
   });
+
+  it("can handle an error", function(next) {
+
+    var busA = mesh.yields(new Error("done"));
+    var busB = mesh.yields(void 0, 1);
+
+    var bus = mesh.parallel(busA, busB);
+    var i = 0;
+    var j = 0;
+    bus(mesh.op("done")).on("error", function() {
+      j++;
+    }).on("end", function() {
+      i++;
+    });
+
+    setTimeout(function() {
+      expect(i).to.be(0);
+      expect(j).to.be(1);
+      next();
+    }, 10);
+  });
 });
