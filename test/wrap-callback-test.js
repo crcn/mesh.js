@@ -51,7 +51,8 @@ describe(__filename + "#", function() {
     });
   });
 
-  it("ends the stream after an error", function(next) {
+  // don't do this
+  xit("ends the stream after an error", function(next) {
     var bus = mesh.wrap(function(op, next) {
       next(new Error("err"));
     });
