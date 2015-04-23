@@ -593,14 +593,18 @@ module.exports = function(callback) {
 var wrap     = require("./wrap");
 attach       = require("./attach");
 
-module.exports = function(data) {
+module.exports = function(error, data) {
 
-  var fn = typeof data === "function" ? data : function() {
+  var errorFn = typeof error === "function" ? error : function() {
+    return error;
+  };
+
+  var dataFn = typeof data === "function" ? data : function() {
     return data;
   };
 
   return attach({ multi: true }, wrap(function(operation, next) {
-    next(void 0, fn(operation));
+    next(errorFn(operation), dataFn(operation));
   }));
 }
 

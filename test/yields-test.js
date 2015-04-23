@@ -5,7 +5,7 @@ var _      = require("highland");
 describe(__filename + "#", function() {
 
   it("can yield plain data", function(next) {
-    var bus = mesh.yields({ name: "aa" });
+    var bus = mesh.yields(void 0, { name: "aa" });
     bus(mesh.op("a")).on("data", function(data) {
       expect(data.name).to.be("aa");
       next();
@@ -13,7 +13,7 @@ describe(__filename + "#", function() {
   });
 
   it("can yield multiple data", function(next) {
-    var bus = mesh.yields([1,2]);
+    var bus = mesh.yields(void 0, [1,2]);
     bus(mesh.op("a")).
     pipe(_.pipeline(_.collect)).
     on("data", function(data) {
@@ -25,7 +25,7 @@ describe(__filename + "#", function() {
   });
 
   it("can use a fn", function(next) {
-    var bus = mesh.yields(function(op) {
+    var bus = mesh.yields(void 0, function(op) {
       return op.name;
     });
     bus(mesh.op("a")).
@@ -36,7 +36,7 @@ describe(__filename + "#", function() {
   });
 
   it("can return an array in a fn", function(next) {
-    var bus = mesh.yields(function(op) {
+    var bus = mesh.yields(void 0, function(op) {
       return [1,2,3];
     });
     bus(mesh.op("a")).
@@ -50,4 +50,21 @@ describe(__filename + "#", function() {
     });
   });
 
+  it("can yield an error", function(next) {
+    var bus = mesh.yields(new Error("err"));
+    bus(mesh.op("d")).on("error", function(error) {
+      expect(error.message).to.be("err");
+      next();
+    });
+  });
+
+  it("can yield an error in a fn", function(next) {
+    var bus = mesh.yields(function(operation) {
+      return new Error(operation.name);
+    });
+    bus(mesh.op("d")).on("error", function(error) {
+      expect(error.message).to.be("d");
+      next();
+    });
+  });
 });
