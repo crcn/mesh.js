@@ -491,12 +491,12 @@ bus(mesh.op("doesn't-really-matter-in-this-case")).on("data", function(people) {
 });
 ```
 
-#### bus mesh.noop()
+#### bus mesh.noop
 
 no operation.
 
 ```javascript
-bus = mesh.accept("load", mesh.noop(), bus); // ignore load operation
+bus = mesh.accept("load", mesh.noop, bus); // ignore load operation
 bus(mesh.op("load")).on("end", function() {
 	// done - operation not handled
 });
