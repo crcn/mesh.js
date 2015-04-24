@@ -471,6 +471,37 @@ bus(mesh.op("hello")).on("data", function(letter) {
 });
 ```
 
+#### bus mesh.reduce(bus, reduce)
+
+reduces the operation data.
+
+```javascript
+
+var bus = mesh.reduce(mesh.stream(function(operation, stream) {
+	stream.write({ name: "Billy", favoriteFood: "Goat" });
+	stream.write({ name: "Bob", favoriteFood: "apples" });
+	stream.end({ name: "Teeth", favoriteFood: "toothpaste"  });
+}), function(operation, prev, current) {
+	return [].concat(prev).concat(current); // cast as array
+});
+
+
+bus(mesh.op("doesn't-really-matter-in-this-case")).on("data", function(people) {
+	console.log(people); // [{ name: "Billy", favoriteFood: "Goat" }, ...] show all people
+});
+```
+
+#### bus mesh.noop()
+
+no operation.
+
+```javascript
+bus = mesh.accept("load", mesh.noop(), bus); // ignore load operation
+bus(mesh.op("load")).on("end", function() {
+	// done - operation not handled
+});
+```
+
 #### bus mesh.catch(bus, handler)
 
 catches all errors emitted by the bus

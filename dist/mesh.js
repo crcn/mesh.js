@@ -16,6 +16,7 @@ module.exports = {
   attach       : require("./attach"),
   run          : require("./run"),
   map          : require("./map"),
+  noop         : require("./noop"),
   reduce       : require("./reduce"),
   catch        : require("./catch"),
   wrapCallback : require("./wrap"),
@@ -31,7 +32,7 @@ module.exports = {
   yields       : require("./yields")
 };
 
-},{"./accept":13,"./attach":14,"./catch":15,"./child":16,"./delta":17,"./fallback":18,"./limit":19,"./map":20,"./open":21,"./operation":22,"./parallel":23,"./race":24,"./reduce":25,"./reject":26,"./run":27,"./sequence":28,"./stream":29,"./tailable":30,"./top":31,"./wrap":32,"./yields":33}],2:[function(require,module,exports){
+},{"./accept":12,"./attach":13,"./catch":14,"./child":15,"./delta":16,"./fallback":17,"./limit":18,"./map":19,"./noop":20,"./open":21,"./operation":22,"./parallel":23,"./race":24,"./reduce":25,"./reject":26,"./run":27,"./sequence":28,"./stream":29,"./tailable":30,"./top":31,"./wrap":32,"./yields":33}],2:[function(require,module,exports){
 (function (process){
 var Stream = require("obj-stream").Stream;
 
@@ -58,6 +59,7 @@ module.exports = function(items, each, complete) {
 
   function done() {
     if (completed) return;
+    completed = true;
     return complete.apply(this, arguments);
   }
 
@@ -160,22 +162,15 @@ module.exports = function(iterator) {
   return _group(function(operation, busses) {
     return _async(function(stream) {
       iterator(busses, function(bus, complete) {
-        bus(operation).once("end", complete).pipe(stream, { end: false });
-      }, function() {
-        stream.end();
+        bus(operation).once("error", complete).once("end", complete).pipe(stream, { end: false });
+      }, function(err) {
+        if (!err) stream.end();
       });
     });
   });
 };
 
 },{"./_async":2,"./_group":7}],10:[function(require,module,exports){
-var stream = require("./stream");
-
-module.exports = stream(function(operation, stream) {
-  stream.end();
-});
-
-},{"./stream":29}],11:[function(require,module,exports){
 var Writable    = require("obj-stream").Writable;
 var _async      = require("./_async");
 var _eachSeries = require("./_eachSeries");
@@ -212,7 +207,6 @@ module.exports = function(iterator) {
           }
         }).pipe(stream, { end: false });
 
-
         if (bs.writable) {
           stream.once("end", bs.end.bind(bs));
         }
@@ -223,7 +217,7 @@ module.exports = function(iterator) {
   });
 };
 
-},{"./_async":2,"./_eachSeries":4,"./_group":7,"obj-stream":36}],12:[function(require,module,exports){
+},{"./_async":2,"./_eachSeries":4,"./_group":7,"obj-stream":36}],11:[function(require,module,exports){
 var _isArray = require("./_isArray");
 
 module.exports = function(data) {
@@ -231,16 +225,16 @@ module.exports = function(data) {
   return _isArray(data) ? data : [data];
 };
 
-},{"./_isArray":8}],13:[function(require,module,exports){
+},{"./_isArray":8}],12:[function(require,module,exports){
 var _async     = require("./_async");
 var _getFilter = require("./_getFilter");
-var _noop      = require("./_noop");
+var noop       = require("./noop");
 
 module.exports = function(accept, bus, elseBus) {
 
   var filter = _getFilter(accept);
 
-  if (!elseBus) elseBus = _noop;
+  if (!elseBus) elseBus = noop;
 
   return function(operation) {
     if (filter(operation)) return bus(operation);
@@ -248,7 +242,7 @@ module.exports = function(accept, bus, elseBus) {
   };
 };
 
-},{"./_async":2,"./_getFilter":6,"./_noop":10}],14:[function(require,module,exports){
+},{"./_async":2,"./_getFilter":6,"./noop":20}],13:[function(require,module,exports){
 var createOperation = require("./operation");
 var extend          = require("xtend/mutable");
 
@@ -278,7 +272,7 @@ module.exports = function(options, bus) {
   return ret;
 };
 
-},{"./operation":22,"xtend/mutable":43}],15:[function(require,module,exports){
+},{"./operation":22,"xtend/mutable":43}],14:[function(require,module,exports){
 var stream = require("./stream");
 module.exports = function(bus, handler) {
   return stream(function(operation, stream) {
@@ -286,7 +280,7 @@ module.exports = function(bus, handler) {
   });
 };
 
-},{"./stream":29}],16:[function(require,module,exports){
+},{"./stream":29}],15:[function(require,module,exports){
 var createOperation = require("./operation");
 var extend          = require("xtend/mutable");
 
@@ -309,7 +303,7 @@ module.exports = function(bus, options) {
   return ret;
 };
 
-},{"./operation":22,"xtend/mutable":43}],17:[function(require,module,exports){
+},{"./operation":22,"xtend/mutable":43}],16:[function(require,module,exports){
 var through = require("obj-stream").through;
 
 module.exports = function() {
@@ -331,7 +325,7 @@ module.exports = function() {
   });
 };
 
-},{"obj-stream":36}],18:[function(require,module,exports){
+},{"obj-stream":36}],17:[function(require,module,exports){
 var _eachSeries = require("./_eachSeries");
 var _pickOne    = require("./_pickOne");
 
@@ -340,7 +334,7 @@ var _pickOne    = require("./_pickOne");
 
 module.exports = _pickOne(_eachSeries);
 
-},{"./_eachSeries":4,"./_pickOne":11}],19:[function(require,module,exports){
+},{"./_eachSeries":4,"./_pickOne":10}],18:[function(require,module,exports){
 var stream = require("./stream");
 
 module.exports = function(count, bus) {
@@ -354,7 +348,7 @@ module.exports = function(count, bus) {
 
   function run(operation, writer) {
     numRunning++;
-    bus(operation).once("end", dequeue).pipe(writer);
+    bus(operation).once("error", dequeue).once("end", dequeue).pipe(writer);
   }
 
   return stream(function(operation, writer) {
@@ -366,7 +360,7 @@ module.exports = function(count, bus) {
   });
 };
 
-},{"./stream":29}],20:[function(require,module,exports){
+},{"./stream":29}],19:[function(require,module,exports){
 var s  = require("obj-stream");
 var stream  = require("./stream");
 var through = s.through;
@@ -378,11 +372,18 @@ module.exports = function(bus, map) {
       mapper.pipe(writable, { end: false });
       mapper.once("end", next);
       map(operation, data, mapper);
-    })).on("data", function(){ }).on("end", writable.end.bind(writable));
+    })).on("data", function() { }).on("end", writable.end.bind(writable));
   });
 };
 
-},{"./stream":29,"obj-stream":36}],21:[function(require,module,exports){
+},{"./stream":29,"obj-stream":36}],20:[function(require,module,exports){
+var stream = require("./stream");
+
+module.exports = stream(function(operation, stream) {
+  stream.end();
+});
+
+},{"./stream":29}],21:[function(require,module,exports){
 var through = require("obj-stream").through;
 
 module.exports = function(bus) {
@@ -431,10 +432,9 @@ var _pickOne      = require("./_pickOne");
 
 module.exports = _pickOne(_eachParallel);
 
-},{"./_eachParallel":3,"./_pickOne":11}],25:[function(require,module,exports){
+},{"./_eachParallel":3,"./_pickOne":10}],25:[function(require,module,exports){
 var stream  = require("./stream");
 var through = require("obj-stream").through;
-
 
 module.exports = function(bus, reduce) {
   return stream(function(operation, writable) {
@@ -465,7 +465,7 @@ module.exports = function(reject, bus, elseBus) {
   }, bus, elseBus);
 };
 
-},{"./_getFilter":6,"./accept":13}],27:[function(require,module,exports){
+},{"./_getFilter":6,"./accept":12}],27:[function(require,module,exports){
 var operation = require("./operation");
 
 module.exports = function(bus, operationName, options, onRun) {
@@ -553,7 +553,7 @@ module.exports = function(bus, compare) {
   );
 };
 
-},{"./_equals":5,"./accept":13,"./fallback":18,"./sequence":28,"./stream":29,"xtend/mutable":43}],31:[function(require,module,exports){
+},{"./_equals":5,"./accept":12,"./fallback":17,"./sequence":28,"./stream":29,"xtend/mutable":43}],31:[function(require,module,exports){
 var operation = require("./operation");
 
 module.exports = function(bus) {
@@ -574,7 +574,7 @@ var stream   = require("./stream");
 module.exports = function(callback) {
   return stream(function(operation, stream) {
     callback(operation, function(err, data) {
-      if (err) stream.emit("error", err);
+      if (err) return stream.emit("error", err);
 
       var items = _toArray(data);
 
@@ -591,7 +591,7 @@ module.exports = function(callback) {
   });
 };
 
-},{"./_toArray":12,"./stream":29}],33:[function(require,module,exports){
+},{"./_toArray":11,"./stream":29}],33:[function(require,module,exports){
 var wrap     = require("./wrap");
 attach       = require("./attach");
 
@@ -608,9 +608,9 @@ module.exports = function(error, data) {
   return attach({ multi: true }, wrap(function(operation, next) {
     next(errorFn(operation), dataFn(operation));
   }));
-}
+};
 
-},{"./attach":14,"./wrap":32}],34:[function(require,module,exports){
+},{"./attach":13,"./wrap":32}],34:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1054,7 +1054,7 @@ module.exports = function(src, dst, ops) {
     listen(src, "close", cleanup),
     listen(dst, "close", cleanup),
     listen(src, "error", onError),
-    listen(dst, "error", onError)
+    listen(dst, "error", cleanup)
   );
 
   dst.emit("pipe", src);
