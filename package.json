@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "1.0.50",
+  "version": "1.0.51",
   "description": "reactive data store library",
   "main": "./lib/index.js",
   "scripts": {
