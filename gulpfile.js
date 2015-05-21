@@ -135,7 +135,9 @@ gulp.task("jscs", function() {
 gulp.task("jshint", function() {
     return gulp.
     src(paths.allFiles).
-    pipe(jshint()).
+    pipe(jshint({
+      es3:true
+    })).
     pipe(jshint.reporter('default'));
 });
 
