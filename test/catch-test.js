@@ -9,7 +9,7 @@ describe(__filename + "#", function() {
       callback(new Error("error!"));
     });
 
-    bus = mesh["catch"](bus, function(err) {
+    bus = mesh.catchError(bus, function(err) {
       expect(err.message).to.be("error!");
       next();
     });
