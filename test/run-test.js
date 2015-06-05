@@ -50,4 +50,15 @@ describe(__filename + "#", function() {
     });
   });
 
+  it("can run operations without options", function(next) {
+    var bus = mesh.wrap(function(operation, next) {
+      next(void 0, operation.name);
+    });
+
+    mesh.run(bus, "insert", function(err, data) {
+      expect(data).to.be("insert");
+      next();
+    });
+  });
+
 });
