@@ -16,8 +16,8 @@ describe(__filename + "#", function() {
       return _([1]);
     };
 
-    bus = mesh.clean(mesh.first(bus, bus));
-    bus("load").on("end", function() {
+    bus = mesh.first(bus, bus);
+    bus({name:"insert"}).on("end", function() {
       expect(i).to.be(1);
       next();
     });

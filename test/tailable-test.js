@@ -11,9 +11,9 @@ describe(__filename + "#", function() {
       return _([]);
     };
 
-    bus = mesh.clean(mesh.tailable(bus));
+    bus = mesh.tailable(bus);
 
-    bus("tail").on("data", function(operation) {
+    bus({name:"tail"}).on("data", function(operation) {
       expect(operation.name).to.be("insert");
       next();
     });

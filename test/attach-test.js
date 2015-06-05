@@ -11,9 +11,9 @@ describe(__filename + "#", function() {
       return _([operation]);
     }
 
-    var child  = mesh.clean(mesh.attach({ a: 1 }, bus));
+    var child  = mesh.attach({ a: 1 }, bus);
 
-    child("insert", { b: 2 }).once("data", function(data) {
+    child({ name:"insert", b: 2 }).once("data", function(data) {
       expect(data.a).to.be(1);
       expect(data.b).to.be(2);
       next();

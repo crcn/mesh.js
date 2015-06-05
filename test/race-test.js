@@ -9,7 +9,7 @@ describe(__filename + "#", function() {
 
     var i = 0;
 
-    var bus = mesh.wrapCallback(function(operation, next) {
+    var bus = mesh.wrap(function(operation, next) {
       i++;
 
       setTimeout(next, 1, void 0, 1);
@@ -25,11 +25,11 @@ describe(__filename + "#", function() {
   it("picks the fastest stream", function(next) {
     var i = 0;
 
-    var busA = mesh.wrapCallback(function(operation, next) {
+    var busA = mesh.wrap(function(operation, next) {
       setTimeout(next, 0, void 0, 1);
     });
 
-    var busB = mesh.wrapCallback(function(operation, next) {
+    var busB = mesh.wrap(function(operation, next) {
       setTimeout(next, 10, void 0, 4);
     });
 

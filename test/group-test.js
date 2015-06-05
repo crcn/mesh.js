@@ -30,18 +30,18 @@ describe(__filename + "#", function() {
   it("can push a new event bus handler at the end", function(next) {
 
     var source = [
-      mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+      mesh.accept("a", mesh.wrap(function(operation, next) {
         next(void 0, 1);
       }))
     ];
 
     var bus = mesh.first(source);
 
-    source.push(mesh.accept("b", mesh.wrapCallback(function(operation, next) {
+    source.push(mesh.accept("b", mesh.wrap(function(operation, next) {
       next(void 0, 2);
     })));
 
-    source.push(mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+    source.push(mesh.accept("a", mesh.wrap(function(operation, next) {
       next(void 0, 2);
     })));
 
@@ -57,14 +57,14 @@ describe(__filename + "#", function() {
   it("can remove a bus", function(next) {
 
     var source = [
-      mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+      mesh.accept("a", mesh.wrap(function(operation, next) {
         next(void 0, 1);
       }))
     ];
 
     var bus = mesh.first(source);
 
-    var a2 = mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+    var a2 = mesh.accept("a", mesh.wrap(function(operation, next) {
       next(void 0, 2);
     }));
 
@@ -87,10 +87,10 @@ describe(__filename + "#", function() {
     var bus = mesh.parallel(source);
 
     source.push(
-      mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+      mesh.accept("a", mesh.wrap(function(operation, next) {
         next(void 0, 1);
       })),
-      mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+      mesh.accept("a", mesh.wrap(function(operation, next) {
         next(void 0, 2);
       }))
     );
@@ -107,14 +107,14 @@ describe(__filename + "#", function() {
   it("can push a new event bus handler at the beginning", function(next) {
 
     var source = [
-      mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+      mesh.accept("a", mesh.wrap(function(operation, next) {
         next(void 0, 1);
       }))
     ];
 
     var bus = mesh.first(source);
 
-    source.unshift(mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+    source.unshift(mesh.accept("a", mesh.wrap(function(operation, next) {
       next(void 0, 2);
     })));
 
@@ -127,7 +127,7 @@ describe(__filename + "#", function() {
   it("accepts sources as a function", function(next) {
 
     var source = function(operation) {
-      return mesh.accept("a", mesh.wrapCallback(function(operation, next) {
+      return mesh.accept("a", mesh.wrap(function(operation, next) {
         next(void 0, 1);
       }))(operation);
     };

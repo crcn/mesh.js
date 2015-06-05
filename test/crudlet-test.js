@@ -13,7 +13,7 @@ describe(__filename + "#", function() {
       return _([]);
     }
 
-    mesh.clean(bus)("insert", { data: "a" }).on("data", function() { }).on("end", next);
+    bus({name:"fdsfs", data: "a" }).on("data", function() { }).on("end", next);
   });
 
   it("can properly handle errors", function(next) {
@@ -35,7 +35,7 @@ describe(__filename + "#", function() {
       return _([{a:1}]);
     }
 
-    mesh.clean(bus)("insert").on("data", function(data) {
+    bus({name:"insert"}).on("data", function(data) {
       expect(data.a).to.be(1);
     }).on("end", next);
   });

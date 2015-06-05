@@ -6,7 +6,7 @@ describe(__filename + "#", function() {
 
   it("can run operations", function(next) {
 
-    var bus = mesh.wrapCallback(function(operation, next) {
+    var bus = mesh.wrap(function(operation, next) {
       next(void 0, "a");
     });
 
@@ -17,7 +17,7 @@ describe(__filename + "#", function() {
 
   it("can handle errors", function(next) {
 
-    var bus = mesh.wrapCallback(function(operation, next) {
+    var bus = mesh.wrap(function(operation, next) {
       next(new Error("a"));
     });
 
@@ -27,7 +27,7 @@ describe(__filename + "#", function() {
   });
 
   it("emits one value if the returned value is an array", function(next) {
-    var bus = mesh.wrapCallback(function(operation, next) {
+    var bus = mesh.wrap(function(operation, next) {
       next(void 0, [1, 2]);
     });
 
@@ -39,7 +39,7 @@ describe(__filename + "#", function() {
   });
 
   it("emits multiple values if the returned value is an array and multi=true", function(next) {
-    var bus = mesh.wrapCallback(function(operation, next) {
+    var bus = mesh.wrap(function(operation, next) {
       next(void 0, [1, 2]);
     });
 

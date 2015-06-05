@@ -10,8 +10,8 @@ describe(__filename + "#", function() {
       return _([operation]);
     };
 
-    bus = mesh.clean(mesh.accept("a", bus));
-    bus("a").pipe(_.pipeline(_.collect)).on("data", function(items) {
+    bus = mesh.accept("a", bus);
+    bus({name:"a"}).pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(1);
       next();
     });
@@ -22,8 +22,8 @@ describe(__filename + "#", function() {
       return _([operation]);
     };
 
-    bus = mesh.clean(mesh.accept("a", bus));
-    bus("c").pipe(_.pipeline(_.collect)).on("data", function(items) {
+    bus = mesh.accept("a", bus);
+    bus({name:"c"}).pipe(_.pipeline(_.collect)).on("data", function(items) {
       expect(items.length).to.be(0);
       next();
     });
@@ -31,7 +31,7 @@ describe(__filename + "#", function() {
 
   it("accepts functions for the first arg", function(next) {
 
-    var bus = mesh.wrapCallback(function(operation, next) {
+    var bus = mesh.wrap(function(operation, next) {
       next(void 0, { name: "a" });
     });
 
