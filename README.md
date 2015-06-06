@@ -2,8 +2,8 @@
 
 **API Docs can be viewed [here](http://meshjs.herokuapp.com/docs)**
 
-npm installation: `npm install mesh`
-bower installation: `bower install mesh`
+- npm installation: `npm install mesh`
+- bower installation: `bower install mesh`
 
 Mesh is a flexible data flow library that makes it incredibly easy to make data sources interoperable with one another. Easily connect things such as mongodb, pubnub, webrtc etc to build powerful features such as rollbacks, offline-mode, realtime data, and more.
 
