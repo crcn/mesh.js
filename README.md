@@ -7,7 +7,7 @@
 
 Mesh is a flexible data flow library that makes it incredibly easy to make data sources interoperable with one another. Easily connect things such as mongodb, pubnub, webrtc etc to build powerful features such as rollbacks, offline-mode, realtime data, and more.
 
-Mesh is just a bundle of utility functions, and doesn't have much of an opinion of how you should use it. Do whatever you want!
+Mesh is just a bundle of utility functions, and doesn't have much of an opinion about how you should use it. Do whatever you want!
 
 Here's a basic example of how you might use Mesh with models:
 
