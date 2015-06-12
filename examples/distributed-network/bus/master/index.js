@@ -1,4 +1,4 @@
-var mesh      = require("mesh");
+var mesh      = require("../../../..");
 var commands  = require("extra/commands");
 var fs        = require("fs");
 var path      = require("path");
