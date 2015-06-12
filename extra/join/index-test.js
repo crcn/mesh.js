@@ -1,5 +1,5 @@
 var expect = require("expect.js");
-var mesh   = require("mesh");
+var mesh   = require("../..");
 var memory = require("mesh-memory");
 var join   = require("./index");
 

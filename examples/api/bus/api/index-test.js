@@ -1,6 +1,6 @@
 var api    = require("./index");
 var expect = require("expect.js");
-var mesh   = require("mesh");
+var mesh   = require("../../../..");
 
 describe(__filename + "#", function() {
 

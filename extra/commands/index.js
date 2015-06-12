@@ -1,4 +1,4 @@
-var mesh = require("mesh");
+var mesh = require("../..");
 module.exports = function(commands, bus) {
 
   var cs = {};

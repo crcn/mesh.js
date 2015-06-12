@@ -1,5 +1,5 @@
-var mesh          = require("mesh");
-var _eachParallel = require("mesh/lib/_eachParallel");
+var mesh          = require("../..");
+var _eachParallel = require("../../lib/_eachParallel");
 var through       = require("obj-stream").through;
 
 module.exports = function(bus) {

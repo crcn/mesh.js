@@ -1,5 +1,5 @@
 var Collection = require("./collection");
-var mesh       = require("mesh");
+var mesh       = require("../../../..");
 var expect     = require("expect.js");
 var extend     = require("xtend/mutable");
 

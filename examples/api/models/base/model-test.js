@@ -1,5 +1,5 @@
 var BaseModel = require("./model");
-var mesh      = require("mesh");
+var mesh      = require("../../../..");
 var expect    = require("expect.js");
 
 describe(__filename + "#", function() {

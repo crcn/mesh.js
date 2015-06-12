@@ -1,12 +1,12 @@
 var sift = require("sift");
-var mesh = require("mesh");
+var mesh = require("../../../..");
 
 /**
  * fakes all persistence & uses the given fixtures if testMode is present
  */
 
 module.exports = function(options, bus) {
-  
+
   if (!bus) bus = mesh.noop;
   var fakeBus = _fake(options);
 

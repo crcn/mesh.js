@@ -2,7 +2,7 @@ var http   = require("mesh-http");
 var cache  = require("extra/cache");
 var routes = require("./routes");
 var sift   = require("sift");
-var mesh   = require("mesh");
+var mesh   = require("../../../..");
 var memory = require("mesh-memory");
 
 /**
@@ -16,7 +16,7 @@ module.exports = function(options) {
 
   // map operations to HTTP requests
   bus     = _routes(routes, bus);
-  
+
   return bus;
 }
 

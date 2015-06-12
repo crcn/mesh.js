@@ -1,4 +1,4 @@
-var mesh = require("mesh");
+var mesh = require("../..");
 
 module.exports = function(bus, options) {
 
@@ -20,7 +20,7 @@ module.exports = function(bus, options) {
     return true;
   };
 
-  
+
   var retBus = mesh.stream(function(operation, stream) {
     var query    = createQuery(operation);
     var response = cache({ name: "load", collection: "cache", query: { operation: query } });

@@ -1,6 +1,6 @@
 var assert   = require("assert");
 var commands = require("./index");
-var mesh     = require("mesh");
+var mesh     = require("../..");
 
 describe(__filename + "#", function() {
 

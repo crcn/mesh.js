@@ -1,5 +1,5 @@
 var assert = require("assert");
-var mesh   = require("mesh");
+var mesh   = require("../..");
 var cache  = require("./index");
 var memory = require("mesh-memory");
 var sift   = require("sift");
