@@ -5,54 +5,38 @@
 - npm installation: `npm install mesh`
 - bower installation: `bower install mesh`
 
-Mesh is a flexible data flow library that makes it incredibly easy to make data sources interoperable with one another. Easily connect things such as mongodb, pubnub, webrtc etc to build powerful features such as rollbacks, offline-mode, realtime data, and more.
+Mesh is a flexible data flow library that makes it incredibly easy to make data sources interoperable with one another. Easily connect things such as [mongodb](http://pubnub.com/), [pubnub](http://pubnub.com/), `webrtc` etc to build powerful features such as rollbacks, offline-mode, realtime data, and more.
 
-Mesh is just a bundle of utility functions, and doesn't have much of an opinion about how you should use it. Do whatever you want!
+Mesh is just a bundle of utility functions, and doesn't have much of an opinion about how you should use it.
 
-Here's a basic example of how you might use Mesh with models:
+Simple realtime example:
 
 ```javascript
-var mesh    = require("mesh");
-var extend  = require("extend");
-// var mongo   = require("mesh-mongodb");
-// var memory  = require("mesh-memory");
-var loki    = require("mesh-loki");
+var mesh         = require("mesh");
+var localStorage = require("mesh-local-storage");
+var io           = require("mesh-socket.io");
 
-function UserModel(properties) {
-  extend(this, properties);
-}
+var bus = localStorage();
+bus     = mesh.tailable(bus);
 
-extend(UserModel.prototype, {
-  insert: function(onInsert) {
-    this.bus({ name: "insert", data: this.toJSON() })
-    .on("data", extend.bind(void 0, this))
-    .on("end", onInsert || function() { });
-  },
-  toJSON: function() {
-    return {
-      _id          : this._id,
-      name         : this.name,
-      emailAddress : this.emailAddress
-    }
-  }
-});
+// persist all operations to socket.io & any operations from socket.io
+// back to the local bus. (Note that remote operations will get ignored)
+bus({ name: "tail" }).pipe(mesh.open(io({ channel: "operations" }, bus)));
 
-// var bus = memory();
-var bus = loki();
-// var bus = mongo({ host: "mongodb://127.0.0.1:27017/database" });
-
-var user = new UserModel({
-  name: "Mad Max",
-  emailAddress: "mad@kindamad.com",
-  bus: mesh.attach({ collection: "users" }, bus)
-});
-
-// insert user into mongodb, or any other database. The
-// API is the same.
-user.insert(function() {
-  console.log(user);
+// insert data. Persists to local storage, and gets
+// broadcasted to all connected clients.
+bus({
+  name : "insert",
+  collection : "messages"
+  data : { text: "hello world" }
 });
 ```
+
+#### Resources
+
+- [Plugins](https://www.npmjs.com/search?q=meshjs)
+- [Documentation](http://meshjs.herokuapp.com/docs)
+- [Examples](https://github.com/mojo-js/mesh.js/tree/master/examples)
 
 #### Highlights
 
