@@ -9,19 +9,13 @@ var bus = createServerBus({
 
   /**
    */
-   
+
   workerPath : path.join(__dirname, "worker.js"),
 
   /**
    */
 
   port       : process.env.PORT || 1337,
-
-  /**
-   * message boundary
-   */
-
-  boundary   : "|||||",
 
   /**
    * number of times to retry executing an operation before returning an error
