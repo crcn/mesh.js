@@ -3,14 +3,38 @@ var cache  = require("extra/cache");
 var routes = require("./routes");
 var sift   = require("sift");
 var mesh   = require("mesh");
+var memory = require("mesh-memory");
 
 /**
  */
 
 module.exports = function(options) {
   var bus = http(options);
-  bus = _routes(routes, bus);
+
+  // cache HTTP requests
+  bus     = _cache(bus);
+
+  // map operations to HTTP requests
+  bus     = _routes(routes, bus);
+  
   return bus;
+}
+
+/**
+ */
+
+function _cache(bus) {
+  return cache(bus, {
+    storage: memory(),
+    bust: function(operation) {
+      return /UPDATE|POST|REMOVE/.test(operation.name) ? {
+        path: operation.path
+      } : void 0
+    },
+    test: function(operation) {
+      return operation.name === "GET";
+    }
+  });
 }
 
 /**
