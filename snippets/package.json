@@ -1,0 +1,22 @@
+{
+  "name": "snippets",
+  "version": "2.0.4",
+  "description": "reactive message bus utility",
+  "keywords": [
+    "meshjs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mojo-js/mesh.js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mojo-js/mesh.js/issues"
+  },
+  "homepage": "https://github.com/mojo-js/mesh.js",
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
+}
