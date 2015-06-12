@@ -6,6 +6,8 @@ var balance   = require("mesh-balance");
 var net       = require("net");
 var ros       = require("ros");
 var socketBus = require("../common/socket-bus");
+var startWorker = require("./start-worker");
+var stopWorker = require("./stop-worker");
 
 /**
  */
@@ -39,21 +41,10 @@ module.exports = function(config) {
  */
 
 function _commands(config, bus) {
-
-  var cs = {};
-
-  // scan the commands directory
-  fs.readdirSync(path.join(__dirname, "commands")).filter(function(filename) {
-
-    // skip hidden files
-    return !/^\./.test(filename);
-  }).forEach(function(filename) {
-
-    // include it
-    cs[path.basename(filename).split(".").shift()] = require(path.join(__dirname, "commands", filename))(config, bus);
-  });
-
-  return commands(cs, bus);
+  return commands({
+    startWorker: startWorker(config),
+    stopWorker : stopWorker(config)
+  }, bus);
 }
 
 /**
