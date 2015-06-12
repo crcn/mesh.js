@@ -1,5 +1,5 @@
 var ros      = require("ros");
-var commands = require("snippets/commands");
+var commands = require("extra/commands");
 var net      = require("net");
 var mesh     = require("mesh");
 var socketBus = require("../common/socket-bus");

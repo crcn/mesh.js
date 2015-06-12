@@ -1,5 +1,5 @@
 var mesh      = require("mesh");
-var commands  = require("snippets/commands");
+var commands  = require("extra/commands");
 var fs        = require("fs");
 var path      = require("path");
 var balance   = require("mesh-balance");
