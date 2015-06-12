@@ -9,10 +9,44 @@ var db = memory();
 
 var server = express();
 
+// user
 
-server.get("/user", function() {
-  
+server.get("/getUsers", function() {
+
 });
+
+server.post("/register", function() {
+
+});
+
+server.post("/updateUser", function() {
+
+});
+
+server.post("/addFriend", function() {
+
+});
+
+// room
+
+server.get("/getRooms", function() {
+
+});
+
+server.post("/addRooms", function() {
+
+});
+
+// messages
+
+server.get("/getMessages", function() {
+
+});
+
+server.post("/addMessage", function() {
+
+});
+
 
 
 
