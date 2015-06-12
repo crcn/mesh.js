@@ -34,9 +34,50 @@ describe(__filename + "#", function() {
     });
 
     it("can load a user", function(next) {
-      bus({ name: "load", collection: "users", data: { id: "u1" }}).on("end", function() {
+      bus({ name: "load", collection: "users", query: { id: "u1" }}).on("end", function() {
         expect(requestOptions.uri).to.be("/login");
         expect(requestOptions.query.userId).to.be("u1");
+        next();
+      });
+    });
+  });
+
+  describe("threads#", function() {
+
+    it("ca load all threads", function(next) {
+      bus({ name: "load", collection: "threads", multi: true }).on("end", function() {
+        expect(requestOptions.uri).to.be("/getThreads");
+        next();
+      });
+    });
+
+    it("ca add a new thread", function(next) {
+      bus({ name: "insert", collection: "threads", data: { user: { id: "user1" }, title: "thread1" } }).on("end", function() {
+        expect(requestOptions.uri).to.be("/addThread");
+        expect(requestOptions.method).to.be("POST");
+        expect(requestOptions.data.userId).to.be("user1");
+        expect(requestOptions.data.title).to.be("thread1");
+        next();
+      });
+    });
+  });
+
+  describe("messages#", function() {
+
+    it("ca load all messages in a thread", function(next) {
+      bus({ name: "load", collection: "messages", multi: true, query: { thread: { id: "thread1" } }}).on("end", function() {
+        expect(requestOptions.uri).to.be("/getMessages");
+        expect(requestOptions.query.threadId).to.be("thread1");
+        next();
+      });
+    });
+
+    it("ca add a new thread", function(next) {
+      bus({ name: "insert", collection: "messages", data: { thread: { id: "thread1" }, text: "texttt" } }).on("end", function() {
+        expect(requestOptions.uri).to.be("/addMessage");
+        expect(requestOptions.method).to.be("POST");
+        expect(requestOptions.data.threadId).to.be("thread1");
+        expect(requestOptions.data.text).to.be("texttt");
         next();
       });
     });

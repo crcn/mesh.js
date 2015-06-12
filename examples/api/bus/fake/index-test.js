@@ -1,6 +1,7 @@
 var fake    = require("./index");
-var expect = require("expect.js");
-var mesh   = require("mesh");
+var expect  = require("expect.js");
+var mesh    = require("mesh");
+var fixtures = require("../../fixtures");
 
 describe(__filename + "#", function() {
 
@@ -9,15 +10,13 @@ describe(__filename + "#", function() {
 
   beforeEach(function() {
     bus = fake({
-      fixtures: {
-        users: [{ id: "user1" }]
-      }
+      fixtures: fixtures
     })
   });
 
   it("can load fixture data based on the query ", function(next) {
-    bus({ fake: true, name: "load", collection: "users", query: { id: "user1" }}).on("data", function(data) {
-      expect(data.id).to.be("user1");
+    bus({ fake: true, name: "load", collection: "users", query: { id: "user-1" }}).on("data", function(data) {
+      expect(data.id).to.be("user-1");
       next();
     });
   });

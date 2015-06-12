@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "reactive message bus utility",
   "main": "./lib/index.js",
   "keywords": [
@@ -48,7 +48,6 @@
     "karma": "^0.12.31",
     "less": "^2.4.0",
     "linklocal": "^2.5.2",
-    "mesh": "file:./",
     "mesh-balance": "0.0.1",
     "mesh-http": "^2.0.0",
     "mesh-local-storage": "1.0.x",

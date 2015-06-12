@@ -1,5 +1,5 @@
 module.exports = {
   users    : require("./users"),
-  rooms    : require("./rooms"),
+  threads  : require("./threads"),
   messages : require("./messages")
-}
+};
