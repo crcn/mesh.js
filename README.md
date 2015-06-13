@@ -31,12 +31,16 @@ bus({
   data : { text: "hello world" }
 });
 ```
+#### Examples
 
-#### Resources
+- [API Example](./examples/api) - example demonstrating how mesh can be used with APIs.
+- [Distributed Network](./examples/distributed-network) - demo of how mesh can be used to build a distributed network.
+- [React](./examples/react) - simple ReactJS example.
+
+#### Other Resources
 
 - [Plugins](https://www.npmjs.com/search?q=meshjs)
 - [Documentation](http://meshjs.herokuapp.com/docs)
-- [Examples](https://github.com/mojo-js/mesh.js/tree/master/examples)
 
 #### Highlights
 
