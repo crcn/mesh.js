@@ -113,7 +113,7 @@ extend(Collection.prototype, Watchable.prototype, {
 
   /**
    * Spies on the bus for operations specific to this collection. We could further
-   * customize this spying function to specific features such as pagination. 
+   * customize this spying function to specific features such as pagination.
    */
 
   _spyOnBus: function() {
