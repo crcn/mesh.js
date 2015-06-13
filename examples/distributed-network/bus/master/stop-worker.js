@@ -3,7 +3,7 @@ var spawn         = childProcess.spawn;
 var extend        = require("xtend/mutable");
 var EventEmitter  = require("events").EventEmitter;
 var commands      = require("snippets/commands");
-var mesh          = require("mesh");
+var mesh          = require("../../../..");
 var ros           = require("ros");
 
 var _idCount = 0;
