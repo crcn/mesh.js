@@ -5,12 +5,6 @@ console.log("starting worker %d", id);
 var bus = createWorkerBus({
 
   /**
-   * message boundary
-   */
-
-  boundary: "|||||",
-
-  /**
    */
 
   masterPort: process.env.MASTER_PORT,
