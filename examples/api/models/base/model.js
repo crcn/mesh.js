@@ -57,6 +57,7 @@ extend(BaseModel.prototype, Watchable.prototype, {
   toJSON: function() {
     var props = {};
     for (var key in this) {
+      if (key.charAt(0) === "_") continue;
       var v = this[key];
       if (/string|boolean|number/.test(typeof v)) {
         props[key] = v;

@@ -43,3 +43,5 @@ extend(Thread.prototype, Model.prototype, {
     }).load(onLoad);
   }
 });
+
+module.exports = Thread;

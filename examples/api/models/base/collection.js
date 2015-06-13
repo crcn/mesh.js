@@ -74,6 +74,15 @@ extend(Collection.prototype, Watchable.prototype, {
   /**
    */
 
+  toJSON: function() {
+    return this.source.map(function(model) {
+      return model.toJSON();
+    });
+  },
+
+  /**
+   */
+
   _onData: function(data) {
     this._diff(data.map(this.createModel.bind(this)));
   },

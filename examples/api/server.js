@@ -39,65 +39,80 @@ server.post("/updateUser", function() {
 
 });
 
-server.post("/addFriend", function() {
-
-});
-
 // room
 
 server.get("/getThreads", function(req, res) {
-  bus.threads({
-    name: "load",
-    multi: true
-  }).pipe(JSONStream.stringify()).pipe(res);
+
+  var m = new models.Threads({
+    bus      : bus.threads
+  });
+
+  m.load(function() {
+    res.send(m.toJSON());
+  });
 });
 
 server.get("/addThread", function(req, res) {
-  bus.threads({
-    name: "insert",
-    data: {
-      title : req.query.title
-    }
-  }).pipe(objToKeyStream()).pipe(JSONStream.stringifyObject()).pipe(res);
+
+  var m = new models.Thread({
+    bus   : bus.threads,
+    title : req.query.title
+  });
+
+  m.insert(function() {
+    res.send(m.toJSON());
+  });
 });
 
 // messages
 
 server.get("/getMessages", function(req, res) {
-  bus.messages({
-    name: "load",
-    multi: true,
-    query: {
-      threadId : req.query.threadId
-    }
-  }).pipe(JSONStream.stringify()).pipe(res);
+
+  var m = new models.Messages({
+    bus      : mesh.attach({ query: { threadId: req.query.threadId } }, bus.messages)
+  });
+
+  m.load(function() {
+    console.log(m);
+    res.send(m.toJSON());
+  });
 });
 
 server.get("/addMessage", function(req, res) {
-  bus.messages({
-    name: "insert",
-    data: {
-      threadId : req.query.threadId,
-      text     : req.query.text
-    }
-  }).pipe(objToKeyStream()).pipe(JSONStream.stringifyObject()).pipe(res);
+
+  var m = new models.Message({
+    bus      : bus.messages,
+    threadId : req.query.threadId,
+    text     : req.query.text
+  });
+
+  m.insert(function() {
+    res.send(m.toJSON());
+  });
 });
 
+// TODO
 server.get("/getMessageUser", function(req, res) {
-  bus.messages({
-    name: "load",
-    query: {
-      id: req.mesageId
-    },
-    join: {
-      user: function(data) {
-        return bus.users({
-          name: "load",
-          query: { id: data.userId }
-        });
+
+  var m = new models.Message({
+    bus: mesh.attach({
+      query: {
+        id: req.query.messageId
+      },
+      join: {
+        user: function(data) {
+          return bus.users({
+            name: "load",
+            query: { id: data.userId }
+          });
+        }
       }
-    }
-  }).pipe(JSONStream.stringifyObject()).pipe(res);
+    }, bus.messages)
+  });
+  
+  m.load(function() {
+    res.send(m.data.user);
+  });
 });
 
 var port = process.env.PORT || 8080;

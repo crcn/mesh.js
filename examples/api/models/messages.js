@@ -13,7 +13,7 @@ function Messages(properties) {
 /**
  */
 
-extend(Message.prototype, Collection.prototype, {
+extend(Messages.prototype, Collection.prototype, {
 
   /**
    */
