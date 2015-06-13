@@ -14,7 +14,6 @@ bus({ name: "insert", collection: "people", data: { id: 1, name: "jeff", friends
 bus({ name: "insert", collection: "people", data: { id: 2, name: "abe", friends: [1, 3]}});
 bus({ name: "insert", collection: "people", data: { id: 3, name: "sarah", friends: [1, 1]}});
 
-
 bus({
   name: "load",
   multi: true,
