@@ -20,11 +20,11 @@ module.exports = function() {
   }, bus);
 
   return bus;
-}
+};
 
-function aliases(aliases, bus) {
+function aliases(als, bus) {
   return function(operation) {
-    var properties = aliases[operation.name] || {};
+    var properties = als[operation.name] || {};
     return bus(extend({}, operation, properties));
   };
 }

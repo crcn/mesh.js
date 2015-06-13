@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/mojo-js/mesh.js",
   "devDependencies": {
+    "JSONStream": "^1.0.4",
     "browser-sync": "^2.5.2",
     "browserify": "^9.0.4",
     "browserify-middleware": "^5.0.2",
@@ -70,6 +71,7 @@
     "yargs": "^3.6.0"
   },
   "dependencies": {
+    "JSONStream": "^1.0.4",
     "obj-stream": "0.0.x",
     "sift": "^1.1.0",
     "xtend": "^4.0.0"

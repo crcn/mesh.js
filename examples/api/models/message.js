@@ -4,15 +4,15 @@ var extend   = require("xtend/mutable");
 /**
  */
 
-function User(properties) {
+function Message(properties) {
   Model.call(this, properties);
 }
 
 /**
  */
 
-extend(User.prototype, Model.prototype, {
+extend(Message.prototype, Model.prototype, {
 
 });
 
-module.exports = User;
+module.exports = Message;

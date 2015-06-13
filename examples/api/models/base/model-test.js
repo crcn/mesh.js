@@ -13,7 +13,7 @@ describe(__filename + "#", function() {
       ops.push(operation);
       next.apply(this, operation.yields || []);
     });
-  })
+  });
 
   it("can be created", function() {
     new BaseModel();

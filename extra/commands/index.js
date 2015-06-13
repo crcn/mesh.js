@@ -18,4 +18,4 @@ module.exports = function(commands, bus) {
     var command = cs[operation.name] || bus || mesh.noop;
     return command(operation);
   });
-}
+};

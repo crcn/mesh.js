@@ -20,7 +20,6 @@ module.exports = function(bus, options) {
     return true;
   };
 
-
   var retBus = mesh.stream(function(operation, stream) {
     var query    = createQuery(operation);
     var response = cache({ name: "load", collection: "cache", query: { operation: query } });
@@ -53,7 +52,7 @@ module.exports = function(bus, options) {
             operation: operation,
             buffer   : buffer
           }
-        })
+        });
       }).pipe(stream, { end: true });
     });
   });

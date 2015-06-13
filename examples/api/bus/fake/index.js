@@ -13,8 +13,8 @@ module.exports = function(options, bus) {
   return function(operation) {
     if (operation.fake) return fakeBus(operation);
     return bus(operation);
-  }
-}
+  };
+};
 
 /**
  */

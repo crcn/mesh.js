@@ -16,8 +16,17 @@ module.exports = [
     return {
       path: "/updateUser",
       data: operation.data || {},
-      query: { userId: operation.data.id },
+      query: { userId: operation.query.id },
       method: "UPDATE"
+    };
+  },
+
+  { name: "load", collection: "users", multi: true }, function(operation) {
+    return {
+      path: "/getUsers",
+      data: {},
+      query: { threadId: operation.query.threadId },
+      method: "POST"
     };
   },
 
@@ -45,18 +54,8 @@ module.exports = [
    return {
      path: "/addThread",
      data: {
-       userId: operation.data.user.id,
        title: operation.data.title
      },
-     method: "POST"
-   };
- },
-
- { name: "insert", collection: "threads" }, function(operation) {
-   return {
-     path: "/addMessage",
-     data: operation.data || {},
-     query: { userId: operation.data.user.id },
      method: "POST"
    };
  },
@@ -68,7 +67,7 @@ module.exports = [
     return {
       path: "/getMessages",
       query: {
-        threadId: operation.query.thread.id
+        threadId: operation.query.threadId
       },
       method: "GET"
     };
@@ -78,11 +77,11 @@ module.exports = [
     return {
       path: "/addMessage",
       data: {
-        threadId: operation.data.thread.id,
+        threadId: operation.data.threadId,
         text: operation.data.text
       },
       method: "POST"
     };
   }
 
-]
+];

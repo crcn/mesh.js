@@ -11,7 +11,7 @@ describe(__filename + "#", function() {
   beforeEach(function() {
     bus = fake({
       fixtures: fixtures
-    })
+    });
   });
 
   it("can load fixture data based on the query ", function(next) {

@@ -12,10 +12,13 @@ function Users(properties) {
 /**
  */
 
-extend(Threads.prototype, {
+extend(Users.prototype, Collection.prototype, {
+
+  /**
+   */
+
   modelClass: User
 });
-
 
 /**
  */

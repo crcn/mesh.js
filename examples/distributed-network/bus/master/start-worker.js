@@ -1,5 +1,5 @@
-var child_process = require("child_process");
-var spawn         = child_process.spawn;
+var childProcess  = require("child_process");
+var spawn         = childProcess.spawn;
 var extend        = require("xtend/mutable");
 var EventEmitter  = require("events").EventEmitter;
 var commands      = require("snippets/commands");
@@ -18,7 +18,7 @@ module.exports = function(config) {
     config.log("spawning %d workers...", count);
 
     for (var i = count; i--;) {
-       spawn("/usr/local/bin/node", [config.workerPath], {
+      spawn("/usr/local/bin/node", [config.workerPath], {
         stdio: "inherit",
         cwd: process.cwd,
         env: {
@@ -29,5 +29,5 @@ module.exports = function(config) {
     }
 
     next();
-  }
-}
+  };
+};

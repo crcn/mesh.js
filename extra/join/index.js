@@ -4,7 +4,6 @@ var through       = require("obj-stream").through;
 
 module.exports = function(bus) {
 
-
   var joinBus = mesh.stream(function(operation, stream) {
 
     var join       = operation.join;
@@ -26,7 +25,9 @@ module.exports = function(bus) {
 
           var value = buffer;
 
-          if (typeof data[property] !== "undefined" && Object.prototype.toString.call(data[property] !== "[object Array]")) {
+          var type = Object.prototype.toString.call(data[property]);
+
+          if (typeof data[property] !== "undefined" && type !== "[object Array]") {
             value = buffer.shift();
           }
 
@@ -44,4 +45,4 @@ module.exports = function(bus) {
     if (!operation.join) return bus(operation);
     return joinBus(operation);
   };
-}
+};

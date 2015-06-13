@@ -6,7 +6,7 @@ var Items = React.createClass({
   render: function() {
     return React.createElement("ul", { className: "item" },
       this.props.items.map(function(item) {
-        return React.createElement(Item, extend({ item: item }, this.props))
+        return React.createElement(Item, extend({ item: item }, this.props));
       }.bind(this))
     );
   }

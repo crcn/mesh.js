@@ -5,4 +5,4 @@ module.exports = function(target, property, listener) {
       return listener(currentValue = target[property]);
     }
   });
-}
+};

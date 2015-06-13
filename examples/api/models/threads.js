@@ -1,5 +1,5 @@
 var Collection = require("./base/collection");
-var mesh       = require("mesh");
+var mesh       = require("../../..");
 var Users      = require("./users");
 var Thread     = require("./thread");
 var extend     = require("xtend/mutable");
@@ -19,7 +19,14 @@ extend(Threads.prototype, Collection.prototype, {
   /**
    */
 
-  modelClass: Thread
+  modelClass: Thread,
+
+  /**
+   */
+
+  create: function(onCreate) {
+    return this.createModel().insert(onCreate);
+  }
 });
 
 /**

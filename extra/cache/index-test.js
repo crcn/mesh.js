@@ -10,7 +10,6 @@ describe(__filename + "#", function() {
   var cacheBus;
   var ops;
 
-
   beforeEach(function() {
     ops = [];
 
@@ -49,8 +48,8 @@ describe(__filename + "#", function() {
     bus({ name: "cacheThis" });
     bus({ name: "cacheThis" });
     bus({ name: "cacheThis" });
-    bus({ name: "dontCacheThis" })
-    bus({ name: "dontCacheThis" })
+    bus({ name: "dontCacheThis" });
+    bus({ name: "dontCacheThis" });
     bus({ name: "dontCacheThis" }).on("end", function() {
       assert.equal(ops.length, 4);
       next();
@@ -67,7 +66,7 @@ describe(__filename + "#", function() {
       bust: function(operation) {
         return operation.name === "bust" ? function() {
           return true;
-        } : void 0
+        } : void 0;
       }
     }));
 

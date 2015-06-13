@@ -14,4 +14,4 @@ module.exports = function(client, bus) {
   }, function send(payload) {
     client.write(JSON.stringify(payload) + "|||||");
   }, bus);
-}
+};

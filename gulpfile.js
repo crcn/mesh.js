@@ -20,9 +20,10 @@ var pkg = require("./package");
  */
 
 var paths = {
-  testFiles  : ["test/**/*-test.js", "examples/**/*-test.js", "extra/**/*-test.js"],
-  appFiles   : ["lib/**/*.js"],
-  allFiles   : ["test/**", "lib/**", "examples/**", "extra/**"]
+  testFiles   : ["test/**/*-test.js", "examples/**/*-test.js", "extra/**/*-test.js"],
+  appFiles    : ["lib/**/*.js"],
+  allFiles    : ["test/**", "lib/**", "examples/**", "extra/**"],
+  allJSFiles  : ["test/**/*.js", "lib/**/*.js", "examples/**/*.js", "extra/**/*.js"]
 };
 
 /**
@@ -111,11 +112,11 @@ gulp.task("lint", function() {
 
 gulp.task("jscs", function() {
   return gulp.
-  src(paths.allFiles).
+  src(paths.allJSFiles).
   pipe(jscs({
     "preset": "google",
     "requireParenthesesAroundIIFE": true,
-    "maximumLineLength": 120,
+    "maximumLineLength": 200,
     "validateLineBreaks": "LF",
     "validateIndentation": 2,
     "validateQuoteMarks": "\"",
@@ -134,9 +135,10 @@ gulp.task("jscs", function() {
 
 gulp.task("jshint", function() {
     return gulp.
-    src(paths.allFiles).
+    src(paths.allJSFiles).
     pipe(jshint({
-      es3:true
+      es3: true,
+      evil: true
     })).
     pipe(jshint.reporter('default'));
 });

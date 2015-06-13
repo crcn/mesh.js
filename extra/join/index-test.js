@@ -18,7 +18,6 @@ describe(__filename + "#", function() {
     bus({ name: "insert", data: { id: 3, name: "sarah", friends: [1, 1]}}).on("end", next);
   });
 
-
   it("can join any abritrary streem", function(next) {
 
     var bus = mesh.wrap(function(operation, next) {

@@ -9,7 +9,7 @@ var Item = React.createClass({
     this.props.bus({
       name: "addItem",
       data: { text: text }
-    })
+    });
   },
   render: function() {
     return React.createElement("div", void 0,

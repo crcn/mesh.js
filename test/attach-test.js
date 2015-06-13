@@ -119,7 +119,7 @@ describe(__filename + "#", function() {
     var bus = mesh.attach({ name: "b" }, mesh.wrap(function(operation) {
       expect(operation.name).to.be("b");
       next();
-    }))
+    }));
     bus({ name: "a" });
   });
 });

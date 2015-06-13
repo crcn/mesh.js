@@ -19,5 +19,4 @@ module.exports = function(operations, bus, complete) {
   }, function() {
     complete(void 0, results);
   });
-
-}
+};

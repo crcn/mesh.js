@@ -14,7 +14,7 @@ module.exports = function(config) {
   bus     = _client(config, bus);
 
   return bus;
-}
+};
 
 /**
  */

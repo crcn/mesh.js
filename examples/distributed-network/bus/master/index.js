@@ -34,7 +34,7 @@ module.exports = function(config) {
   _server(config, bus);
 
   return bus;
-}
+};
 
 /**
  * commands for the
@@ -63,7 +63,7 @@ function _distribute(config, bus) {
   return function(operation) {
     var distBus = dists[operation.dist] || dists.sequence;
     return distBus(operation);
-  }
+  };
 }
 
 /**

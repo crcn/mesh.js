@@ -1,6 +1,7 @@
 var Model    = require("./base/model");
 var Messages = require("./messages");
-var mesh     = require("mesh");
+var Message  = require("./message");
+var mesh     = require("../../..");
 var extend   = require("xtend/mutable");
 
 /**
@@ -14,6 +15,15 @@ function Thread(properties) {
  */
 
 extend(Thread.prototype, Model.prototype, {
+
+  /**
+   */
+
+  addMessage: function(onInsert) {
+    return new Message({
+      bus: mesh.attach({ collection: "messages", data: { threadId: this.id }})
+    }).insert(onInsert);
+  },
 
   /**
    */

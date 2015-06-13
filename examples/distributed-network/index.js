@@ -51,11 +51,11 @@ function captureOperation(error) {
   rl.question("", function(command) {
     try {
       new Function("exec", command)(exec.bind(void 0, captureOperation));
-    } catch(e) {
+    } catch (e) {
       console.error(e);
       captureOperation();
     }
   });
-};
+}
 
 captureOperation();

@@ -7,6 +7,7 @@ var watchProperty = require("./watch-property");
 
 function BaseModel(properties) {
   Watchable.call(this, properties);
+  if (this.data) this._onData(this.data);
   watchProperty(this, "data", this._onData.bind(this));
 }
 

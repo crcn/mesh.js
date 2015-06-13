@@ -42,7 +42,7 @@ var bus = createWorkerBus({
      */
 
     trace: function(operation) {
-      console.log("worker %s trace %s %d",id, operation.dist, operation.count || 0);
+      console.log("worker %s trace %s %d", id, operation.dist, operation.count || 0);
       if (operation.count) {
         return bus({ name: "trace", dist: operation.dist, count: operation.count - 1 });
       } else {
@@ -56,7 +56,7 @@ var bus = createWorkerBus({
 
     error: function(operation, next) {
       console.log("worker %s return error", id);
-      next(new Error(operation.message || "some error"))
+      next(new Error(operation.message || "some error"));
     }
   }
 });
