@@ -37,6 +37,14 @@ bus({
 - [Distributed Network](./examples/distributed-network) - demo of how mesh can be used to build a distributed network.
 - [React](./examples/react) - simple ReactJS example.
 
+#### Extras
+
+Just a few extra utilities you can drop into your app.
+
+- [join](./extra/join) - joins one operation stream into another. Similar to db joins.
+- [cache](./extra/cache) - caches operations. Useful for client-side stuff.
+- [commands](./extra/commands) - specify operation handlers based on the operation name.
+
 #### Other Resources
 
 - [Plugins](https://www.npmjs.com/search?q=meshjs)
