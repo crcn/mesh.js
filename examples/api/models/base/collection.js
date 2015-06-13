@@ -68,7 +68,7 @@ extend(Collection.prototype, Watchable.prototype, {
     .pipe(_.pipeline(_.collect))
     .on("data", this._onData.bind(this))
     .once("error", onLoad)
-    .once("end", onLoad);
+    .once("end", onLoad.bind(this, void 0, this));
   },
 
   /**
@@ -112,6 +112,8 @@ extend(Collection.prototype, Watchable.prototype, {
   },
 
   /**
+   * Spies on the bus for operations specific to this collection. We could further
+   * customize this spying function to specific features such as pagination. 
    */
 
   _spyOnBus: function() {

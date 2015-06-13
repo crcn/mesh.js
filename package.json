@@ -23,6 +23,7 @@
   "homepage": "https://github.com/mojo-js/mesh.js",
   "devDependencies": {
     "JSONStream": "^1.0.4",
+    "body-parser": "^1.12.4",
     "browser-sync": "^2.5.2",
     "browserify": "^9.0.4",
     "browserify-middleware": "^5.0.2",

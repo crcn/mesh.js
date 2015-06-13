@@ -6,24 +6,35 @@ var models     = require("./models");
 var createBus  = require("./bus");
 var JSONStream = require("JSONStream");
 var stream     = require("obj-stream");
+var bodyParser = require("body-parser");
 
+// this can be swapped out for mongodb assuming you
+// create another transformation step that takes id properties
+// and prepends an _ character.
 var db = memory();
 
 var _id = 0;
+
+// specific to the memory db since it doesn't support this kinda thing.
+// Just add an ID whenever a new item is added to any collection
 var bus = mesh.accept("insert", function(operation) {
   operation.data.id = operation.collection + (++_id);
   return db(operation);
 }, db);
 
+// setup the bus - that's used on ALL clients. Except use the db (second param)
+// as the main data source where data is persisted to.
 bus          = createBus({}, bus);
 
-bus.users    = mesh.attach({ collection: "users"    }, bus);
+// create an alias for the collections we wanna save to
 bus.threads  = mesh.attach({ collection: "threads"  }, bus);
 bus.messages = mesh.attach({ collection: "messages" }, bus);
 
 var server = express();
+server.use(bodyParser.json());
 
-
+// transforms objects into a stream of data that is compatible
+// with JSONStream
 function objToKeyStream() {
   return stream.through(function(data, next) {
     for (var key in data) this.push([key, data[key]]);
@@ -31,16 +42,9 @@ function objToKeyStream() {
   });
 }
 
-server.post("/register", function() {
-
-});
-
-server.post("/updateUser", function() {
-
-});
-
-// room
-
+// Route stuff. All the models here just contain business logic. DB stuff is passed
+// as bus property, so that means models / collections are isomorphic. They can run on any
+// platform.
 server.get("/getThreads", function(req, res) {
 
   var m = new models.Threads({
@@ -52,11 +56,11 @@ server.get("/getThreads", function(req, res) {
   });
 });
 
-server.get("/addThread", function(req, res) {
+server.post("/addThread", function(req, res) {
 
   var m = new models.Thread({
     bus   : bus.threads,
-    title : req.query.title
+    title : req.body.title
   });
 
   m.insert(function() {
@@ -78,40 +82,16 @@ server.get("/getMessages", function(req, res) {
   });
 });
 
-server.get("/addMessage", function(req, res) {
+server.post("/addMessage", function(req, res) {
 
   var m = new models.Message({
     bus      : bus.messages,
-    threadId : req.query.threadId,
-    text     : req.query.text
+    threadId : req.body.threadId,
+    text     : req.body.text
   });
 
   m.insert(function() {
     res.send(m.toJSON());
-  });
-});
-
-// TODO
-server.get("/getMessageUser", function(req, res) {
-
-  var m = new models.Message({
-    bus: mesh.attach({
-      query: {
-        id: req.query.messageId
-      },
-      join: {
-        user: function(data) {
-          return bus.users({
-            name: "load",
-            query: { id: data.userId }
-          });
-        }
-      }
-    }, bus.messages)
-  });
-  
-  m.load(function() {
-    res.send(m.data.user);
   });
 });
 

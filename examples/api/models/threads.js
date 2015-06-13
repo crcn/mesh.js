@@ -1,6 +1,5 @@
 var Collection = require("./base/collection");
 var mesh       = require("../../..");
-var Users      = require("./users");
 var Thread     = require("./thread");
 var extend     = require("xtend/mutable");
 

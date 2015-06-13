@@ -75,7 +75,7 @@ extend(BaseModel.prototype, Watchable.prototype, {
     .bus(operation)
     .on("data", this._onData.bind(this))
     .once("error", next)
-    .once("end", next);
+    .once("end", next.bind(this, void 0, this));
     return this;
   },
 

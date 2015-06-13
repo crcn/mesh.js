@@ -16,40 +16,6 @@ describe(__filename + "#", function() {
     });
   });
 
-  describe("users#", function() {
-
-    it("can register a user", function(next) {
-      bus({ name: "insert", collection: "users" }).on("end", function() {
-        expect(requestOptions.uri).to.be("/register");
-        next();
-      });
-    });
-
-    it("can update a user", function(next) {
-      bus({ name: "update", collection: "users", query: { id: "u1" }}).on("end", function() {
-        expect(requestOptions.uri).to.be("/updateUser");
-        expect(requestOptions.query.userId).to.be("u1");
-        next();
-      });
-    });
-
-    it("can load a user", function(next) {
-      bus({ name: "load", collection: "users", query: { id: "u1" }}).on("end", function() {
-        expect(requestOptions.uri).to.be("/login");
-        expect(requestOptions.query.userId).to.be("u1");
-        next();
-      });
-    });
-
-    it("can load loaders from a threadId ", function(next) {
-      bus({ name: "load", collection: "users", multi: true, query: { threadId: "thread1" }}).on("end", function() {
-        expect(requestOptions.uri).to.be("/getUsers");
-        expect(requestOptions.query.threadId).to.be("thread1");
-        next();
-      });
-    });
-  });
-
   describe("threads#", function() {
 
     it("ca load all threads", function(next) {

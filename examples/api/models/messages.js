@@ -18,16 +18,7 @@ extend(Messages.prototype, Collection.prototype, {
   /**
    */
 
-  modelClass: Message,
-
-  /**
-   */
-
-  getUser: function(onLoad) {
-    return new User({
-      bus: mesh.attach({ collection: "users", query: { messageId: this.id }})
-    }).load(onLoad);
-  }
+  modelClass: Message
 });
 
 /**

@@ -9,6 +9,7 @@ var memory = require("mesh-memory");
  */
 
 module.exports = function(options) {
+
   var bus = http(options);
 
   // cache HTTP requests

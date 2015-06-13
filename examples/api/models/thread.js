@@ -19,9 +19,9 @@ extend(Thread.prototype, Model.prototype, {
   /**
    */
 
-  addMessage: function(onInsert) {
+  addMessage: function(text, onInsert) {
     return new Message({
-      bus: mesh.attach({ collection: "messages", data: { threadId: this.id }})
+      bus: mesh.attach({ collection: "messages", data: { threadId: this.id, text: text }}, this.bus)
     }).insert(onInsert);
   },
 
@@ -31,15 +31,6 @@ extend(Thread.prototype, Model.prototype, {
   getMessages: function(onLoad) {
     return new Messages({
       bus: mesh.attach({ collection: "messages", query: { threadId: this.id } }, this.bus)
-    }).load(onLoad);
-  },
-
-  /**
-   */
-
-  getParticipants: function(onLoad) {
-    return new Users({
-      bus: mesh.attach({ collection: "users", query: { threadId: this.id }}, this.bis)
     }).load(onLoad);
   }
 });
