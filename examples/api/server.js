@@ -22,7 +22,7 @@ var bus = mesh.accept("insert", function(operation) {
   return db(operation);
 }, db);
 
-// setup the bus - that's used on ALL clients. Except use the db (second param)
+// setup the bus that's used on ALL clients. Except use the db (second param)
 // as the main data source where data is persisted to.
 bus          = createBus({}, bus);
 
