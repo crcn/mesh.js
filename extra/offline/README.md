@@ -1,24 +1,31 @@
-TODO
+TODO:
 
-Offline-mode plugin. This adapter stores operations, and executes them against a remote data source
-when the app comes back online
+Offline-mode plugin. This utility stores `CRUD` operations temporarily to whatever local data store you want. When your app
+goes back online, this adapter will diff changes to the local storage, and re-persist data back to your *remote* data source.
 
-Usage
+Usage:
 
 ```javascript
-var offline = require("./offline");
-var storage = require("mesh-memory");
-var api     = http();
+var mesh         = require("mesh");
+var localStorage = require("mesh-local-storage");
+var offline      = require("./offline");
+var http         = require("mesh-http");
 
-var store   = offline(api(), storage());
 
-var bus = function(operation) {
-
-  if (isOffline) {
-    operation.offline = true;
+var api  = http();
+var bus  = offline(api(), {
+  storage: localStorage(),
+  testError: function(err) {
+    return !!~err.message.indexOf("ECONREFUSED");
   }
+});
 
-  return store(operation);
-}
+
+
 
 ```
+
+Caveats:
+
+
+<!-- Offline-mode is a bit limited in functionality since it  -->
