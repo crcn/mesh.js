@@ -21,7 +21,7 @@ thread.save(function() {
   // set the limit above to 1
   thread.addMessage("hello world");
   thread.addMessage("mmmm donuts");
-  thread.addMessage("how much wood could a wood chuck chuck?");
+  thread.addMessage("how much wood would a wood chuck chuck?");
   thread.addMessage("there are 160,934.4 cm in a mile");
 
   // this will get executed after all messages are persisted and
