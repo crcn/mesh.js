@@ -2,8 +2,6 @@
 
 **API Docs can be viewed [here](http://meshjs.herokuapp.com/docs)**
 
-- npm installation: `npm install mesh`
-- bower installation: `bower install mesh`
 
 Mesh is a flexible data flow library that makes it incredibly easy to make data sources interoperable with one another. Easily connect things such as [mongodb](http://pubnub.com/), [pubnub](http://pubnub.com/), `webrtc` etc to build powerful features such as rollbacks, offline-mode, realtime data, and more.
 
@@ -31,24 +29,6 @@ bus({
   data : { text: "hello world" }
 });
 ```
-#### Examples
-
-- [API Example](./examples/api) - example demonstrating how mesh can be used with APIs.
-- [Distributed Network](./examples/distributed-network) - demo of how mesh can be used to build a distributed network.
-- [React](./examples/react) - simple ReactJS example.
-
-#### Extras
-
-Just a few extra utilities you can drop into your app.
-
-- [join](./extra/join) - joins one operation stream into another. Similar to db joins.
-- [cache](./extra/cache) - caches operations. Useful for client-side stuff.
-- [commands](./extra/commands) - specify operation handlers based on the operation name.
-
-#### Other Resources
-
-- [Plugins](https://www.npmjs.com/search?q=meshjs)
-- [Documentation](http://meshjs.herokuapp.com/docs)
 
 #### Highlights
 
@@ -60,3 +40,55 @@ Just a few extra utilities you can drop into your app.
 - Isomorphic. Easily use different data sources for different platforms.
 - Easily testable. Stub out any data source for a fake one.
 - Simple design. Use it for many other things such as an event bus, message-queue service, etc.
+
+#### NPM
+
+[NPM](https://www.npmjs.com/): `npm install mesh` <br />
+[Bower](http://bower.io/): `bower install mesh`
+
+## Resources
+
+- [Examples](./examples)
+  - [API Example](./examples/api) - example demonstrating how mesh can be used with APIs.
+  - [Distributed Network](./examples/distributed-network) - demo of how mesh can be used to build a distributed network.
+  - [React](./examples/react) - simple ReactJS example.
+- Discuss
+  - [Google group](https://groups.google.com/forum/#!forum/meshjs)
+  - [Gitter chat](https://gitter.im/mojo-js/mesh.js)
+- Documentation
+  - [Core API](http://meshjs.herokuapp.com/docs)
+  - [Load balancing API](http://meshjs.herokuapp.com/docs/balance)
+  - [Writing adapters](http://meshjs.herokuapp.com/docs/writing-adapters)
+- [Plugins](https://www.npmjs.com/search?q=meshjs)
+  - [load balancing algorithms](https://github.com/mojo-js/mesh-balance)
+  - [local storage](https://github.com/mojo-js/mesh-local-storage)
+  - [pubnub](https://github.com/mojo-js/mesh-pubnub)
+  - [webrtc](https://github.com/mojo-js/mesh-webrtc)
+  - [mongodb](https://github.com/mojo-js/mesh-mongodb)
+  - [memory database](https://github.com/mojo-js/mesh-memory)
+  - [loki](https://github.com/mojo-js/mesh-loki)
+  - [socket.io](https://github.com/mojo-js/mesh-loki)
+<!-- - Articles -->
+
+## Licence (MIT)
+
+Copyright (c) 2015 [Craig Condon](http://craigjefferds.com)
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
