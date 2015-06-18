@@ -10,16 +10,20 @@ Mesh is just a bundle of utility functions, and doesn't have much of an opinion 
 Simple realtime example:
 
 ```javascript
-var mesh         = require("mesh");
-var localStorage = require("mesh-local-storage");
-var io           = require("mesh-socket.io");
+var mesh    = require("mesh");
+var storage = require("mesh-local-storage");
 
-var bus = localStorage();
-bus     = mesh.tailable(bus);
+// use any one of these database adapters. They all handle
+// the same CRUD operations
+// var storage = require("mesh-memory");
+// var storage = require("mesh-loki");
+var realtime  = require("mesh-socket.io");
+
+var bus = storage();
 
 // persist all operations to socket.io & any operations from socket.io
-// back to the local bus. (Note that remote operations will get ignored)
-bus({ name: "tail" }).pipe(mesh.open(io({ channel: "operations" }, bus)));
+// back to local storage.
+bus = mesh.parallel(bus, realtime({ channel: "operations" }, bus));
 
 // insert data. Persists to local storage, and gets
 // broadcasted to all connected clients.
