@@ -75,7 +75,11 @@ bus({
   - [memory database](https://github.com/mojo-js/mesh-memory)
   - [loki](https://github.com/mojo-js/mesh-loki)
   - [socket.io](https://github.com/mojo-js/mesh-loki)
-<!-- - Articles -->
+- [Extra utilities](./extra)
+  - [cache](./extra/cache) - caches operations results. Sorta like memoization.
+  - [commands](./extra/commands) - easily register operation handlers by name
+  - [join](./extra/join) - join other operations into one stream according to emitted data (like DB joins).
+- Articles (comming soon)
 
 ## Licence (MIT)
 
