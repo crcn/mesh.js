@@ -1,8 +1,8 @@
 various test cases you should run if you plan on creating a mesh adapter.
 
-#### Database test cases
+# Database test cases
 
-Docs can be view ed here. 
+Docs can be [viewed here](http://meshjs.herokuapp.com/docs/database-adapters).
 
 Test case usage:
 
