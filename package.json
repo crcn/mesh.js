@@ -57,6 +57,7 @@
     "mesh-memory": "1.0.x",
     "mesh-pubnub": "1.0.x",
     "mesh-socket.io": "1.0.x",
+    "mesh-store-test-cases": "0.0.3",
     "meshlet": "0.0.3",
     "paperclip": "^1.4.10",
     "react": "^0.13.1",
