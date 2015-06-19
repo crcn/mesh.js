@@ -3,29 +3,36 @@
 **API Docs can be viewed [here](http://meshjs.herokuapp.com/docs)**
 
 
-Mesh is a flexible data flow library that makes it incredibly easy to make data sources interoperable with one another. Easily connect things such as [mongodb](http://pubnub.com/), [pubnub](http://pubnub.com/), `webrtc` etc to build powerful features such as rollbacks, offline-mode, realtime data, and more.
+Mesh is a flexible data synchronization library that makes it incredibly easy to make data sources interoperable with one another. Easily connect things such as [mongodb](http://pubnub.com/), [pubnub](http://pubnub.com/), `webrtc` etc to build powerful features such as rollbacks, offline-mode, realtime data, and more.
 
 Mesh is just a bundle of utility functions, and doesn't have much of an opinion about how you should use it.
 
 Simple realtime example:
 
 ```javascript
-var mesh         = require("mesh");
-var localStorage = require("mesh-local-storage");
-var io           = require("mesh-socket.io");
+var mesh    = require("mesh");
+var storage = require("mesh-local-storage");
 
-var bus = localStorage();
-bus     = mesh.tailable(bus);
+// use any one of these database adapters. They all handle
+// the same CRUD operations
+// var storage = require("mesh-memory");
+// var storage = require("mesh-loki");
+var realtime  = require("mesh-socket.io");
+
+var bus = storage();
 
 // persist all operations to socket.io & any operations from socket.io
-// back to the local bus. (Note that remote operations will get ignored)
-bus({ name: "tail" }).pipe(mesh.open(io({ channel: "operations" }, bus)));
+// back to local storage.
+bus = mesh.parallel(
+  bus, 
+  realtime({ channel: "operations" }, bus)
+);
 
 // insert data. Persists to local storage, and gets
 // broadcasted to all connected clients.
 bus({
   name : "insert",
-  collection : "messages"
+  collection : "messages",
   data : { text: "hello world" }
 });
 ```
