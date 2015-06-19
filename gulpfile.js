@@ -20,10 +20,9 @@ var pkg = require("./package");
  */
 
 var paths = {
-  testFiles   : ["test/**/*-test.js", "examples/**/*-test.js", "extra/**/*-test.js"],
+  testFiles   : ["test/**/*-test.js", "examples/**/*-test.js", "extra/**/*-test.js", "test-cases/**/*-test.js"],
   appFiles    : ["lib/**/*.js"],
-  allFiles    : ["test/**", "lib/**", "examples/**", "extra/**"],
-  allJSFiles  : ["test/**/*.js", "lib/**/*.js", "examples/**/*.js", "extra/**/*.js"]
+  allJSFiles  : ["test/**/*.js", "lib/**/*.js", "examples/**/*.js", "extra/**/*.js","test-cases/**/*.js"]
 };
 
 /**
@@ -162,7 +161,7 @@ var iofwatch = process.argv.indexOf("watch");
  */
 
 gulp.task("watch", function () {
-  gulp.watch(paths.allFiles, process.argv.slice(2, iofwatch));
+  gulp.watch(paths.allJSFiles, process.argv.slice(2, iofwatch));
 });
 
 /**

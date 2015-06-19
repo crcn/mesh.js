@@ -16,7 +16,7 @@ describe(__filename + "#", function() {
     });
   })
 
-  it("can pass operations to the main bus", function(next) {
+  xit("can pass operations to the main bus", function(next) {
     var bus = offline(fakebus);
     bus({}).on("end", function() {
       expect(ops.length).to.be(1);
@@ -24,7 +24,7 @@ describe(__filename + "#", function() {
     });
   });
 
-  it("can store operations in a temporary database if the remote bus goes offline", function(next) {
+  xit("can store operations in a temporary database if the remote bus goes offline", function(next) {
 
     var mem = storage();
     fakebus = mesh.attach({ yields: [new Error("econrefused")] }, fakebus);
