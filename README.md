@@ -24,7 +24,7 @@ var bus = storage();
 // persist all operations to socket.io & any operations from socket.io
 // back to local storage.
 bus = mesh.parallel(
-  bus, 
+  bus,
   realtime({ channel: "operations" }, bus)
 );
 
@@ -39,16 +39,17 @@ bus({
 
 #### Highlights
 
-- Streamable interface.
-- Works with any library, or framework.
-- Works on any platform.
+- [Streamable](https://github.com/substack/stream-handbook) interface.
+- Utility based. Kinda like underscore for data.
+- Works with any library, or framework (React, express).
+- Works on any JavaScript platform (browser, NodeJS).
 - Tiny (11kb).
 - Works nicely with other stream-based libraries such as [highland](http://highlandjs.org/).
 - Isomorphic. Easily use different data sources for different platforms.
-- Easily testable. Stub out any data source for a fake one.
+- Highly testable. Stub out any data source for a fake one.
 - Simple design. Use it for many other things such as an event bus, message-queue service, etc.
 
-#### NPM
+#### Installation
 
 [NPM](https://www.npmjs.com/): `npm install mesh` <br />
 [Bower](http://bower.io/): `bower install mesh`
