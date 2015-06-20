@@ -85,6 +85,13 @@ module.exports = function(createDb) {
 
   });
 
+  xit("emits an error if collection is missing", function(next) {
+    // var db = mesh.clean(lokidb());
+    db("insert", { data: { name: "abba" }}).on("error", function() {
+      next();
+    });
+  });
+
   it("can update one item", function(next) {
     insertMultipleItems();
 
