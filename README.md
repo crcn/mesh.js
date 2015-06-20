@@ -67,7 +67,7 @@ bus({
 - Documentation
   - [Core API](http://meshjs.herokuapp.com/docs)
   - [Load balancing API](http://meshjs.herokuapp.com/docs/balance)
-  - [Writing adapters](http://meshjs.herokuapp.com/docs/writing-adapters)
+  - [Writing adapters](http://meshjs.herokuapp.com/docs/database-adapters)
 - [Plugins](https://www.npmjs.com/search?q=meshjs)
   - [load balancing algorithms](https://github.com/mojo-js/mesh-balance)
   - [local storage](https://github.com/mojo-js/mesh-local-storage)
