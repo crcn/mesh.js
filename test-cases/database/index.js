@@ -4,18 +4,16 @@ var _      = require("highland");
 
 module.exports = function(createDb) {
 
-  var ret, db;
-
   var cases = {};
   var db;
 
-
   function it(description, run) {
-    return cases[description] = function(next) {
+    cases[description] = function(next) {
       if (!next) next = function() { };
       db = mesh.limit(1, createDb());
       run(next);
-    }
+    };
+    return cases[description];
   }
 
   var insertOneItem = it("can insert one item", function(next) {

@@ -12,9 +12,9 @@ describe(__filename + "#", function() {
     ops = [];
     fakebus = mesh.wrap(function(operation, next) {
       ops.push(operation);
-      next.apply(this, operation.yields || [])
+      next.apply(this, operation.yields || []);
     });
-  })
+  });
 
   xit("can pass operations to the main bus", function(next) {
     var bus = offline(fakebus);
