@@ -85,7 +85,7 @@ bus({
 
 ## Licence (MIT)
 
-Copyright (c) 2015 [Craig Condon](http://craigjefferds.com)
+Copyright (c) 2015 [Craig Jefferds](http://craigjefferds.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
