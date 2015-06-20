@@ -601,13 +601,9 @@ module.exports = function(callback) {
 
       var items = _toArray(data);
 
-      if (operation.multi) {
-        items.forEach(function(data) {
-          stream.write(data);
-        });
-      } else if (!!items.length) {
-        stream.write(items[0]);
-      }
+      _toArray(data).forEach(function(data) {
+        stream.write(data);
+      });
 
       stream.end();
     });
@@ -1347,8 +1343,8 @@ module.exports = function(fn) {
       }));
     }, 0, Array.prototype.slice.call(arguments));
     return s;
-  }
-}
+  };
+};
 
 },{"./stream":39}],42:[function(require,module,exports){
 var protoclass   = require("protoclass");

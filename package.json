@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "reactive message bus utility",
   "main": "./lib/index.js",
   "keywords": [
@@ -30,7 +30,6 @@
     "clone": "^1.0.2",
     "expect.js": "^0.3.1",
     "express": "^4.12.4",
-    "extra": "file:./extra/",
     "famous": "^0.3.5",
     "fourk": "0.0.3",
     "glob": "^5.0.3",
@@ -48,7 +47,6 @@
     "highland": "^2.4.0",
     "karma": "^0.12.31",
     "less": "^2.4.0",
-    "linklocal": "^2.5.2",
     "mesh-balance": "0.0.1",
     "mesh-http": "^2.0.0",
     "mesh-local-storage": "1.0.x",

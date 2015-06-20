@@ -1,5 +1,5 @@
 var http   = require("mesh-http");
-var cache  = require("extra/cache");
+var cache  = require("../../../../extra/cache");
 var routes = require("./routes");
 var sift   = require("sift");
 var mesh   = require("../../../..");

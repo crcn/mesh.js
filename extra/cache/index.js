@@ -1,4 +1,4 @@
-var mesh = require("../..");
+var mesh = require("../../lib/index");
 
 module.exports = function(bus, options) {
 

@@ -1,5 +1,5 @@
 var api      = require("./api");
-var join     = require("extra/join");
+var join     = require("../../../extra/join");
 var spy      = require("./spy");
 
 module.exports = function(options, bus) {
