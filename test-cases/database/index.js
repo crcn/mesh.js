@@ -16,6 +16,10 @@ module.exports = function(createDb) {
     return cases[description];
   }
 
+  function xit() {
+
+  }
+
   var insertOneItem = it("can insert one item", function(next) {
     db({ name: "insert", collection: "items", data: { name: "a" }}).on("data", function(data) {
       expect(data.name).to.be("a");
@@ -75,6 +79,10 @@ module.exports = function(createDb) {
       expect(data.length).to.be(3);
       next();
     });
+  });
+
+  xit("can load no items", function() {
+
   });
 
   it("can update one item", function(next) {

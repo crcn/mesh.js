@@ -49,7 +49,7 @@ bus({
 - Highly testable. Stub out any data source for a fake one.
 - Simple design. Use it for many other things such as an event bus, message-queue service, etc.
 
-#### Installation
+#### Installationchrome
 
 [NPM](https://www.npmjs.com/): `npm install mesh` <br />
 [Bower](http://bower.io/): `bower install mesh`
@@ -60,6 +60,7 @@ bus({
   - [API Example](./examples/api) - example demonstrating how mesh can be used with APIs.
   - [Distributed Network](./examples/distributed-network) - demo of how mesh can be used to build a distributed network.
   - [React](./examples/react) - simple ReactJS example.
+  - [Database Adater](./examples/database-adapter) - in-memory database adapter example.
 - Discuss
   - [Google group](https://groups.google.com/forum/#!forum/meshjs)
   - [Gitter chat](https://gitter.im/mojo-js/mesh.js)
