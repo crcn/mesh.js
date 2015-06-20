@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "3.0.4",
+  "version": "4.0.0",
   "description": "reactive message bus utility",
   "main": "./lib/index.js",
   "keywords": [
