@@ -1,7 +1,7 @@
 {
   "name": "mesh",
   "version": "4.0.4",
-  "description": "reactive message bus utility",
+  "description": "data synchronization library",
   "main": "./lib/index.js",
   "keywords": [
     "meshjs",
