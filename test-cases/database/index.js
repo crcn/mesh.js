@@ -91,6 +91,12 @@ module.exports = function(createDb) {
       next();
     });
   });
+  
+  xit("ignores operations that are not supported", function(next) {
+    db(mesh.op("afdfsfsd", { collection: "people", data: { name: "a"}})).on("end", function() {
+      next();
+    });
+  });
 
   it("can update one item", function(next) {
     insertMultipleItems();
