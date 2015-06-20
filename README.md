@@ -60,7 +60,7 @@ bus({
   - [API Example](./examples/api) - example demonstrating how mesh can be used with APIs.
   - [Distributed Network](./examples/distributed-network) - demo of how mesh can be used to build a distributed network.
   - [React](./examples/react) - simple ReactJS example.
-  - [Database Adater](./examples/database-adapter) - in-memory database adapter example.
+  - [Database Adapter](./examples/database-adapter) - in-memory database adapter example.
 - Discuss
   - [Google group](https://groups.google.com/forum/#!forum/meshjs)
   - [Gitter chat](https://gitter.im/mojo-js/mesh.js)
