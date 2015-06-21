@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/mojo-js/mesh.js.svg)](https://travis-ci.org/mojo-js/mesh.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/mesh.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/mesh.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/mesh.js.svg)](https://david-dm.org/mojo-js/mesh.js) [![Join the chat at https://gitter.im/mojo-js/mesh.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/mesh.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**API Docs can be viewed [here](http://meshjs.herokuapp.com/docs)**
+**API Docs can be viewed [here](http://mesh.mojojs.com/docs)**
 
 
 Mesh is a flexible data synchronization library that makes it incredibly easy to make data sources interoperable with one another. Easily connect things such as [mongodb](http://pubnub.com/), [pubnub](http://pubnub.com/), `webrtc` etc to build powerful features such as rollbacks, offline-mode, realtime data, and more.
@@ -65,9 +65,9 @@ bus({
   - [Google group](https://groups.google.com/forum/#!forum/meshjs)
   - [Gitter chat](https://gitter.im/mojo-js/mesh.js)
 - Documentation
-  - [Core API](http://meshjs.herokuapp.com/docs)
-  - [Load balancing API](http://meshjs.herokuapp.com/docs/balance)
-  - [Writing adapters](http://meshjs.herokuapp.com/docs/database-adapters)
+  - [Core API](http://mesh.mojojs.com/docs)
+  - [Load balancing API](http://mesh.mojojs.com/docs/balance)
+  - [Writing adapters](http://mesh.mojojs.com/docs/database-adapters)
 - [Plugins](https://www.npmjs.com/search?q=meshjs)
   - [load balancing algorithms](https://github.com/mojo-js/mesh-balance)
   - [local storage](https://github.com/mojo-js/mesh-local-storage)
