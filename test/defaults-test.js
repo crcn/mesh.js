@@ -31,4 +31,16 @@ describe(__filename + "#", function() {
     bus = mesh.defaults({key:"value"}, bus);
     bus({name:"op"});
   });
+
+  it("can define defaults as a function", function(next) {
+    var bus = mesh.defaults(function(operation) {
+      return { name: "op2", key: "value" };
+    }, mesh.wrap(function(operation) {
+      expect(operation.name).to.be("op");
+      expect(operation.key).to.be("value");
+      next();
+    }));
+
+    bus({name:"op"});
+  });
 });
