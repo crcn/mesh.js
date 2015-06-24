@@ -3,6 +3,7 @@ var istanbul   = require("gulp-istanbul");
 var mocha      = require("gulp-mocha");
 var plumber    = require("gulp-plumber");
 var jshint     = require("gulp-jshint");
+var collapser  = require("bundle-collapser/plugin");
 var browserify = require("browserify");
 var uglify     = require("gulp-uglify");
 var source     = require("vinyl-source-stream");
@@ -67,6 +68,7 @@ gulp.task("test-coveralls", ["test-coverage"], function () {
 
 gulp.task("bundle", function() {
   return browserify("./lib/index.js").
+  plugin(collapser).
   bundle().
   pipe(source(pkg.name + '.js')).
   pipe(buffer()).

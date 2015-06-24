@@ -28,6 +28,7 @@
     "browser-sync": "^2.5.2",
     "browserify": "^9.0.4",
     "browserify-middleware": "^5.0.2",
+    "bundle-collapser": "^1.2.0",
     "expect.js": "^0.3.1",
     "express": "^4.12.4",
     "fourk": "0.0.3",
@@ -55,7 +56,6 @@
     "through2": "^0.6.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "JSONStream": "^1.0.4",
     "yargs": "^3.6.0"
   },
   "dependencies": {
