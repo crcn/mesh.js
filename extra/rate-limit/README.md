@@ -1,7 +1,7 @@
 Rate limit bus.
 
 
-#### rateLimit(getUniqueId, limitStorage, bus)
+#### rateLimit(getUniqueId, limitStorage, bus, rateLimitedBus)
 
 ```javascript
 var mesh       = require("mesh");
@@ -18,7 +18,7 @@ var rateLimitedBus = rateLimit(function(operation, next) {
   .once("data", function(data) {
     next(void 0, data._id);
   });
-}, memory(), bus);
+}, memory(), bus, mesh.yields(new Error("you're bout to get throttled!")));
 
 var server = express();
 
