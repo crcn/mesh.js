@@ -82,6 +82,10 @@ bus({
   - [commands](./extra/commands) - easily register operation handlers by name
   - [join](./extra/join) - join other operations into one stream according to emitted data (like DB joins).
 - Articles (comming soon)
+- Other useful resources
+  - [transducers (closure)](http://clojure.org/transducers)
+  - [transducers (javascript)](http://jlongster.com/Transducers.js--A-JavaScript-Library-for-Transformation-of-Data)
+  - [currying in JavaScript](https://medium.com/@kbrainwave/currying-in-javascript-ce6da2d324fe)
 
 ## Licence (MIT)
 
