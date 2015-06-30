@@ -3,7 +3,7 @@
 **API Docs can be viewed [here](http://mesh.mojojs.com/docs)**
 
 
-Mesh is a flexible data synchronization library that makes it incredibly easy to make data sources interoperable with one another. Easily connect things such as [mongodb](http://pubnub.com/), [pubnub](http://pubnub.com/), `webrtc` etc to build powerful features such as rollbacks, offline-mode, realtime data, and more.
+Mesh is a flexible data synchronization library that makes it incredibly easy to make data sources interoperable with one another. Easily connect things such as [mongodb](https://www.mongodb.org/), [pubnub](http://pubnub.com/), [socket.io](http://socket.io/) `webrtc` etc to build powerful features such as rollbacks, offline-mode, realtime data, and more.
 
 Mesh is just a bundle of utility functions, and doesn't have much of an opinion about how you should use it.
 
