@@ -1,5 +1,5 @@
 var expect      = require("expect.js");
-var createCases = require("../../test-cases/database");
+var createCases = require("../../test/cases/database");
 var createDb    = require("./database");
 
 describe(__filename + "#", function() {

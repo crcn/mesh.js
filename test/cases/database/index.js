@@ -1,4 +1,4 @@
-var mesh   = require("../..");
+var mesh   = require("../../..");
 var expect = require("expect.js");
 var _      = require("highland");
 
