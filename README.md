@@ -49,7 +49,7 @@ mergedBus({
 - Highly testable. Stub out any data source for a fake one.
 - Simple design. Use it for many other things such as an event bus, message-queue service, etc.
 
-#### Installationchrome
+#### Installation
 
 [NPM](https://www.npmjs.com/): `npm install mesh` <br />
 [Bower](http://bower.io/): `bower install mesh`
