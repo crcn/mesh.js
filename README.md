@@ -81,7 +81,8 @@ mergedBus({
   - [cache](./extra/cache) - caches operations results. Sorta like memoization.
   - [commands](./extra/commands) - easily register operation handlers by name
   - [join](./extra/join) - join other operations into one stream according to emitted data (like DB joins).
-- Articles (comming soon)
+- Articles
+  - [Why re-write code when you can strangle it?](http://blog.hellosign.com/why-rewrite-your-code-when-you-can-strangle-it/)
 
 <!--
 - Other useful resources
