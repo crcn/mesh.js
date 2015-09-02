@@ -54,7 +54,7 @@ mergedBus({
 [NPM](https://www.npmjs.com/): `npm install mesh` <br />
 [Bower](http://bower.io/): `bower install mesh`
 
-## Resources
+#### Resources
 
 - [Examples](./examples)
   - [API Example](./examples/api) - example demonstrating how mesh can be used with APIs.
