@@ -19,7 +19,7 @@ var pkg = require("./package");
  */
 
 var paths = {
-  testFiles   : ["test/**/*-test.js", "examples/**/*-test.js", "extra/**/*-test.js", "test-cases/**/*-test.js"],
+  testFiles   : ["test/**/*-test.js"],
   appFiles    : ["lib/**/*.js"],
   allJSFiles  : ["test/**/*.js", "lib/**/*.js", "examples/**/*.js", "extra/**/*.js","test-cases/**/*.js"]
 };
