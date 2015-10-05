@@ -27,6 +27,16 @@ describe(__filename + "#", function() {
       });
   });
 
+  it("passes errors downstream", function(next) {
+     var bus = mesh.yields(new Error("blah!")) ;
+     bus = mesh.map(bus, function() {
+
+     });
+     bus({}).on("error", function(error) {
+         next();
+     });
+  });
+
   it("doesn't end the parent stream", function(next) {
     var bus = mesh.stream(function(operation, stream) {
       stream.write("ab");
