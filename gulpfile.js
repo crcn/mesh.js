@@ -15,13 +15,16 @@ var options    = require("yargs").argv;
 
 var pkg = require("./package");
 
+require("babel/register")();
+
 /**
  */
 
 var paths = {
   testFiles   : ["test/**/*-test.js"],
   appFiles    : ["lib/**/*.js"],
-  allJSFiles  : ["test/**/*.js", "lib/**/*.js", "examples/**/*.js", "extra/**/*.js","test-cases/**/*.js"]
+  allJSFiles  : ["!{node_modules,node_modules/**}", "**/*"],
+  allFiles    : ["**/*.js", "!node_modules/**"]
 };
 
 /**
@@ -150,7 +153,7 @@ var iofwatch = process.argv.indexOf("watch");
  */
 
 gulp.task("watch", function () {
-  gulp.watch(paths.allJSFiles, process.argv.slice(2, iofwatch));
+  gulp.watch(paths.allFiles, process.argv.slice(2, iofwatch));
 });
 
 /**

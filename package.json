@@ -24,11 +24,14 @@
   "homepage": "https://github.com/mojo-js/mesh.js",
   "devDependencies": {
     "JSONStream": "^1.0.4",
+    "babel": "^5.8.23",
+    "babelify": "^6.3.0",
     "body-parser": "^1.12.4",
     "browser-sync": "^2.5.2",
     "browserify": "^9.0.4",
     "browserify-middleware": "^5.0.2",
     "bundle-collapser": "^1.2.0",
+    "co": "^4.6.0",
     "expect.js": "^0.3.1",
     "express": "^4.12.4",
     "fourk": "0.0.3",
@@ -43,11 +46,6 @@
     "gulp-uglify": "^1.1.0",
     "hasher": "^1.2.0",
     "highland": "^2.4.0",
-    "mesh-balance": "0.0.1",
-    "mesh-http": "^2.0.0",
-    "mesh-local-storage": "1.0.x",
-    "mesh-memory": "1.0.x",
-    "mesh-socket.io": "1.0.x",
     "react": "^0.13.1",
     "reactify": "^1.1.0",
     "ros": "^1.0.2",
@@ -58,8 +56,5 @@
     "vinyl-source-stream": "^1.1.0",
     "yargs": "^3.6.0"
   },
-  "dependencies": {
-    "obj-stream": "0.0.x",
-    "xtend": "^4.0.0"
-  }
+  "dependencies": {}
 }
