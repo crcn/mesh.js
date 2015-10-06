@@ -51,4 +51,25 @@ describe(__filename + "#", function() {
 
 		yield ret;
 	}));
+
+	it("runs the provided callback function in the constructor", co.wrap(function*() {
+		var response = new AsyncResponse(function(response) {
+			response.write("a");
+			response.end("b");
+		});
+
+		expect(yield response.read()).to.be("a");
+		expect(yield response.read()).to.be("b");
+		expect(yield response.read()).to.be(void 0);
+	}));
+
+	it("can continue to read after the response has ended", co.wrap(function*() {
+		var response = new AsyncResponse(function(response) {
+			response.end();
+		});
+		yield response.read();
+		yield response.read();
+		yield response.read();
+		yield response.read();
+	}));
 });

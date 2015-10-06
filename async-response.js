@@ -3,9 +3,12 @@ import Response from "./response";
 /**
  */
 
-function AsyncResponse() {
+function AsyncResponse(run) {
 	Response.call(this);
 	this._chunks = [];
+
+	// todo - pass writable instead
+	if(run) run(this);
 }
 
 /**
@@ -27,6 +30,10 @@ Object.assign(AsyncResponse.prototype, Response.prototype, {
 		if (!!this._chunks.length) {
 			var chunk = this._chunks.shift();
 			return Promise.resolve(chunk);
+		}
+
+		if (this._ended) {
+			return Promise.resolve(void 0);
 		}
 
 		return new Promise((resolve, reject) => {
@@ -54,7 +61,8 @@ Object.assign(AsyncResponse.prototype, Response.prototype, {
 			this.write(chunk);
 		}
 
-		this._chunks.push(void 0);
+		this._ended = true;
+		this.write(void 0);
 	}
 });
 
