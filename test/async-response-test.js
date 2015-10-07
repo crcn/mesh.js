@@ -12,9 +12,9 @@ describe(__filename + "#", function() {
     response.end();
 
     var ret = co(function*() {
-      expect(yield response.read()).to.be("a");
-      expect(yield response.read()).to.be("b");
-      expect(yield response.read()).to.be(void 0);
+      expect((yield response.read()).value).to.be("a");
+      expect((yield response.read()).value).to.be("b");
+      expect((yield response.read()).value).to.be(void 0);
     });
 
     yield ret;
@@ -24,9 +24,9 @@ describe(__filename + "#", function() {
     var response = new AsyncResponse();
 
     var ret = co(function*() {
-      expect(yield response.read()).to.be("a");
-      expect(yield response.read()).to.be("b");
-      expect(yield response.read()).to.be(void 0);
+      expect((yield response.read()).value).to.be("a");
+      expect((yield response.read()).value).to.be("b");
+      expect((yield response.read()).value).to.be(void 0);
     });
 
     response.write("a");
@@ -40,9 +40,9 @@ describe(__filename + "#", function() {
     var response = new AsyncResponse();
 
     var ret = co(function*() {
-      expect(yield response.read()).to.be("a");
-      expect(yield response.read()).to.be("b");
-      expect(yield response.read()).to.be(void 0);
+      expect((yield response.read()).value).to.be("a");
+      expect((yield response.read()).value).to.be("b");
+      expect((yield response.read()).value).to.be(void 0);
     });
 
     response.write("a");
@@ -57,9 +57,9 @@ describe(__filename + "#", function() {
       response.end("b");
     });
 
-    expect(yield response.read()).to.be("a");
-    expect(yield response.read()).to.be("b");
-    expect(yield response.read()).to.be(void 0);
+    expect((yield response.read()).value).to.be("a");
+    expect((yield response.read()).value).to.be("b");
+    expect((yield response.read()).value).to.be(void 0);
   }));
 
   it("can continue to read after the response has ended", co.wrap(function*() {
@@ -99,7 +99,7 @@ describe(__filename + "#", function() {
     } catch (e) { err = e; }
 
     expect(err.message).to.be("something went wrong");
-    expect(yield response.read()).to.be("chunk");
-    expect(yield response.read()).to.be(void 0);
+    expect((yield response.read()).value).to.be("chunk");
+    expect((yield response.read()).value).to.be(void 0);
   }));
 });

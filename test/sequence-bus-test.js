@@ -22,9 +22,9 @@ describe(__filename + "#", function() {
 
     var response = bus.execute();
 
-    expect(yield response.read()).to.be("a");
-    expect(yield response.read()).to.be("b");
-    expect(yield response.read()).to.be(void 0);
+    expect((yield response.read()).value).to.be("a");
+    expect((yield response.read()).value).to.be("b");
+    expect((yield response.read()).value).to.be(void 0);
   }));
 
   it("skips a bus that was removed during execution", co.wrap(function*() {
@@ -41,9 +41,9 @@ describe(__filename + "#", function() {
     var bus = new SequenceBus(busses);
     var response = bus.execute(busses);
 
-    expect(yield response.read()).to.be("a");
-    expect(yield response.read()).to.be("b");
-    expect(yield response.read()).to.be("c");
+    expect((yield response.read()).value).to.be("a");
+    expect((yield response.read()).value).to.be("b");
+    expect((yield response.read()).value).to.be("c");
 
   }));
 
@@ -57,5 +57,4 @@ describe(__filename + "#", function() {
 
     expect(err.message).to.be("unknown error");
   }));
-
 });

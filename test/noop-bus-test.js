@@ -11,6 +11,6 @@ describe(__filename + "#", function() {
   it("returns an empty response with no data", co.wrap(function*() {
     var noop     = new NoopBus();
     var response = noop.execute();
-    expect(yield response.read()).to.be(void 0);
+    expect((yield response.read()).done).to.be(true);
   }));
 });

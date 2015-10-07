@@ -9,7 +9,7 @@ describe(__filename + "#", function() {
 
     // sanity check to ensure read() never returns a value
     for (var i = 10; i--;) {
-      expect(yield response.read()).to.be(void 0);
+      expect((yield response.read()).done).to.be(true);
     }
   }));
 

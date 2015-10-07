@@ -40,7 +40,7 @@ Object.assign(AsyncResponse.prototype, Response.prototype, {
     }
 
     if (this._ended) {
-      return Promise.resolve(void 0);
+      return Promise.resolve({ value: void 0, done: true });
     }
 
     return new Promise((resolve, reject) => {
@@ -62,9 +62,8 @@ Object.assign(AsyncResponse.prototype, Response.prototype, {
   /**
    */
 
-  write: function(chunk) {
-    this._chunks.push(chunk);
-    this.__signalWrite();
+  write: function(value) {
+    this._writeChunk({ value: value, done: false });
   },
 
   /**
@@ -77,7 +76,15 @@ Object.assign(AsyncResponse.prototype, Response.prototype, {
     }
 
     this._ended = true;
-    this.write(void 0);
+    this.__signalWrite();
+  },
+
+  /**
+   */
+
+  _writeChunk: function(chunk) {
+    this._chunks.push(chunk);
+    this.__signalWrite();
   }
 });
 
