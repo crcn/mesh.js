@@ -10,9 +10,9 @@ function NoopBus() {
  */
 
 Object.assign(NoopBus.prototype, {
-	execute: function(operation) {
-		return new EmptyResponse();
-	}
+  execute: function(operation) {
+    return new EmptyResponse();
+  }
 });
 
 /**

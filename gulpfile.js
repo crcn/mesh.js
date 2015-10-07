@@ -23,35 +23,35 @@ require("babel/register")();
 var paths = {
   testFiles   : ["test/**/*-test.js"],
   appFiles    : ["lib/**/*.js"],
-  allJSFiles  : ["!{node_modules,node_modules/**}", "**/*"],
-  allFiles    : ["**/*.js", "!node_modules/**"]
+  allJSFiles  : ["*.js", "test/*.js"],
+  allFiles    : ["*.js", "test/**", "utils/**", "extra/**", "examples/**"]
 };
 
 /**
  */
 
 var mochaOptions = {
-  bail     : options.bail     !== 'false',
-  reporter : options.reporter || 'dot',
-  grep     : options.grep   || options.only,
+  bail     : options.bail     !== "false",
+  reporter : options.reporter || "dot",
+  grep     : options.grep     || options.only,
   timeout  : 500
-}
+};
 
 /**
  */
 
-gulp.task("test-coverage", function (complete) {
+gulp.task("test-coverage", function(complete) {
   gulp.
   src(paths.appFiles).
   pipe(istanbul()).
   pipe(istanbul.hookRequire()).
-  on("finish", function () {
+  on("finish", function() {
     gulp.
     src(paths.testFiles).
     pipe(plumber()).
     pipe(mocha(mochaOptions)).
     pipe(istanbul.writeReports({
-        reporters: ["text","text-summary", "lcov"]
+      reporters: ["text", "text-summary", "lcov"]
     })).
     on("end", complete);
   });
@@ -60,7 +60,7 @@ gulp.task("test-coverage", function (complete) {
 /**
  */
 
-gulp.task("test-coveralls", ["test-coverage"], function () {
+gulp.task("test-coveralls", ["test-coverage"], function() {
   return gulp.
   src("coverage/**/lcov.info").
   pipe(coveralls());
@@ -73,9 +73,9 @@ gulp.task("bundle", function() {
   return browserify("./lib/index.js").
   plugin(collapser).
   bundle().
-  pipe(source(pkg.name + '.js')).
+  pipe(source(pkg.name + ".js")).
   pipe(buffer()).
-  pipe(gulp.dest('./dist'));
+  pipe(gulp.dest("./dist"));
 });
 
 /**
@@ -86,9 +86,9 @@ gulp.task("minify", ["bundle"], function() {
   src("./dist/" + pkg.name + ".js").
   pipe(uglify()).
   pipe(rename(function(path) {
-      path.basename += ".min";
+    path.basename += ".min";
   })).
-  pipe(gulp.dest('./dist'));
+  pipe(gulp.dest("./dist"));
 });
 
 /**
@@ -108,6 +108,7 @@ gulp.task("jscs", function() {
     "preset": "google",
     "requireParenthesesAroundIIFE": true,
     "maximumLineLength": 200,
+    "esnext": true,
     "validateLineBreaks": "LF",
     "validateIndentation": 2,
     "validateQuoteMarks": "\"",
@@ -125,19 +126,19 @@ gulp.task("jscs", function() {
  */
 
 gulp.task("jshint", function() {
-    return gulp.
-    src(paths.allJSFiles).
-    pipe(jshint({
-      es3: true,
-      evil: true
-    })).
-    pipe(jshint.reporter('default'));
+  return gulp.
+  src(paths.allJSFiles).
+  pipe(jshint({
+    esnext: true,
+    evil: true
+  })).
+  pipe(jshint.reporter("default"));
 });
 
 /**
  */
 
-gulp.task("test", function (complete) {
+gulp.task("test", function(complete) {
   gulp.
   src(paths.testFiles, { read: false }).
   pipe(plumber()).
@@ -152,28 +153,28 @@ var iofwatch = process.argv.indexOf("watch");
  * runs previous tasks (1 or more)
  */
 
-gulp.task("watch", function () {
+gulp.task("watch", function() {
   gulp.watch(paths.allFiles, process.argv.slice(2, iofwatch));
 });
 
 /**
  */
 
-gulp.task("default", function () {
+gulp.task("default", function() {
   return gulp.run("test-coverage");
 });
 
 /**
  */
 
-gulp.task("examples", function (next) {
+gulp.task("examples", function(next) {
   require("./examples/_app");
 });
 
 /**
  */
 
-gulp.doneCallback = function (err) {
+gulp.doneCallback = function(err) {
 
   // a bit hacky, but fixes issue with testing where process
   // doesn't exist process. Also fixes case where timeout / interval are set (CC)

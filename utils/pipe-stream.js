@@ -21,7 +21,7 @@ export default function(readable, writable, ops) {
 					if (ops.end) writable.end();
 					resolve();
 				}
-			}, writable.write.bind(writable));
+			}, writable.error.bind(writable));
 		}
 		pump();
 	});

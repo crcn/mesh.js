@@ -1,14 +1,16 @@
 import Response from "./response";
 
 /**
+ * TODO - break this out into writable stream
  */
 
 function AsyncResponse(run) {
-	Response.call(this);
-	this._chunks = [];
+  Response.call(this);
+  this._chunks = [];
+  this._errors = [];
 
-	// todo - pass writable instead
-	if(run) run(this);
+  // todo - pass writable instead
+  if (run) run(this);
 }
 
 /**
@@ -16,54 +18,67 @@ function AsyncResponse(run) {
 
 Object.assign(AsyncResponse.prototype, Response.prototype, {
 
-	/**
-	 * super private
-	 */
+  /**
+   * super private
+   */
 
-	__signalWrite: function() { },
+  __signalWrite: function() { },
 
-	/**
-	 */
+  /**
+   */
 
-	read: function() {
+  read: function() {
 
-		if (!!this._chunks.length) {
-			var chunk = this._chunks.shift();
-			return Promise.resolve(chunk);
-		}
+    if (!!this._errors.length) {
+      var error = this._errors.shift();
+      return Promise.reject(error);
+    }
 
-		if (this._ended) {
-			return Promise.resolve(void 0);
-		}
+    if (!!this._chunks.length) {
+      var chunk = this._chunks.shift();
+      return Promise.resolve(chunk);
+    }
 
-		return new Promise((resolve, reject) => {
-			this.__signalWrite = () => {
-				this.__signalWrite = () => { };
-				this.read().then(resolve, reject);
-			}
-		});
-	},
+    if (this._ended) {
+      return Promise.resolve(void 0);
+    }
 
-	/**
-	 */
+    return new Promise((resolve, reject) => {
+      this.__signalWrite = () => {
+        this.__signalWrite = () => { };
+        this.read().then(resolve, reject);
+      };
+    });
+  },
 
-	write: function(chunk) {
-		this._chunks.push(chunk);
-		this.__signalWrite();
-	},
+  /**
+   */
 
-	/**
-	 */
+  error: function(error) {
+    this._errors.push(error);
+    this.__signalWrite();
+  },
 
-	end: function(chunk) {
+  /**
+   */
 
-		if (chunk != void 0) {
-			this.write(chunk);
-		}
+  write: function(chunk) {
+    this._chunks.push(chunk);
+    this.__signalWrite();
+  },
 
-		this._ended = true;
-		this.write(void 0);
-	}
+  /**
+   */
+
+  end: function(chunk) {
+
+    if (chunk != void 0) {
+      this.write(chunk);
+    }
+
+    this._ended = true;
+    this.write(void 0);
+  }
 });
 
 /**

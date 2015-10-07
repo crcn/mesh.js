@@ -9,9 +9,9 @@ function Bus() {
  */
 
 Object.assign(Bus.prototype, {
-	execute: function(operation) {
-		// OVERRIDE ME
-	}
+  execute: function(operation) {
+    // OVERRIDE ME
+  }
 });
 
 /**

@@ -9,9 +9,9 @@ function FallbackBus() {
  */
 
 Object.assign(FallbackBus.prototype, Bus.prototype, {
-	execute: function(operation) {
-		
-	}
+  execute: function(operation) {
+
+  }
 });
 
 /**
