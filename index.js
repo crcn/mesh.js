@@ -6,6 +6,7 @@
 export { default as Bus } from "./bus";
 export { default as NoopBus } from "./noop-bus";
 export { default as SequenceBus } from "./sequence-bus";
+export { default as ParallelBus } from "./parallel-bus";
 
 /**
  * responses

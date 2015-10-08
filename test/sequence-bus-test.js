@@ -24,7 +24,7 @@ describe(__filename + "#", function() {
 
     expect((yield response.read()).value).to.be("a");
     expect((yield response.read()).value).to.be("b");
-    expect((yield response.read()).value).to.be(void 0);
+    expect((yield response.read()).done).to.be(true);
   }));
 
   it("skips a bus that was removed during execution", co.wrap(function*() {
@@ -44,7 +44,6 @@ describe(__filename + "#", function() {
     expect((yield response.read()).value).to.be("a");
     expect((yield response.read()).value).to.be("b");
     expect((yield response.read()).value).to.be("c");
-
   }));
 
   it("passes errors down", co.wrap(function*() {
