@@ -1,8 +1,13 @@
-import { BufferedBus } from "..";
+import { BufferedBus, Bus } from "..";
 import co from "co";
 import expect from "expect.js";
 
 describe(__filename + "#", function() {
+
+  it("is a bus", function() {
+    expect(new BufferedBus()).to.be.an(Bus);
+  });
+
   it("can return a buffered chunk", co.wrap(function*() {
     var bus  = new BufferedBus(void 0, "chunk");
     var resp = bus.execute();

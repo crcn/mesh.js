@@ -1,5 +1,7 @@
-import AsyncResponse from "./async-response";
+import Bus from "./bus";
 import pipe from "./internal/pipe-stream";
+import extend from "./internal/extend";
+import AsyncResponse from "./async-response";
 
 /**
  */
@@ -11,7 +13,7 @@ function SequenceBus(busses) {
 /**
  */
 
-Object.assign(SequenceBus.prototype, {
+extend(Bus, SequenceBus, {
 
   /**
    */

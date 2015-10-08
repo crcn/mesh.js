@@ -1,4 +1,6 @@
+import Bus     from "./bus";
 import NoopBus from "./noop-bus";
+import extend  from "./internal/extend";
 
 /**
  */
@@ -12,7 +14,7 @@ function AcceptBus(filter, acceptBus, rejectBus) {
 /**
  */
 
-Object.assign(AcceptBus.prototype, {
+extend(Bus, AcceptBus, {
 
   /**
    */

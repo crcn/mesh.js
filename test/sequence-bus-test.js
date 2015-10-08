@@ -1,23 +1,18 @@
-import { SequenceBus, AsyncResponse, EmptyResponse } from "..";
+import { Bus, SequenceBus, AsyncResponse, EmptyResponse, BufferedBus } from "..";
 import co from "co";
 import expect from "expect.js";
 
 describe(__filename + "#", function() {
 
-  function YieldsBus(error, result) {
-    this.execute = function(operation) {
-      return new AsyncResponse(function(writable) {
-        if (error) return writable.error(error);
-        writable.end(result);
-      });
-    };
-  }
+  it("is a bus", function() {
+    expect(new SequenceBus()).to.be.an(Bus);
+  });
 
   it("executes ops against multiple busses and joins the read() data", co.wrap(function*() {
 
     var bus = new SequenceBus([
-      new YieldsBus(void 0, "a"),
-      new YieldsBus(void 0, "b")
+      new BufferedBus(void 0, "a"),
+      new BufferedBus(void 0, "b")
     ]);
 
     var response = bus.execute();
@@ -36,7 +31,7 @@ describe(__filename + "#", function() {
       }
     };
 
-    var busses = [new YieldsBus(void 0, "a"), rmbus, new YieldsBus(void 0, "b"), new YieldsBus(void 0, "c")];
+    var busses = [new BufferedBus(void 0, "a"), rmbus, new BufferedBus(void 0, "b"), new BufferedBus(void 0, "c")];
 
     var bus = new SequenceBus(busses);
     var response = bus.execute(busses);
@@ -47,7 +42,7 @@ describe(__filename + "#", function() {
   }));
 
   it("passes errors down", co.wrap(function*() {
-    var bus = new SequenceBus([new YieldsBus(new Error("unknown error"))]);
+    var bus = new SequenceBus([new BufferedBus(new Error("unknown error"))]);
     var err;
 
     try {

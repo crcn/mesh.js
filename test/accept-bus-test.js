@@ -1,9 +1,14 @@
-import { AcceptBus, BufferedBus } from "..";
+import { AcceptBus, Bus, BufferedBus } from "..";
 import sift from "sift";
 import co from "co";
 import expect from "expect.js";
 
 describe(__filename + "#", function() {
+
+  it("is a bus", function() {
+    expect(new AcceptBus()).to.be.an(Bus);
+  });
+
   it("can redirect an operation according to the accept bus filter", co.wrap(function*() {
     var bus = new AcceptBus(
       sift({ name: "op1" }),

@@ -1,5 +1,7 @@
+import Bus from "./bus";
+import pipe from "./internal/pipe-stream";
+import extend from "./internal/extend";
 import AsyncResponse from "./async-response";
-import pipe          from "./internal/pipe-stream";
 
 /**
  */
@@ -11,7 +13,7 @@ function ParallelBus(busses) {
 /**
  */
 
-Object.assign(ParallelBus.prototype, {
+extend(Bus, ParallelBus, {
 
   /**
    */

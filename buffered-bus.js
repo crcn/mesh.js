@@ -1,3 +1,5 @@
+import Bus from "./bus";
+import extend from "./internal/extend";
 import AsyncResponse from "./async-response";
 
 /**
@@ -11,7 +13,7 @@ function BufferedBus(error, chunkValues) {
 /**
  */
 
-Object.assign(BufferedBus.prototype, {
+extend(Bus, BufferedBus, {
   execute: function(operation) {
     return new AsyncResponse((writable) => {
       if (this._error) return writable.error(this._error);

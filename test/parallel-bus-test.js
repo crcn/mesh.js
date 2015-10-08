@@ -1,23 +1,18 @@
-import { ParallelBus, AsyncResponse, EmptyResponse } from "..";
+import { Bus, ParallelBus, AsyncResponse, EmptyResponse, BufferedBus } from "..";
 import co from "co";
 import expect from "expect.js";
 
 describe(__filename + "#", function() {
 
-  function YieldsBus(error, result) {
-    this.execute = function(operation) {
-      return new AsyncResponse(function(writable) {
-        if (error) return writable.error(error);
-        writable.end(result);
-      });
-    };
-  }
+  it("is a bus", function() {
+    expect(new ParallelBus()).to.be.an(Bus);
+  });
 
   it("executes ops against multiple busses and joins the read() data", co.wrap(function*() {
 
     var bus = new ParallelBus([
-      new YieldsBus(void 0, "a"),
-      new YieldsBus(void 0, "b")
+      new BufferedBus(void 0, "a"),
+      new BufferedBus(void 0, "b")
     ]);
 
     var response = bus.execute();
@@ -62,7 +57,7 @@ describe(__filename + "#", function() {
 
   it("passes errors down", co.wrap(function*() {
     var bus = new ParallelBus([
-      new YieldsBus(new Error("error"))
+      new BufferedBus(new Error("error"))
     ]);
 
     var response = bus.execute();
@@ -84,7 +79,7 @@ describe(__filename + "#", function() {
           return new EmptyResponse();
         }
       },
-      new YieldsBus(void 0, "a")
+      new BufferedBus(void 0, "a")
     ]);
     var response = bus.execute();
     expect((yield response.read()).value).to.be("a");
