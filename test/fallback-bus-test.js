@@ -42,4 +42,8 @@ describe(__filename + "#", function() {
     // TODO
     // expect((yield response.read()).done).to.be(true);
   }));
+
+  xit("continues run operations if a bus has been removed", co.wrap(function*() {
+
+  }));
 });
