@@ -1,5 +1,5 @@
 import AsyncResponse from "./async-response";
-import pipe          from "./utils/pipe-stream";
+import pipe          from "./internal/pipe-stream";
 
 /**
  */
@@ -24,7 +24,7 @@ Object.assign(ParallelBus.prototype, {
 
       busses.forEach((bus) => {
         pipe(bus.execute(operation), writable, { end: false}).then(() => {
-          if(!(--numLeft)) writable.end();
+          if (!(--numLeft)) writable.end();
         });
       });
     });

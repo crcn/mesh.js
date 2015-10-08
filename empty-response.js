@@ -14,8 +14,8 @@ function EmptyResponse() {
 Object.assign(EmptyResponse.prototype, Response.prototype, {
   read: function() {
     return Promise.resolve({
-      value: void 0,
-      done: true
+      value : void 0,
+      done  : true
     });
   }
 });

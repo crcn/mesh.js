@@ -1,5 +1,5 @@
 import AsyncResponse from "./async-response";
-import pipe from "./utils/pipe-stream";
+import pipe from "./internal/pipe-stream";
 
 /**
  */

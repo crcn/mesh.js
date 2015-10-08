@@ -67,9 +67,11 @@ describe(__filename + "#", function() {
 
     var response = bus.execute();
     var err;
+
     try {
       yield bus.execute().read();
-    } catch(e) { err = e; }
+    } catch (e) { err = e; }
+
     expect(err.message).to.be("error");
   }));
 
