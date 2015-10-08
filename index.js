@@ -10,6 +10,7 @@ export { default as RejectBus   } from "./reject-bus";
 export { default as SequenceBus } from "./sequence-bus";
 export { default as ParallelBus } from "./parallel-bus";
 export { default as BufferedBus } from "./buffered-bus";
+export { default as FallbackBus } from "./fallback-bus";
 
 /**
  * responses
