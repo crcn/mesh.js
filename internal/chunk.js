@@ -3,7 +3,7 @@
 
 function Chunk(value, done) {
   this.value = value;
-  this.done  = done;
+  this.done  = done === true;
 }
 
 /**

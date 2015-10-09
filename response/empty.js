@@ -1,26 +1,18 @@
-import Response from "./base";
+import BufferedResponse from "./buffered";
 import extend from "../internal/extend";
 
 /**
  */
 
 function EmptyResponse() {
-  Response.call(this);
-  this._resolve();
+  BufferedResponse.call(this);
 }
 
 /**
  */
 
 
-extend(Response, EmptyResponse, {
-  read: function() {
-    return Promise.resolve({
-      value : void 0,
-      done  : true
-    });
-  }
-});
+extend(BufferedResponse, EmptyResponse);
 
 /**
  */

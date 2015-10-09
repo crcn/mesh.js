@@ -1,13 +1,13 @@
 import Bus from "./base";
 import extend from "../internal/extend";
-import AsyncResponse from "../response/async";
+import BufferedResponse from "../response/buffered";
 
 /**
  */
 
 function BufferedBus(error, chunkValues) {
   this._error       = error;
-  this._chunkValues = Array.isArray(chunkValues) ? chunkValues : chunkValues == void 0 ? [] : [chunkValues];
+  this._chunkValues = chunkValues;
 }
 
 /**
@@ -15,13 +15,7 @@ function BufferedBus(error, chunkValues) {
 
 extend(Bus, BufferedBus, {
   execute: function(operation) {
-    return new AsyncResponse((writable) => {
-      if (this._error) return writable.error(this._error);
-      for (var chunkValue of this._chunkValues) {
-        writable.write(chunkValue);
-      }
-      writable.end();
-    });
+    return new BufferedResponse(this._error, this._chunkValues);
   }
 });
 

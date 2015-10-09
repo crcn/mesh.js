@@ -19,6 +19,8 @@ export { default as CatchErrorBus } from "./bus/catch-error";
  * responses
  */
 
-export { default as Response      } from "./response/base";
-export { default as EmptyResponse } from "./response/empty";
-export { default as AsyncResponse } from "./response/async";
+export { default as Response         } from "./response/base";
+export { default as EmptyResponse    } from "./response/empty";
+export { default as AsyncResponse    } from "./response/async";
+export { default as ErrorResponse    } from "./response/error";
+export { default as BufferedResponse } from "./response/buffered";
