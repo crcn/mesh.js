@@ -22,13 +22,11 @@ extend(Bus, RaceBus, {
       busses.forEach((bus, i) => {
         var response = bus.execute(operation);
         pump(response, ({value, done}) => {
-          if (done) {
-            if (!~found) {
-              if ((--numLeft) === 0) {
-                writable.end();
-              }
-              return;
+          if (done && !~found) {
+            if ((--numLeft) === 0) {
+              writable.end();
             }
+            return;
           }
           if (~found && found !== i) return;
           if (done) {
