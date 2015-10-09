@@ -7,21 +7,17 @@ Mesh is a flexible data synchronization library that makes it incredibly easy to
 
 Mesh is just a bundle of utility functions, and doesn't have much of an opinion about how you should use it.
 
-Simple realtime example:
+Simple example:
 
 ```javascript
-import { RejectBus, WrapBus } from "mesh";
-import sift from "sift";
-import MemoryBus from "mesh-memory-db-bus";
-import SocketioBus from "mesh-socketio-bus";
+import { WrapBus, BufferedResponse } from "mesh";
 
-var bus = new MemoryBus();
-bus     = new SpyableBus(bus);
+var pingBus = new WrapBus(function({name}) {
+  return new BufferedResponse(void 0, `hello {name}!`);
+});
 
-bus     = new SocketioBus({ host: "//127.0.0.1:8080" }, bus);
-
-bus({
-  name: "insert"
+pingBus.execute({ name: "world" }).read().then(function({value}) {
+  console.log(value); // hello world!
 });
 ```
 
