@@ -24,7 +24,7 @@ var paths = {
   testFiles   : ["test/**/*-test.js"],
   appFiles    : ["lib/**/*.js"],
   allJSFiles  : ["*.js", "test/*.js"],
-  allFiles    : ["*.js", "test/**", "internal/**", "extra/**", "examples/**"]
+  allFiles    : ["*.js", "test/**", "internal/**", "bus/**", "response/**", "extra/**", "examples/**"]
 };
 
 /**

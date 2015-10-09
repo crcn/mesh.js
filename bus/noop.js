@@ -1,6 +1,6 @@
-import Bus from "./bus";
-import extend from "./internal/extend";
-import EmptyResponse from "./empty-response";
+import Bus from "./base";
+import extend from "../internal/extend";
+import EmptyResponse from "../response/empty";
 
 /**
  */

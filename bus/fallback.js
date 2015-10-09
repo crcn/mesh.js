@@ -1,7 +1,7 @@
-import Bus from "./bus";
-import extend from "./internal/extend";
-import AsyncResponse from "./async-response";
-import pump from "./internal/pump-stream";
+import Bus from "./base";
+import extend from "../internal/extend";
+import AsyncResponse from "../response/async";
+import pump from "../internal/pump-stream";
 
 /**
  */

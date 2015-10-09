@@ -3,22 +3,22 @@
  * busses
  */
 
-export { default as Bus           } from "./bus";
-export { default as NoopBus       } from "./noop-bus";
-export { default as RaceBus       } from "./race-bus";
-export { default as RetryBus      } from "./retry-bus";
-export { default as AcceptBus     } from "./accept-bus";
-export { default as RejectBus     } from "./reject-bus";
-export { default as SequenceBus   } from "./sequence-bus";
-export { default as ParallelBus   } from "./parallel-bus";
-export { default as BufferedBus   } from "./buffered-bus";
-export { default as FallbackBus   } from "./fallback-bus";
-export { default as CatchErrorBus } from "./catch-error-bus";
+export { default as Bus           } from "./bus/base";
+export { default as NoopBus       } from "./bus/noop";
+export { default as RaceBus       } from "./bus/race";
+export { default as RetryBus      } from "./bus/retry";
+export { default as AcceptBus     } from "./bus/accept";
+export { default as RejectBus     } from "./bus/reject";
+export { default as SequenceBus   } from "./bus/sequence";
+export { default as ParallelBus   } from "./bus/parallel";
+export { default as BufferedBus   } from "./bus/buffered";
+export { default as FallbackBus   } from "./bus/fallback";
+export { default as CatchErrorBus } from "./bus/catch-error";
 
 /**
  * responses
  */
 
-export { default as Response      } from "./response";
-export { default as EmptyResponse } from "./empty-response";
-export { default as AsyncResponse } from "./async-response";
+export { default as Response      } from "./response/base";
+export { default as EmptyResponse } from "./response/empty";
+export { default as AsyncResponse } from "./response/async";

@@ -1,4 +1,4 @@
-import Response from "./response";
+import Response from "./base";
 
 /**
  * TODO - break this out into writable stream

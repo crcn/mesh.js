@@ -1,6 +1,6 @@
-import Bus     from "./bus";
-import NoopBus from "./noop-bus";
-import extend  from "./internal/extend";
+import Bus     from "./base";
+import NoopBus from "./noop";
+import extend  from "../internal/extend";
 
 /**
  */

@@ -1,4 +1,4 @@
-import Response from "./response";
+import Response from "./base";
 
 /**
  */
