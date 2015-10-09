@@ -24,9 +24,11 @@ extend(Bus, CatchErrorBus, {
           writable.write(value);
         }
       }, (error) => {
-        var p = this._catchError(error);
-        if (p == void 0) {
+        try {
+          var p = this._catchError(error, operation);
           writable.end();
+        } catch(e) {
+          writable.error(e);
         }
       });
     });

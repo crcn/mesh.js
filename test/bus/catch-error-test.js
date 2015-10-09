@@ -10,21 +10,25 @@ describe(__filename + "#", function() {
 
   it("eats errors that have been caught", co.wrap(function*(next) {
     var caughtError;
-    var bus = new CatchErrorBus(new BufferedBus(new Error("an error")), function(error) {
+    var bus = new CatchErrorBus(new BufferedBus(new Error("an error")), function(error, operation) {
       caughtError = error;
+      expect(operation.name).to.be("op1");
     });
 
-    yield bus.execute().read();
+    yield bus.execute({ name: "op1" }).read();
     expect(caughtError.message).to.be("an error");
   }));
 
-  xit("can re-throw ", co.wrap(function*(next) {
-    var caughtError;
-    var bus = new CatchErrorBus(new BufferedBus(new Error("an error")), function(error) {
-      caughtError = error;
+  it("can re-throw ", co.wrap(function*(next) {
+
+    var bus = new CatchErrorBus(new BufferedBus(new Error("an error")), function(error, operation) {
+      throw new Error("uncaught error");
     });
 
-    yield bus.execute().read();
-    expect(caughtError.message).to.be("an error");
+    var err;
+    try {
+      yield bus.execute().read();
+    } catch(e) { err = e; }
+    expect(err.message).to.be("uncaught error");
   }));
 });
