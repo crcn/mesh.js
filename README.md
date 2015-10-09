@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mojo-js/mesh.js.svg)](https://travis-ci.org/mojo-js/mesh.js) [![Coverage Status](https://coveralls.io/repos/mojo-js/mesh.js/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/mesh.js?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/mesh.js.svg)](https://david-dm.org/mojo-js/mesh.js) [![Join the chat at https://gitter.im/mojo-js/mesh.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/mesh.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/crcn/mesh.js.svg)](https://travis-ci.org/crcn/mesh.js) [![Coverage Status](https://coveralls.io/repos/crcn/mesh.js/badge.svg?branch=master)](https://coveralls.io/r/crcn/mesh.js?branch=master) [![Dependency Status](https://david-dm.org/crcn/mesh.js.svg)](https://david-dm.org/crcn/mesh.js) [![Join the chat at https://gitter.im/crcn/mesh.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/mesh.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 **API Docs can be viewed [here](http://mesh.mojojs.com/docs)**
 
@@ -51,20 +51,20 @@ bus({
   - [Database Adapter](./examples/database-adapter) - in-memory database adapter example.
 - Discuss
   - [Google group](https://groups.google.com/forum/#!forum/meshjs)
-  - [Gitter chat](https://gitter.im/mojo-js/mesh.js)
+  - [Gitter chat](https://gitter.im/crcn/mesh.js)
 - Documentation
   - [Core API](http://mesh.mojojs.com/docs)
   - [Load balancing API](http://mesh.mojojs.com/docs/balance)
   - [Writing adapters](http://mesh.mojojs.com/docs/database-adapters)
 - [Plugins](https://www.npmjs.com/search?q=meshjs)
-  - [load balancing algorithms](https://github.com/mojo-js/mesh-balance)
-  - [local storage](https://github.com/mojo-js/mesh-local-storage)
-  - [pubnub](https://github.com/mojo-js/mesh-pubnub)
-  - [webrtc](https://github.com/mojo-js/mesh-webrtc)
-  - [mongodb](https://github.com/mojo-js/mesh-mongodb)
-  - [memory database](https://github.com/mojo-js/mesh-memory)
-  - [loki](https://github.com/mojo-js/mesh-loki)
-  - [socket.io](https://github.com/mojo-js/mesh-loki)
+  - [load balancing algorithms](https://github.com/crcn/mesh-balance)
+  - [local storage](https://github.com/crcn/mesh-local-storage)
+  - [pubnub](https://github.com/crcn/mesh-pubnub)
+  - [webrtc](https://github.com/crcn/mesh-webrtc)
+  - [mongodb](https://github.com/crcn/mesh-mongodb)
+  - [memory database](https://github.com/crcn/mesh-memory)
+  - [loki](https://github.com/crcn/mesh-loki)
+  - [socket.io](https://github.com/crcn/mesh-loki)
 - [Extra utilities](./extra)
   - [cache](./extra/cache) - caches operations results. Sorta like memoization.
   - [commands](./extra/commands) - easily register operation handlers by name

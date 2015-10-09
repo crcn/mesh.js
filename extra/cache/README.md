@@ -1,5 +1,5 @@
 This snippet caches operations. It's entirely customizable, and interoperable
-with many adapters including [mesh-mongodb](https://github.com/mojo-js/mesh-mongodb), [mesh-local-storage](https://github.com/mojo-js/mesh-local-storage), [mesh-memory](https://github.com/mojo-js/mesh-memory), [mesh-loki](https://github.com/mojo-js/mesh-mongodb), and [mesh-http](https://github.com/mojo-js/mesh-http).
+with many adapters including [mesh-mongodb](https://github.com/crcn/mesh-mongodb), [mesh-local-storage](https://github.com/crcn/mesh-local-storage), [mesh-memory](https://github.com/crcn/mesh-memory), [mesh-loki](https://github.com/crcn/mesh-mongodb), and [mesh-http](https://github.com/crcn/mesh-http).
 
 Usage:
 

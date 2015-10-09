@@ -7,14 +7,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/mojo-js/mesh.js.git"
+    "url": "https://github.com/crcn/mesh.js.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mojo-js/mesh.js/issues"
+    "url": "https://github.com/crcn/mesh.js/issues"
   },
-  "homepage": "https://github.com/mojo-js/mesh.js",
+  "homepage": "https://github.com/crcn/mesh.js",
   "devDependencies": {
   },
   "dependencies": {
