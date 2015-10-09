@@ -1,4 +1,4 @@
-import { Bus, FallbackBus, BufferedBus } from "..";
+import { Bus, FallbackBus, BufferedBus, EmptyResponse } from "..";
 import expect from "expect.js";
 import co from "co";
 
@@ -43,7 +43,18 @@ describe(__filename + "#", function() {
     // expect((yield response.read()).done).to.be(true);
   }));
 
-  xit("continues run operations if a bus has been removed", co.wrap(function*() {
+  it("continues run operations if a bus has been removed", co.wrap(function*() {
+    var busses = [
+      {
+        execute: function(operation) {
+          busses.splice(0, 1);
+          return new EmptyResponse();
+        }
+      },
+      new BufferedBus(void 0, "a")
+    ];
 
+    var bus = new FallbackBus(busses);
+    expect((yield bus.execute({}).read()).value).to.be("a");
   }));
 });

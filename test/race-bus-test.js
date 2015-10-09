@@ -1,4 +1,4 @@
-import { Bus, RaceBus, BufferedBus, AsyncResponse } from "..";
+import { Bus, RaceBus, BufferedBus, NoopBus, AsyncResponse, EmptyResponse } from "..";
 import expect from "expect.js";
 import co from "co";
 
@@ -32,7 +32,7 @@ describe(__filename + "#", function() {
     expect((yield response.read()).done).to.be(true);
   }));
 
-  xit("stops execution if an error occurs", co.wrap(function*() {
+  it("stops execution if an error occurs", co.wrap(function*() {
 
     var bus = new RaceBus([
       new BufferedBus(new Error("an error")),
@@ -47,8 +47,30 @@ describe(__filename + "#", function() {
     } catch (e) { err = e; }
 
     expect(err.message).to.be("an error");
+  }));
 
-    // TODO
-    // expect((yield response.read()).done).to.be(true);
+  it("continues run operations if a bus has been removed", co.wrap(function*() {
+    var busses = [
+      {
+        execute: function(operation) {
+          busses.splice(0, 1);
+          return new EmptyResponse();
+        }
+      },
+      new BufferedBus(void 0, "a")
+    ];
+
+    var bus = new RaceBus(busses);
+    expect((yield bus.execute({}).read()).value).to.be("a");
+  }));
+
+  it("properly ends if there is no data", co.wrap(function*() {
+    var busses = [
+      new NoopBus(),
+      new NoopBus()
+    ];
+
+    var bus = new RaceBus(busses);
+    expect((yield bus.execute({}).read()).done).to.be(true);
   }));
 });

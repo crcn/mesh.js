@@ -16,7 +16,7 @@ function FallbackBus(busses) {
 extend(Bus, FallbackBus, {
   execute: function(operation) {
     return new AsyncResponse((writable) => {
-      var busses = this._busses;
+      var busses = this._busses.concat();
       var next = (i) => {
         if (i === busses.length) return writable.end();
         var response = busses[i].execute(operation);
