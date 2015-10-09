@@ -1,8 +1,12 @@
-import { AsyncResponse } from "../..";
+import { AsyncResponse, Response } from "../..";
 import co from "co";
 import expect from "expect.js";
 
 describe(__filename + "#", function() {
+
+  it("is a Response", function() {
+    expect(new AsyncResponse()).to.be.an(Response);
+  });
 
   it("read() chunks immediately if they exist", co.wrap(function*() {
     var response = new AsyncResponse();

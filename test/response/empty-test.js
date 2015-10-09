@@ -1,8 +1,12 @@
-import { EmptyResponse } from "../..";
+import { EmptyResponse, Response } from "../..";
 import co from "co";
 import expect from "expect.js";
 
 describe(__filename + "#", function() {
+
+    it("is a Response", function() {
+      expect(new EmptyResponse()).to.be.an(Response);
+    });
 
   it("returns undefined when read is called", co.wrap(function*() {
     var response = new EmptyResponse();

@@ -1,4 +1,5 @@
 import Response from "./base";
+import extend from "../internal/extend";
 
 /**
  * TODO - break this out into writable stream
@@ -16,7 +17,7 @@ function AsyncResponse(run) {
 /**
  */
 
-Object.assign(AsyncResponse.prototype, Response.prototype, {
+extend(Response, AsyncResponse, {
 
   /**
    * super private
