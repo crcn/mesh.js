@@ -10,30 +10,18 @@ Mesh is just a bundle of utility functions, and doesn't have much of an opinion 
 Simple realtime example:
 
 ```javascript
-var mesh    = require("mesh");
-var storage = require("mesh-local-storage");
+import { RejectBus, WrapBus } from "mesh";
+import sift from "sift";
+import MemoryBus from "mesh-memory-db-bus";
+import SocketioBus from "mesh-socketio-bus";
 
-// use any one of these database adapters. They all handle
-// the same CRUD operations
-// var storage = require("mesh-memory");
-// var storage = require("mesh-loki");
-var realtime  = require("mesh-socket.io");
+var bus = new MemoryBus();
+bus     = new SpyableBus(bus);
 
-var storageBus = storage();
+bus     = new SocketioBus({ host: "//127.0.0.1:8080" }, bus);
 
-// persist all operations to socket.io & any operations from socket.io
-// back to local storage.
-var mergedBus = mesh.parallel(
-  storageBus,
-  realtime({ channel: "operations" }, storageBus)
-);
-
-// insert data. Persists to local storage, and gets
-// broadcasted to all connected clients.
-mergedBus({
-  name : "insert",
-  collection : "messages"
-  data : { text: "hello world" }
+bus({
+  name: "insert"
 });
 ```
 
