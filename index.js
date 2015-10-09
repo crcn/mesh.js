@@ -4,6 +4,7 @@
  */
 
 export { default as Bus           } from "./bus/base";
+export { default as MapBus        } from "./bus/map";
 export { default as NoopBus       } from "./bus/noop";
 export { default as RaceBus       } from "./bus/race";
 export { default as RetryBus      } from "./bus/retry";
