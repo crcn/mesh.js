@@ -1,4 +1,4 @@
-import { BufferedBus, Bus } from "..";
+import { BufferedBus, Bus } from "../..";
 import co from "co";
 import expect from "expect.js";
 

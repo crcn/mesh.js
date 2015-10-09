@@ -1,4 +1,4 @@
-import { EmptyResponse } from "..";
+import { EmptyResponse } from "../..";
 import co from "co";
 import expect from "expect.js";
 

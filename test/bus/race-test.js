@@ -1,4 +1,4 @@
-import { Bus, RaceBus, BufferedBus, NoopBus, AsyncResponse, EmptyResponse } from "..";
+import { Bus, RaceBus, BufferedBus, NoopBus, AsyncResponse, EmptyResponse } from "../..";
 import expect from "expect.js";
 import co from "co";
 

@@ -1,4 +1,4 @@
-import { AsyncResponse } from "..";
+import { AsyncResponse } from "../..";
 import co from "co";
 import expect from "expect.js";
 

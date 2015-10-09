@@ -1,4 +1,4 @@
-import { CatchErrorBus, BufferedBus, Bus } from "..";
+import { CatchErrorBus, BufferedBus, Bus } from "../..";
 import co from "co";
 import expect from "expect.js";
 

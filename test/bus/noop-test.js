@@ -1,4 +1,4 @@
-import { NoopBus, Bus } from "..";
+import { NoopBus, Bus } from "../..";
 import co from "co";
 import expect from "expect.js";
 
