@@ -13,7 +13,7 @@ Simple example:
 import { WrapBus, BufferedResponse } from "mesh";
 
 var pingBus = new WrapBus(function({name}) {
-  return new BufferedResponse(void 0, `hello {name}!`);
+  return new BufferedResponse(void 0, `hello ${name}!`);
 });
 
 pingBus.execute({ name: "world" }).read().then(function({value}) {

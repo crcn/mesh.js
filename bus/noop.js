@@ -11,6 +11,10 @@ function NoopBus() { }
  */
 
 extend(Bus, NoopBus, {
+
+  /**
+   */
+
   execute: function(operation) {
     return new EmptyResponse();
   }

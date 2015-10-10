@@ -14,6 +14,10 @@ function FallbackBus(busses) {
  */
 
 extend(Bus, FallbackBus, {
+
+  /**
+   */
+   
   execute: function(operation) {
     return new AsyncResponse((writable) => {
       var busses = this._busses.concat();

@@ -24,6 +24,10 @@ function RetryBus(maxRetries, errorFilter, bus) {
  */
 
 extend(Bus, RetryBus, {
+
+  /**
+   */
+   
   execute: function(operation) {
     return new AsyncResponse((writable) => {
       var hasChunk  = false;

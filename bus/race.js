@@ -4,16 +4,20 @@ import extend from "../internal/extend";
 import AsyncResponse from "../response/async";
 
 /**
-*/
+ */
 
 function RaceBus(busses) {
   this._busses = busses;
 }
 
 /**
-*/
+ */
 
 extend(Bus, RaceBus, {
+
+  /**
+   */
+
   execute: function(operation) {
     return new AsyncResponse((writable) => {
       var busses  = this._busses.concat();

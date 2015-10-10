@@ -15,6 +15,10 @@ function CatchErrorBus(bus, catchError) {
  */
 
 extend(Bus, CatchErrorBus, {
+
+  /**
+   */
+   
   execute: function(operation) {
     return new AsyncResponse((writable) => {
       pump(this._bus.execute(operation), ({value, done}) => {

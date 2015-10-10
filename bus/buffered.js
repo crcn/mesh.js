@@ -14,6 +14,10 @@ function BufferedBus(error, chunkValues) {
  */
 
 extend(Bus, BufferedBus, {
+
+  /**
+   */
+   
   execute: function(operation) {
     return new BufferedResponse(this._error, this._chunkValues);
   }

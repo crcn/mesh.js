@@ -15,6 +15,10 @@ function MapBus(bus, map) {
  */
 
 extend(Bus, MapBus, {
+
+  /**
+   */
+   
   execute: function(operation) {
     return new AsyncResponse((writable) => {
       pump(this._bus.execute(operation), ({value, done}) => {

@@ -11,6 +11,10 @@ function RejectBus(filter, rejectBus, acceptBus) {
  */
 
 Object.assign(RejectBus.prototype, {
+
+  /**
+   */
+
   execute: function(operation) {
     return this._bus.execute(operation);
   }
