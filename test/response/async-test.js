@@ -106,4 +106,31 @@ describe(__filename + "#", function() {
     expect((yield response.read()).value).to.be("chunk");
     expect((yield response.read()).value).to.be(void 0);
   }));
+
+  it("wait for a chunk to be read before writing", co.wrap(function*() {
+
+    var writeCounts = 0;
+
+    var response = new AsyncResponse(co.wrap(function*(writable) {
+      writeCounts++;
+      yield writable.write("a");
+      writeCounts++;
+      yield writable.write("b");
+      writeCounts++;
+      yield writable.write("c");
+      writeCounts++;
+      yield writable.end();
+      writeCounts++;
+    }));
+
+    expect(writeCounts).to.be(1);
+    expect((yield response.read()).value).to.be("a");
+    expect(writeCounts).to.be(2);
+    expect((yield response.read()).value).to.be("b");
+    expect(writeCounts).to.be(3);
+    expect((yield response.read()).value).to.be("c");
+    expect(writeCounts).to.be(4);
+    expect((yield response.read()).done).to.be(true);
+    expect(writeCounts).to.be(4);
+  }));
 });

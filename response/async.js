@@ -26,9 +26,17 @@ extend(Response, AsyncResponse, {
   __signalWrite: function() { },
 
   /**
+   * super private
+   */
+
+  __signalRead: function() { },
+
+  /**
    */
 
   read: function() {
+
+    this.__signalRead();
 
     if (!!this._errors.length) {
       var error = this._errors.shift();
@@ -64,7 +72,15 @@ extend(Response, AsyncResponse, {
    */
 
   write: function(value) {
-    this._writeChunk({ value: value, done: false });
+    return new Promise((resolve, reject) => {
+
+      this.__signalRead = () => {
+        this.__signalRead = () => { };
+        resolve();
+      }
+
+      this._writeChunk({ value: value, done: false });
+    })
   },
 
   /**
