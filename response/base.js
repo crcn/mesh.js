@@ -44,4 +44,4 @@ Object.assign(Response.prototype, {
 /**
  */
 
-export default Response;
+module.exports =  Response;

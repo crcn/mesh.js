@@ -1,6 +1,6 @@
-import Bus     from "./base";
-import NoopBus from "./noop";
-import extend  from "../internal/extend";
+var Bus = require("./base");
+var NoopBus = require("./noop");
+var extend = require("../internal/extend");
 
 /**
  */
@@ -27,4 +27,4 @@ extend(Bus, AcceptBus, {
 /**
  */
 
-export default AcceptBus;
+module.exports =  AcceptBus;

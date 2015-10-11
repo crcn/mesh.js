@@ -1,6 +1,6 @@
-import Chunk from "../internal/chunk";
-import extend from "../internal/extend";
-import Response from "./base";
+var Chunk = require("../internal/chunk");
+var extend = require("../internal/extend");
+var Response = require("./base");
 
 /**
  */
@@ -31,4 +31,4 @@ extend(Response, BufferedResponse, {
 /**
  */
 
-export default BufferedResponse;
+module.exports =  BufferedResponse;

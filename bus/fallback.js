@@ -1,7 +1,7 @@
-import Bus from "./base";
-import extend from "../internal/extend";
-import AsyncResponse from "../response/async";
-import pump from "../internal/pump-stream";
+var Bus = require("./base");
+var extend = require("../internal/extend");
+var AsyncResponse = require("../response/async");
+var pump = require("../internal/pump-stream");
 
 /**
  */
@@ -17,7 +17,7 @@ extend(Bus, FallbackBus, {
 
   /**
    */
-   
+
   execute: function(operation) {
     return new AsyncResponse((writable) => {
       var busses = this._busses.concat();
@@ -25,8 +25,8 @@ extend(Bus, FallbackBus, {
         if (i === busses.length) return writable.end();
         var response = busses[i].execute(operation);
         var hasChunk = false;
-        pump(response, ({value, done}) => {
-          if (done) {
+        pump(response, (chunk) => {
+          if (chunk.done) {
             if (hasChunk) {
               writable.end();
             } else {
@@ -34,7 +34,7 @@ extend(Bus, FallbackBus, {
             }
           } else {
             hasChunk = true;
-            writable.write(value);
+            writable.write(chunk.value);
           }
         }, writable.error.bind(writable));
       };
@@ -46,4 +46,4 @@ extend(Bus, FallbackBus, {
 /**
  */
 
-export default FallbackBus;
+module.exports =  FallbackBus;

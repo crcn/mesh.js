@@ -1,6 +1,6 @@
-import Bus from "./base";
-import extend from "../internal/extend";
-import EmptyResponse from "../response/empty";
+var Bus = require("./base");
+var extend = require("../internal/extend");
+var EmptyResponse = require("../response/empty");
 
 /**
  */
@@ -23,4 +23,4 @@ extend(Bus, NoopBus, {
 /**
  */
 
-export default NoopBus;
+module.exports =  NoopBus;

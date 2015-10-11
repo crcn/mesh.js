@@ -1,6 +1,10 @@
-import { Bus, ReduceBus, BufferedBus } from "../..";
-import expect from "expect.js";
-import co from "co";
+var mesh = require("../..");
+
+var ReduceBus = mesh.ReduceBus;
+var Bus = mesh.Bus;
+
+var expect = require("expect.js");
+var co = require("co");
 
 describe(__filename + "#", function() {
 

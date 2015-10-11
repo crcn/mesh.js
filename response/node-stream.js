@@ -1,5 +1,5 @@
-import AsyncResponse from "./async";
-import extend from "../internal/extend";
+var AsyncResponse = require("./async");
+var extend = require("../internal/extend");
 
 /**
  */
@@ -38,4 +38,4 @@ extend(AsyncResponse, NodeStreamResponse);
 /**
  */
 
-export default NodeStreamResponse;
+module.exports =  NodeStreamResponse;

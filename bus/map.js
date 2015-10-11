@@ -1,7 +1,7 @@
-import Bus from "./base";
-import extend from "../internal/extend";
-import AsyncResponse from "../response/async";
-import pump from "../internal/pump-stream";
+var Bus = require("./base");
+var extend = require("../internal/extend");
+var AsyncResponse = require("../response/async");
+var pump = require("../internal/pump-stream");
 
 /**
  */
@@ -18,13 +18,13 @@ extend(Bus, MapBus, {
 
   /**
    */
-   
+
   execute: function(operation) {
     return new AsyncResponse((writable) => {
-      pump(this._bus.execute(operation), ({value, done}) => {
-        if (done) return writable.end();
+      pump(this._bus.execute(operation), (chunk) => {
+        if (chunk.done) return writable.end();
         try {
-          this._map(value, writable, operation);
+          this._map(chunk.value, writable, operation);
         } catch(e) {
           // TODO - end response here. Chunks will continue to be pumped otherwise
           writable.error(e);
@@ -37,4 +37,4 @@ extend(Bus, MapBus, {
 /**
  */
 
-export default MapBus;
+module.exports =  MapBus;

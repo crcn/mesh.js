@@ -1,10 +1,11 @@
-import Bus from "./base";
-import extend from "../internal/extend";
+var Bus = require("./base");
+var extend = require("../internal/extend");
 
 /**
  */
 
-function _defaults(to, ...props) {
+function _defaults(to) {
+  var props = Array.prototype.slice.call(arguments, 1);
   for (var i = 0, n = props.length; i < n; i++) {
     var obj = props[i];
     for (var key in obj) {
@@ -34,4 +35,4 @@ extend(Bus, AttachDefaultsBus, {
 /**
  */
 
-export default AttachDefaultsBus;
+module.exports =  AttachDefaultsBus;

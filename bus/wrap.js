@@ -1,5 +1,5 @@
-import Bus from "./base";
-import extend from "../internal/extend";
+var Bus = require("./base");
+var extend = require("../internal/extend");
 
 /**
 */
@@ -24,4 +24,4 @@ extend(Bus, WrapBus, {
 /**
 */
 
-export default WrapBus;
+module.exports =  WrapBus;

@@ -1,6 +1,9 @@
-import { EmptyResponse, Response } from "../..";
-import co from "co";
-import expect from "expect.js";
+var mesh = require("../..");
+
+var Response = mesh.Response;
+var EmptyResponse = mesh.EmptyResponse;
+var co = require("co");
+var expect = require("expect.js");
 
 describe(__filename + "#", function() {
 

@@ -1,6 +1,12 @@
-import { AsyncResponse, Response } from "../..";
-import co from "co";
-import expect from "expect.js";
+var mesh = require("../..");
+
+var WrapBus = mesh.WrapBus;
+
+var Response = mesh.Response;
+var AsyncResponse = mesh.AsyncResponse;
+
+var co = require("co");
+var expect = require("expect.js");
 
 describe(__filename + "#", function() {
 

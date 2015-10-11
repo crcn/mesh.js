@@ -1,7 +1,7 @@
-import Bus from "./base";
-import pump from "../internal/pump-stream";
-import extend from "../internal/extend";
-import AsyncResponse from "../response/async";
+var Bus = require("./base");
+var pump = require("../internal/pump-stream");
+var extend = require("../internal/extend");
+var AsyncResponse = require("../response/async");
 
 /**
  */
@@ -18,14 +18,14 @@ extend(Bus, CatchErrorBus, {
 
   /**
    */
-   
+
   execute: function(operation) {
     return new AsyncResponse((writable) => {
-      pump(this._bus.execute(operation), ({value, done}) => {
-        if (done) {
+      pump(this._bus.execute(operation), (chunk) => {
+        if (chunk.done) {
           writable.end();
         } else {
-          writable.write(value);
+          writable.write(chunk.value);
         }
       }, (error) => {
         try {
@@ -42,4 +42,4 @@ extend(Bus, CatchErrorBus, {
 /**
  */
 
-export default CatchErrorBus;
+module.exports =  CatchErrorBus;

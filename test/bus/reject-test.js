@@ -1,7 +1,13 @@
-import { RejectBus, BufferedBus } from "../..";
-import sift from "sift";
-import co from "co";
-import expect from "expect.js";
+var mesh = require("../..");
+
+var RejectBus = mesh.RejectBus;
+var NoopBus = mesh.NoopBus;
+var Bus = mesh.Bus;
+var BufferedBus = mesh.BufferedBus;
+
+var sift = require("sift");
+var co = require("co");
+var expect = require("expect.js");
 
 describe(__filename + "#", function() {
   it("can redirect an operation according to the reject bus filter", co.wrap(function*() {

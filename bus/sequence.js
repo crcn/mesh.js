@@ -1,7 +1,7 @@
-import Bus from "./base";
-import pipe from "../internal/pipe-stream";
-import extend from "../internal/extend";
-import AsyncResponse from "../response/async";
+var Bus = require("./base");
+var pipe = require("../internal/pipe-stream");
+var extend = require("../internal/extend");
+var AsyncResponse = require("../response/async");
 
 /**
  */

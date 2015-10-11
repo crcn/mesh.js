@@ -1,6 +1,10 @@
-import { BufferedResponse, Response } from "../..";
-import expect from "expect.js";
-import co from "co";
+var mesh = require("../..");
+
+var Response = mesh.Response;
+var BufferedResponse = mesh.BufferedResponse;
+
+var expect = require("expect.js");
+var co = require("co");
 
 describe(__filename + "#", function() {
   it("is a response", function() {

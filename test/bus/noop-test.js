@@ -1,6 +1,10 @@
-import { NoopBus, Bus } from "../..";
-import co from "co";
-import expect from "expect.js";
+var mesh = require("../..");
+
+var NoopBus = mesh.NoopBus;
+var Bus = mesh.Bus;
+
+var co = require("co");
+var expect = require("expect.js");
 
 describe(__filename + "#", function() {
 

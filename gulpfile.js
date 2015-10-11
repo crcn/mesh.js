@@ -15,8 +15,6 @@ var options    = require("yargs").argv;
 
 var pkg = require("./package");
 
-require("babel/register")();
-
 /**
  */
 

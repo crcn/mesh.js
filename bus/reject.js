@@ -1,4 +1,4 @@
-import AcceptBus from "./accept";
+var AcceptBus = require("./accept");
 
 /**
  */
@@ -23,4 +23,4 @@ Object.assign(RejectBus.prototype, {
 /**
  */
 
-export default RejectBus;
+module.exports =  RejectBus;

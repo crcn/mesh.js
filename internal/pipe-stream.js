@@ -1,10 +1,10 @@
-import pump from "./pump-stream";
+var pump = require("./pump-stream");
 
 /**
  * pumps a stream into another stream
  */
 
-export default function(readable, writable, ops) {
+module.exports =  function(readable, writable, ops) {
 
 	if (!ops) {
 		ops = {

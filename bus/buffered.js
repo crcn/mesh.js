@@ -1,6 +1,6 @@
-import Bus from "./base";
-import extend from "../internal/extend";
-import BufferedResponse from "../response/buffered";
+var Bus = require("./base");
+var extend = require("../internal/extend");
+var BufferedResponse = require("../response/buffered");
 
 /**
  */
@@ -26,4 +26,4 @@ extend(Bus, BufferedBus, {
 /**
  */
 
-export default BufferedBus;
+module.exports =  BufferedBus;

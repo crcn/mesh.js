@@ -1,6 +1,9 @@
-import { Bus, AttachDefaultsBus, BufferedResponse } from "../..";
-import co from "co";
-import expect from "expect.js";
+var mesh = require("../..");
+var co = require("co");
+var expect = require("expect.js");
+var AttachDefaultsBus = mesh.AttachDefaultsBus;
+var Bus = mesh.Bus;
+var BufferedResponse = mesh.BufferedResponse;
 
 describe(__filename + "#", function() {
   it("is a bus", function() {

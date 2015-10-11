@@ -1,6 +1,9 @@
-import { ErrorResponse } from "../..";
-import co from "co";
-import expect from "expect.js";
+var mesh = require("../..");
+
+var Response = mesh.Response;
+var ErrorResponse = mesh.ErrorResponse;
+var co = require("co");
+var expect = require("expect.js");
 
 describe(__filename + "#", function() {
   it("returns an error", co.wrap(function*() {

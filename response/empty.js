@@ -1,5 +1,5 @@
-import BufferedResponse from "./buffered";
-import extend from "../internal/extend";
+var BufferedResponse = require("./buffered");
+var extend = require("../internal/extend");
 
 /**
  */
@@ -17,4 +17,4 @@ extend(BufferedResponse, EmptyResponse);
 /**
  */
 
-export default EmptyResponse;
+module.exports =  EmptyResponse;

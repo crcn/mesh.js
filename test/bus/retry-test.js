@@ -1,7 +1,16 @@
-import { Bus, RetryBus, BufferedBus, ErrorResponse, AcceptBus } from "../..";
-import sift from "sift";
-import expect from "expect.js";
-import co from "co";
+var mesh = require("../..");
+
+var RetryBus = mesh.RetryBus;
+var NoopBus = mesh.NoopBus;
+var Bus = mesh.Bus;
+var BufferedBus = mesh.BufferedBus;
+var AsyncResponse = mesh.AsyncResponse;
+var EmptyResponse = mesh.EmptyResponse;
+var ErrorResponse = mesh.ErrorResponse;
+
+var sift = require("sift");
+var expect = require("expect.js");
+var co = require("co");
 
 describe(__filename + "#", function() {
 

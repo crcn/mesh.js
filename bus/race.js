@@ -1,7 +1,7 @@
-import Bus from "./base";
-import pump from "../internal/pump-stream";
-import extend from "../internal/extend";
-import AsyncResponse from "../response/async";
+var Bus = require("./base");
+var pump = require("../internal/pump-stream");
+var extend = require("../internal/extend");
+var AsyncResponse = require("../response/async");
 
 /**
  */
@@ -25,19 +25,19 @@ extend(Bus, RaceBus, {
       var found   = -1;
       busses.forEach((bus, i) => {
         var response = bus.execute(operation);
-        pump(response, ({value, done}) => {
-          if (done && !~found) {
+        pump(response, (chunk) => {
+          if (chunk.done && !~found) {
             if ((--numLeft) === 0) {
               writable.end();
             }
             return;
           }
           if (~found && found !== i) return;
-          if (done) {
+          if (chunk.done) {
             writable.end();
           } else {
             found = i;
-            writable.write(value);
+            writable.write(chunk.value);
           }
         }, writable.error.bind(writable));
       });
@@ -48,4 +48,4 @@ extend(Bus, RaceBus, {
 /**
 */
 
-export default RaceBus;
+module.exports =  RaceBus;

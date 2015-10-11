@@ -1,6 +1,14 @@
-import { Bus, RaceBus, BufferedBus, NoopBus, AsyncResponse, EmptyResponse } from "../..";
-import expect from "expect.js";
-import co from "co";
+var mesh = require("../..");
+
+var RaceBus = mesh.RaceBus;
+var NoopBus = mesh.NoopBus;
+var Bus = mesh.Bus;
+var BufferedBus = mesh.BufferedBus;
+var AsyncResponse = mesh.AsyncResponse;
+var EmptyResponse = mesh.EmptyResponse;
+
+var expect = require("expect.js");
+var co = require("co");
 
 describe(__filename + "#", function() {
 

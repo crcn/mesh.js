@@ -1,5 +1,5 @@
-import Response from "./base";
-import extend from "../internal/extend";
+var Response = require("./base");
+var extend = require("../internal/extend");
 
 /**
  * TODO - break this out into writable stream
@@ -108,4 +108,4 @@ extend(Response, AsyncResponse, {
 /**
  */
 
-export default AsyncResponse;
+module.exports =  AsyncResponse;

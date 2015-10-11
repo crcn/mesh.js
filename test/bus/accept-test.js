@@ -1,12 +1,16 @@
-import { AcceptBus, Bus, BufferedBus } from "../..";
-import sift from "sift";
-import co from "co";
-import expect from "expect.js";
+var mesh = require("../..");
+var sift = require("sift");
+var co = require("co");
+var expect = require("expect.js");
+
+var AcceptBus = mesh.AcceptBus;
+var Bus = mesh.Bus;
+var BufferedBus = mesh.BufferedBus;
 
 describe(__filename + "#", function() {
 
   it("is a bus", function() {
-    expect(new AcceptBus()).to.be.an(Bus);
+    expect(new AcceptBus()).to.be.an(mesh.Bus);
   });
 
   it("can redirect an operation according to the accept bus filter", co.wrap(function*() {
@@ -21,7 +25,7 @@ describe(__filename + "#", function() {
   }));
 
   it("no-ops the accept bus if it's null", co.wrap(function*() {
-    var bus = new AcceptBus(
+    var bus = new mesh.AcceptBus(
       sift({ name: "op1" }),
       void 0,
       new BufferedBus(void 0, "b")

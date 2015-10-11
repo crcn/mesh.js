@@ -9,4 +9,4 @@ function Chunk(value, done) {
 /**
  */
 
-export default Chunk;
+module.exports = Chunk;

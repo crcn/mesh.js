@@ -1,7 +1,7 @@
-import Bus from "./base";
-import extend from "../internal/extend";
-import AsyncResponse from "../response/async";
-import pump from "../internal/pump-stream";
+var Bus = require("./base");
+var extend = require("../internal/extend");
+var AsyncResponse = require("../response/async");
+var pump = require("../internal/pump-stream");
 
 /**
  */
@@ -27,7 +27,7 @@ extend(Bus, RetryBus, {
 
   /**
    */
-   
+
   execute: function(operation) {
     return new AsyncResponse((writable) => {
       var hasChunk  = false;
@@ -36,10 +36,10 @@ extend(Bus, RetryBus, {
       var run = (triesLeft) => {
         if (!triesLeft) return writable.error(prevError);
         var response = this._bus.execute(operation);
-        pump(response, ({value, done}) => {
+        pump(response, (chunk) => {
           hasChunk = true;
-          if (done) {
-            writable.write(value);
+          if (chunk.done) {
+            writable.write(chunk.value);
           } else {
             writable.end();
           }
@@ -57,4 +57,4 @@ extend(Bus, RetryBus, {
 /**
  */
 
-export default RetryBus;
+module.exports =  RetryBus;

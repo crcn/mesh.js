@@ -1,7 +1,10 @@
-import { Response, NodeStreamResponse } from "../..";
-import fs from "fs";
-import co from "co";
-import expect from "expect.js";
+var mesh = require("../..");
+
+var Response = mesh.Response;
+var NodeStreamResponse = mesh.NodeStreamResponse;
+var fs = require("fs");
+var co = require("co");
+var expect = require("expect.js");
 
 describe(__filename + "#", function() {
   it("is a response", function() {
@@ -13,10 +16,9 @@ describe(__filename + "#", function() {
     var stream = fs.createReadStream(__dirname + "/fixtures/test-file.txt");
     var response = new NodeStreamResponse(fs.createReadStream(__dirname + "/fixtures/test-file.txt"));
     var buffer = [];
-    var value;
-    var done;
-    while(({ value, done } = (yield response.read())) && !done) {
-      buffer.push(value);
+    var chunk;
+    while((chunk = (yield response.read())) && !chunk.done) {
+      buffer.push(chunk.value);
     }
 
     expect(buffer.join("")).to.be("a b c d e\n");

@@ -5,4 +5,4 @@ var pump = (stream, each, reject) => {
   }, reject);
 };
 
-module.exports =  pump;
+module.exports = pump;
