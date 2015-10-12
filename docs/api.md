@@ -13,7 +13,7 @@ class ReadFileBus extends Bus {
   execute(operation) {
 
     // return response immediately
-    return new NodeStreamResponse(fs.readFile(operation.path, "utf8"));
+    return new NodeStreamResponse(fs.createReadStream(operation.path));
   }
 }
 
