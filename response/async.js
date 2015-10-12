@@ -57,6 +57,7 @@ extend(Response, AsyncResponse, {
     }
 
     if (this._ended) {
+      this._resolve();
       return Promise.resolve({ value: void 0, done: true });
     }
 
@@ -73,6 +74,7 @@ extend(Response, AsyncResponse, {
 
   error: function(error) {
     this._error = error;
+    this._reject(error); // fin
     this.__signalWrite();
   },
 

@@ -170,4 +170,42 @@ describe(__filename + "#", function() {
 
     expect(errors.length).to.be(10);
   }));
+
+  it("calls then() after completing", function(next) {
+    var response = new AsyncResponse(function(writable) {
+      writable.end();
+    });
+
+    response.then(function() {
+      next();
+    });
+
+    response.read();
+  });
+
+  it("calls then() when an error is emitted", function(next) {
+    var response = new AsyncResponse(function(writable) {
+      writable.error(new Error("an error"));
+    });
+
+    response.then(function(){}, function(error) {
+      expect(error.message).to.be("an error");
+      next();
+    });
+
+    response.read();
+  });
+
+  it("calls catch() when an error is emitted", function(next) {
+    var response = new AsyncResponse(function(writable) {
+      writable.error(new Error("an error"));
+    });
+
+    response.catch(function(error) {
+      expect(error.message).to.be("an error");
+      next();
+    });
+
+    response.read();
+  });
 });

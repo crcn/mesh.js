@@ -39,4 +39,18 @@ describe(__filename + "#", function() {
     expect((yield response.read()).value).to.be("b");
     expect((yield response.read()).done).to.be(true);
   }));
+
+  it("calls then() immediately", function(next) {
+    var response = new BufferedResponse(void 0, ["a", "b"]);
+    response.then(function() {
+      next();
+    });
+  });
+
+  it("calls catch() when an error occurs", function(next) {
+    var response = new BufferedResponse(new Error("an error"));
+    response.catch(function() {
+      next();
+    });
+  });
 });

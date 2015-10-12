@@ -14,4 +14,11 @@ describe(__filename + "#", function() {
     } catch(e) { err = e; }
     expect(err.message).to.be("an error");
   }));
+
+  it("calls catch() immediately", function(next) {
+    var resp = new ErrorResponse(new Error("an error"));
+    resp.catch(function(error) {
+      next();
+    });
+  });
 });

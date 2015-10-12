@@ -20,16 +20,16 @@ Object.assign(Response.prototype, {
    * yield { then: function() { }}
    */
 
-  then: function(callback) {
-    return this._promise.then(callback);
+  then: function(resolve, reject) {
+    return this._promise.then(resolve, reject);
   },
 
   /**
    * error handler
    */
 
-  catch: function(error) {
-
+  catch: function(reject) {
+    return this._promise.catch(reject);
   },
 
   /**

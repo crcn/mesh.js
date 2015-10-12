@@ -23,4 +23,20 @@ describe(__filename + "#", function() {
 
     expect(buffer.join("")).to.be("a b c d e\n");
   }));
+
+  it("calls then() after finishing", co.wrap(function*() {
+
+    var stream = fs.createReadStream(__dirname + "/fixtures/test-file.txt");
+    var response = new NodeStreamResponse(fs.createReadStream(__dirname + "/fixtures/test-file.txt"));
+    var buffer = [];
+
+
+    var chunk;
+    while((chunk = (yield response.read())) && !chunk.done) {
+      buffer.push(chunk.value);
+    }
+
+    // return respnse as thenable
+    return response;
+  }));
 });

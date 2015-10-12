@@ -10,7 +10,7 @@ function NodeStreamResponse(stream) {
 
     if (!stream) return writable.end();
 
-    function pump() {
+    var pump = () => {
       stream.resume();
       stream.once("data", function(data) {
         stream.pause();
@@ -18,7 +18,7 @@ function NodeStreamResponse(stream) {
       });
     }
 
-    function end() {
+    var end = () => {
       writable.end();
     }
 

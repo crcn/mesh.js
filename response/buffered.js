@@ -9,7 +9,11 @@ function BufferedResponse(error, chunkValues) {
   Response.call(this);
   this._error       = error;
   this._chunkValues = Array.isArray(chunkValues) ? chunkValues : chunkValues != void 0 ? [chunkValues] : [];
-  this._resolve();
+  if (error) {
+    this._reject();
+  } else {
+    this._resolve();
+  }
 }
 
 /**
