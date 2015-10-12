@@ -8,10 +8,18 @@ var extend = require("../internal/extend");
 function AsyncResponse(run) {
   Response.call(this);
   this._chunks = [];
-  this._errors = [];
 
   // todo - pass writable instead
-  if (run) run(this);
+  if (run) {
+    var ret = run(this);
+
+    // thenable? Automatically end
+    if (ret && ret.then) {
+      ret.then(() => {
+        this.end();
+      }, this.error.bind(this));
+    }
+  }
 }
 
 /**
@@ -38,9 +46,9 @@ extend(Response, AsyncResponse, {
 
     this.__signalRead();
 
-    if (!!this._errors.length) {
-      var error = this._errors.shift();
-      return Promise.reject(error);
+    // if there is an error, always fail
+    if (!!this._error) {
+      return Promise.reject(this._error);
     }
 
     if (!!this._chunks.length) {
@@ -64,7 +72,7 @@ extend(Response, AsyncResponse, {
    */
 
   error: function(error) {
-    this._errors.push(error);
+    this._error = error;
     this.__signalWrite();
   },
 

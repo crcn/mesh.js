@@ -4,7 +4,16 @@
  */
 
 module.exports =  function (parent, child) {
-  var props = Array.prototype.slice.call(arguments, 2);
+
+  var props;
+
+  if (typeof child === "function") {
+    props = Array.prototype.slice.call(arguments, 2);
+  } else {
+    child  = parent;
+    parent = Object;
+    props  = Array.prototype.slice.call(arguments, 1);
+  }
 
   function ctor() {
     this.constructor = child;

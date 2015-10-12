@@ -96,23 +96,6 @@ describe(__filename + "#", function() {
     expect(err.message).to.be("something went wrong");
   }));
 
-  it("can continue to read chunks after an error has been emitted", co.wrap(function*() {
-    var response = new AsyncResponse(function(response) {
-      response.error(new Error("something went wrong"));
-      response.end("chunk");
-    });
-
-    var err;
-
-    try {
-      yield response.read();
-    } catch (e) { err = e; }
-
-    expect(err.message).to.be("something went wrong");
-    expect((yield response.read()).value).to.be("chunk");
-    expect((yield response.read()).value).to.be(void 0);
-  }));
-
   it("wait for a chunk to be read before writing", co.wrap(function*() {
 
     var writeCounts = 0;
@@ -138,5 +121,53 @@ describe(__filename + "#", function() {
     expect(writeCounts).to.be(4);
     expect((yield response.read()).done).to.be(true);
     expect(writeCounts).to.be(4);
+  }));
+
+  it("automatically ends the async response if the runnable provided returns a promise", co.wrap(function*() {
+    var response = new AsyncResponse(co.wrap(function*(writable) {
+      writable.write("a");
+      writable.write("b");
+    }));
+
+    expect((yield response.read()).value).to.be("a");
+    expect((yield response.read()).value).to.be("b");
+    expect((yield response.read()).done).to.be(true);
+  }));
+
+  it("automatically handles errors that are thrown within an async runnable", co.wrap(function*() {
+    var response = new AsyncResponse(co.wrap(function*(writable) {
+      writable.write("a");
+      writable.write("b");
+      throw new Error("an error");
+    }));
+
+    // eat the first value - error will get emitted asynchronously
+    yield response.read();
+
+    var err;
+    try {
+      yield response.read();
+    } catch(e) { err = e; }
+
+    expect(err.message).to.be("an error");
+  }));
+
+  it("always returns an error once set to the async response", co.wrap(function*() {
+    var response = new AsyncResponse(co.wrap(function*(writable) {
+      writable.write("a");
+      throw new Error("an error");
+    }));
+
+    var errors = [];
+
+    // eat the first chunk
+    yield response.read();
+
+    for (var i = 10; i--;)
+    try {
+      yield response.read();
+    } catch(e) { errors.push(e) };
+
+    expect(errors.length).to.be(10);
   }));
 });

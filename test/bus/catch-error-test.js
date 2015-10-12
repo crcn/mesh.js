@@ -31,7 +31,8 @@ describe(__filename + "#", function() {
 
     var err;
     try {
-      yield bus.execute().read();
+      var resp = bus.execute();
+      yield yield resp.read();
     } catch(e) { err = e; }
     expect(err.message).to.be("uncaught error");
   }));
