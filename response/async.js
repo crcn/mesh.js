@@ -2,7 +2,7 @@ var Response = require("./base");
 var extend = require("../internal/extend");
 
 /**
- * TODO - break this out into writable stream
+ * Creates a new Streamed response 
  */
 
 function AsyncResponse(run) {
