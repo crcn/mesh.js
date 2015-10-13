@@ -11,7 +11,6 @@ function EmptyResponse() {
 /**
  */
 
-
 extend(BufferedResponse, EmptyResponse);
 
 /**

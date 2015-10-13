@@ -1,8 +1,9 @@
 var Response = require("./base");
 var extend = require("../internal/extend");
+var Chunk = require("../internal/chunk");
 
 /**
- * Creates a new Streamed response 
+ * Creates a new Streamed response
  */
 
 function AsyncResponse(run) {
@@ -58,7 +59,7 @@ extend(Response, AsyncResponse, {
 
     if (this._ended) {
       this._resolve();
-      return Promise.resolve({ value: void 0, done: true });
+      return Promise.resolve(new Chunk(void 0, true));
     }
 
     return new Promise((resolve, reject) => {
@@ -89,7 +90,7 @@ extend(Response, AsyncResponse, {
         resolve();
       }
 
-      this._writeChunk({ value: value, done: false });
+      this._writeChunk(new Chunk(value, false));
     })
   },
 

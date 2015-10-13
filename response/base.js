@@ -37,7 +37,7 @@ Object.assign(Response.prototype, {
    */
 
   read: function() {
-
+    // OVERRIDE ME
   }
 });
 
