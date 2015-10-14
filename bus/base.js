@@ -22,7 +22,7 @@ Object.assign(Bus.prototype, {
 /**
  */
 
-Bus.create = require("../internal/create-object");
+Bus.create = require('../internal/create-object');
 
 /**
  */

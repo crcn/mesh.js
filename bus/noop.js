@@ -1,6 +1,6 @@
-var Bus = require("./base");
-var extend = require("../internal/extend");
-var EmptyResponse = require("../response/empty");
+var Bus = require('./base');
+var extend = require('../internal/extend');
+var EmptyResponse = require('../response/empty');
 
 /**
  */

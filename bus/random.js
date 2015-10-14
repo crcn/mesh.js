@@ -1,5 +1,5 @@
-var Bus = require("./base");
-var extend = require("../internal/extend");
+var Bus = require('./base');
+var extend = require('../internal/extend');
 
 /**
  */

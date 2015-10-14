@@ -1,7 +1,7 @@
-var Bus              = require("./base");
-var extend           = require("../internal/extend");
-var AsyncResponse    = require("../response/async");
-var BufferedResponse = require("../response/buffered");
+var Bus              = require('./base');
+var extend           = require('../internal/extend');
+var AsyncResponse    = require('../response/async');
+var BufferedResponse = require('../response/buffered');
 
 /**
 */

@@ -1,6 +1,6 @@
-var Chunk = require("../internal/chunk");
-var extend = require("../internal/extend");
-var Response = require("./base");
+var Chunk = require('../internal/chunk');
+var extend = require('../internal/extend');
+var Response = require('./base');
 
 /**
  */

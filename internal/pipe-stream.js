@@ -1,4 +1,4 @@
-var pump = require("./pump-stream");
+var pump = require('./pump-stream');
 
 /**
  * pumps a stream into another stream

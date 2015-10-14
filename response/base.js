@@ -1,5 +1,4 @@
 
-
 /**
  * impl should be close to this: https://streams.spec.whatwg.org/
  */
@@ -45,7 +44,7 @@ Object.assign(Response.prototype, {
 /**
  */
 
-Response.create = require("../internal/create-object");
+Response.create = require('../internal/create-object');
 
 /**
  */

@@ -1,7 +1,7 @@
-var Bus = require("./base");
-var pump = require("../internal/pump-stream");
-var extend = require("../internal/extend");
-var AsyncResponse = require("../response/async");
+var Bus = require('./base');
+var pump = require('../internal/pump-stream');
+var extend = require('../internal/extend');
+var AsyncResponse = require('../response/async');
 
 /**
  */

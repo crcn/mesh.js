@@ -1,4 +1,4 @@
-var AcceptBus = require("./accept");
+var AcceptBus = require('./accept');
 
 /**
  */

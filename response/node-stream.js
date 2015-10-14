@@ -1,5 +1,5 @@
-var AsyncResponse = require("./async");
-var extend = require("../internal/extend");
+var AsyncResponse = require('./async');
+var extend = require('../internal/extend');
 
 /**
  */
@@ -12,7 +12,7 @@ function NodeStreamResponse(stream) {
 
     var pump = () => {
       stream.resume();
-      stream.once("data", function(data) {
+      stream.once('data', function(data) {
         stream.pause();
         writable.write(data).then(pump);
       });
@@ -23,8 +23,8 @@ function NodeStreamResponse(stream) {
     }
 
     stream
-    .once("end", end)
-    .once("error", writable.error.bind(writable));
+    .once('end', end)
+    .once('error', writable.error.bind(writable));
 
     pump();
   });

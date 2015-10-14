@@ -1,6 +1,6 @@
-var Bus = require("./base");
-var NoopBus = require("./noop");
-var extend = require("../internal/extend");
+var Bus = require('./base');
+var NoopBus = require('./noop');
+var extend = require('../internal/extend');
 
 /**
  */

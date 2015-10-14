@@ -1,5 +1,5 @@
-var BufferedResponse = require("./buffered");
-var extend = require("../internal/extend");
+var BufferedResponse = require('./buffered');
+var extend = require('../internal/extend');
 
 /**
  */

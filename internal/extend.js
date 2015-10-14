@@ -7,7 +7,7 @@ module.exports =  function (parent, child) {
 
   var props;
 
-  if (typeof child === "function") {
+  if (typeof child === 'function') {
     props = Array.prototype.slice.call(arguments, 2);
   } else {
     child  = parent;

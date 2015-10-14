@@ -1,6 +1,6 @@
-var Response = require("./base");
-var extend = require("../internal/extend");
-var Chunk = require("../internal/chunk");
+var Response = require('./base');
+var extend = require('../internal/extend');
+var Chunk = require('../internal/chunk');
 
 /**
  * Creates a new Streamed response
