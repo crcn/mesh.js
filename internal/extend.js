@@ -19,6 +19,8 @@ module.exports =  function (parent, child) {
     this.constructor = child;
   }
 
+  Object.assign(child, parent); // copy static props
+
   ctor.prototype  = parent.prototype;
   child.prototype = new ctor();
 

@@ -1,4 +1,5 @@
 
+
 /**
  * impl should be close to this: https://streams.spec.whatwg.org/
  */
@@ -40,6 +41,11 @@ Object.assign(Response.prototype, {
     // OVERRIDE ME
   }
 });
+
+/**
+ */
+
+Response.create = require("../internal/create-object");
 
 /**
  */

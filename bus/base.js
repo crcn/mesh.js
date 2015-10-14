@@ -1,3 +1,4 @@
+
 /**
  */
 
@@ -17,6 +18,11 @@ Object.assign(Bus.prototype, {
     // OVERRIDE ME
   }
 });
+
+/**
+ */
+
+Bus.create = require("../internal/create-object");
 
 /**
  */
