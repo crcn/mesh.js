@@ -12,11 +12,20 @@ Simple example:
 ```javascript
 import { WrapBus, BufferedResponse } from "mesh";
 
-var pingBus = new WrapBus(function({name}) {
-  return new BufferedResponse(void 0, `hello ${name}!`);
-});
+export function create() {
+  return WrapBus.create(function({name}) {
+    return BufferedResponse.create(void 0, `hello ${name}!`);
+  });
+}
+```
 
-pingBus.execute({ name: "world" }).read().then(function({value}) {
+usage:
+
+```javascript
+var CustomBus = require("./bus");
+var bus = CustomBus.create();
+
+bus.execute({ name: "world" }).read().then(function({value}) {
   console.log(value); // hello world!
 });
 ```
