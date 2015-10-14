@@ -47,4 +47,25 @@ describe(__filename + "#", function() {
     expect(chunk.value).to.be(void 0);
     expect(chunk.done).to.be(true);
   }));
+
+  it("accepts a resolved value from the filter", co.wrap(function*() {
+    var bus = AcceptBus.create(function(operation) {
+      return Promise.resolve(operation.name === "a");
+    }, BufferedBus.create(void 0, "a"));
+    expect((yield bus.execute({ name: "a" }).read()).value).to.be("a");
+    expect((yield bus.execute({ name: "b" }).read()).value).to.be(void 0);
+  }));
+
+  it("throws an error if the promise is rejected", co.wrap(function*() {
+    var bus = AcceptBus.create(function(operation) {
+      return Promise.reject(operation.name === "a");
+    }, BufferedBus.create(void 0, "a"));
+    var err;
+    try {
+      expect((yield bus.execute({ name: "a" }).read()).value).to.be(void 0);
+    } catch(e) {
+      err = e;
+    }
+    expect(err).to.be(true);
+  }));
 });

@@ -8,12 +8,12 @@ var co = require("co");
 
 describe(__filename + "#", function() {
 
-  xit("is a bus", function() {
-    expect(new ReduceBus()).to.be.an(Bus);
-  });
-
-  xit("can reduce many chunks into a single one", co.wrap(function*() {
-  }));
+  // xit("is a bus", function() {
+  //   expect(new ReduceBus()).to.be.an(Bus);
+  // });
+  //
+  // xit("can reduce many chunks into a single one", co.wrap(function*() {
+  // }));
 
 
 });
