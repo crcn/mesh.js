@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "5.0.6",
+  "version": "5.0.7",
   "tag": "trunk",
   "description": "data synchronization library",
   "main": "./lib/index.js",
@@ -37,6 +37,7 @@
     "gulp-plumber": "^1.0.0",
     "gulp-rename": "^1.2.0",
     "gulp-uglify": "^1.1.0",
+    "lodash": "^3.10.1",
     "sift": "^2.0.9",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",

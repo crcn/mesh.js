@@ -11,6 +11,7 @@ module.exports = {
   WrapBus           : require("./bus/wrap"),
   RaceBus           : require("./bus/race"),
   RetryBus          : require("./bus/retry"),
+  RandomBus         : require("./bus/random"),
   AcceptBus         : require("./bus/accept"),
   RejectBus         : require("./bus/reject"),
   SequenceBus       : require("./bus/sequence"),
@@ -18,6 +19,7 @@ module.exports = {
   BufferedBus       : require("./bus/buffered"),
   FallbackBus       : require("./bus/fallback"),
   CatchErrorBus     : require("./bus/catch-error"),
+  RoundRobinBus     : require("./bus/round-robin"),
   AttachDefaultsBus : require("./bus/attach-defaults"),
 
   // TODO
