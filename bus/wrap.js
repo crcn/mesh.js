@@ -40,10 +40,6 @@ extend(Bus, WrapBus, {
     if (ret.then) return new AsyncResponse(function(writable) {
       ret.then(writable.end.bind(writable), writable.error.bind(writable));
     });
-
-    return new AsyncResponse(function(writable) {
-
-    });
   }
 });
 
