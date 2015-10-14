@@ -23,6 +23,7 @@ Object.assign(Bus.prototype, {
  */
 
 Bus.create = require('../internal/create-object');
+Bus.extend = require('../internal/extend');
 
 /**
  */

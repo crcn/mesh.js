@@ -45,6 +45,7 @@ Object.assign(Response.prototype, {
  */
 
 Response.create = require('../internal/create-object');
+Response.extend = require('../internal/extend');
 
 /**
  */

@@ -14,4 +14,8 @@ describe(__filename + "#", function() {
     extend(Response, SubResponse);
     expect(SubResponse.create()).to.be.an(Response);
   });
+
+  it("can extend() a base class", function() {
+    expect(Response.extend().create()).to.be.an(Response);
+  });
 });

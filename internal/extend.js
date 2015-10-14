@@ -6,25 +6,38 @@
 module.exports =  function (parent, child) {
 
   var props;
+  var pi;
 
-  if (typeof child === 'function') {
-    props = Array.prototype.slice.call(arguments, 2);
+  var c = child;
+  var p = parent;
+
+  if (typeof c === 'function') {
+    pi = 2;
   } else {
-    child  = parent;
-    parent = Object;
-    props  = Array.prototype.slice.call(arguments, 1);
+    if (typeof p === 'object') {
+      c = function() { }
+      pi = 0;
+    } else {
+      c = p || function() { };
+      pi = 2;
+    }
+
+    p = typeof this === 'function' ? this : Object;
   }
+
+
+  props = Array.prototype.slice.call(arguments, pi);
 
   function ctor() {
-    this.constructor = child;
+    this.constructor = c;
   }
 
-  Object.assign(child, parent); // copy static props
+  Object.assign(c, p); // copy static props
 
-  ctor.prototype  = parent.prototype;
-  child.prototype = new ctor();
+  ctor.prototype  = p.prototype;
+  c.prototype = new ctor();
 
-  Object.assign(child.prototype, Object.assign.apply(Object, [{}].concat(props)));
+  Object.assign(c.prototype, Object.assign.apply(Object, [{}].concat(props)));
 
-  return child;
+  return c;
 }

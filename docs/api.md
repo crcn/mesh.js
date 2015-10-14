@@ -33,12 +33,9 @@ function MyBus() {
   Bus.call(this);
 }
 
-// set prototype to a new Bus - this will make instanceof work properly
-MyBus.prototype = Bus.create();
-MyBus.create    = Bus.create; // make sure to pass the create method
-MyBus.prototype.execute = function(operation) {
-  // execute operation here
-};
+Bus.extend(MyBus, {
+  // props
+});
 ```
 
 #### WrapBus(executeFunction)
