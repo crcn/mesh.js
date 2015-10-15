@@ -19,12 +19,11 @@ module.exports =  function (parent, child) {
       pi = 0;
     } else {
       c = p || function() { };
-      pi = 2;
+      pi = 1;
     }
 
     p = typeof this === 'function' ? this : Object;
   }
-
 
   props = Array.prototype.slice.call(arguments, pi);
 

@@ -1,3 +1,4 @@
+var extend = require('../internal/extend');
 
 /**
  */
@@ -9,7 +10,7 @@ function Bus() {
 /**
  */
 
-Object.assign(Bus.prototype, {
+extend(Bus, {
 
   /**
    */
@@ -23,7 +24,7 @@ Object.assign(Bus.prototype, {
  */
 
 Bus.create = require('../internal/create-object');
-Bus.extend = require('../internal/extend');
+Bus.extend = extend;
 
 /**
  */
