@@ -62,7 +62,7 @@ extend(PassThrough, {
     }
 
     if (!!this._values.length) {
-      return Promise.resolve(this._values.shift());
+      return Promise.resolve({ value: this._values.shift(), done: false });
     }
 
     if (this._closed) {

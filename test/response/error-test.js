@@ -17,6 +17,7 @@ describe(__filename + '#', function() {
 
   it('calls catch() immediately', function(next) {
     var resp = new ErrorResponse(new Error('an error'));
+    resp.read();
     resp.catch(function(error) {
       next();
     });

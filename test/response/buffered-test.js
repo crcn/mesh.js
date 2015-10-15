@@ -42,6 +42,9 @@ describe(__filename + '#', function() {
 
   it('calls then() immediately', function(next) {
     var response = new BufferedResponse(void 0, ['a', 'b']);
+    response.read();
+    response.read();
+    response.read();
     response.then(function() {
       next();
     });
@@ -49,6 +52,7 @@ describe(__filename + '#', function() {
 
   it('calls catch() when an error occurs', function(next) {
     var response = new BufferedResponse(new Error('an error'));
+    response.read();
     response.catch(function() {
       next();
     });

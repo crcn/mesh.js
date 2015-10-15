@@ -10,8 +10,7 @@ var WritableStream = require('../stream/writable');
 function AsyncResponse(run) {
   Response.call(this);
 
-  var writer   = new WritableStream();
-  writer.then(this._resolve, this._reject);
+  var writer   = this._writer = new WritableStream();
   this._reader = writer.getReader();
 
   // todo - pass writable instead
@@ -32,6 +31,20 @@ function AsyncResponse(run) {
  */
 
 extend(Response, AsyncResponse, {
+
+  /**
+   */
+
+  then: function(resolve, reject) {
+    return this._writer.then(resolve, reject);
+  },
+
+  /**
+   */
+
+  catch: function(reject) {
+    return this._writer.catch(reject);
+  },
 
   /**
    */

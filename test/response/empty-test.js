@@ -22,6 +22,7 @@ describe(__filename + '#', function() {
 
   it('calls then() immediately after it\'s called', co.wrap(function*() {
     var response = new EmptyResponse();
+    response.read();
     yield new Promise(function(resolve, reject) {
       response.then(resolve);
     });
@@ -29,6 +30,7 @@ describe(__filename + '#', function() {
 
   it('can be yielded', co.wrap(function*() {
     var response = new EmptyResponse();
+    response.read();
     yield response;
     yield response;
     yield response;

@@ -12,9 +12,9 @@ describe(__filename + 'function', function() {
     q.write('a');
     q.write('b');
     q.write('c');
-    expect(yield q.read()).to.be('a');
-    expect(yield q.read()).to.be('b');
-    expect(yield q.read()).to.be('c');
+    expect(yield q.read()).to.eql({ value: 'a', done: false });
+    expect(yield q.read()).to.eql({ value: 'b', done: false });
+    expect(yield q.read()).to.eql({ value: 'c', done: false });
   }));
 
   it('can wait for items to be readd before enqueuing', co.wrap(function*() {
@@ -29,21 +29,21 @@ describe(__filename + 'function', function() {
     });
 
     expect(i).to.be(0);
-    expect(yield q.read()).to.be('a');
+    expect(yield q.read()).to.eql({ value: 'a', done: false });
     expect(i).to.be(1);
-    expect(yield q.read()).to.be('b');
+    expect(yield q.read()).to.eql({ value: 'b', done: false });
     expect(i).to.be(2);
-    expect(yield q.read()).to.be('c');
+    expect(yield q.read()).to.eql({ value: 'c', done: false });
   }));
 
   it('can wait for items to be writed before reading', co.wrap(function*() {
     var i = 0;
     var q = new PassThrough();
-    q.read().then(function(value) {
-      expect(value).to.be('a');
+    q.read().then(function(item) {
+      expect(item.value).to.be('a');
       i++;
-      q.read().then(function(value) {
-        expect(value).to.be('b');
+      q.read().then(function(item) {
+        expect(item.value).to.be('b');
         i++;
         q.read().then(function(value) {
           i++;

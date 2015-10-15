@@ -24,6 +24,17 @@ extend(ReadableStream, {
 
   pipeTo: function(writable, options) {
     if (!options) options = {};
+    var pump = () => {
+      this.read().then((item) => {
+        if (item.done) {
+          writable.end();
+        } else {
+          writable.write(item.value);
+          pump();
+        }
+      }, writable.abort.bind(writable));
+    };
+    pump();
   }
 });
 

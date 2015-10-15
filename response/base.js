@@ -1,44 +1,54 @@
 var extend = require('../internal/extend');
+var Chunk = require('../internal/chunk');
+var WritableStream = require('../stream/writable');
 
 /**
- * impl should be close to this: https://streams.spec.whatwg.org/
+ * Creates a new Streamed response
  */
 
-function Response() {
-  this._promise = new Promise((resolve, reject) => {
-    this._resolve = resolve;
-    this._reject  = reject;
-  });
+function Response(run) {
+
+  var writer   = this._writer = new WritableStream();
+  this._reader = writer.getReader();
+
+  // todo - pass writable instead
+  if (run) {
+    // var ret = run(this._writable);
+    var ret = run(writer);
+
+    // thenable? Automatically end
+    if (ret && ret.then) {
+      ret.then(() => {
+        writer.end();
+      }, writer.abort.bind(writer));
+    }
+  }
 }
 
 /**
  */
 
-Object.assign(Response.prototype, {
+extend(Response, {
 
   /**
-   * Called when the response has ended - Makes Response a thenable i.e: this works
-   * yield { then: function() { }}
    */
 
   then: function(resolve, reject) {
-    return this._promise.then(resolve, reject);
+    return this._writer.then(resolve, reject);
   },
 
   /**
-   * error handler
    */
 
   catch: function(reject) {
-    return this._promise.catch(reject);
+    return this._writer.catch(reject);
   },
 
   /**
-   * read a chunk
    */
 
   read: function() {
-    // OVERRIDE ME
+    return this._reader.read();
   }
 });
 

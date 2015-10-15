@@ -1,7 +1,6 @@
 var extend = require('../internal/extend');
 var PassThrough = require('./_pass-through');
 var ReadableStream = require('./readable');
-var Chunk = require('./chunk');
 
 /**
  */
@@ -26,8 +25,15 @@ extend(WritableStream, {
   /**
    */
 
-  write: function(chunkValue) {
-    return this._passThrough.write(new Chunk(chunkValue));
+  catch: function(reject) {
+    return this.then(void 0, reject);
+  },
+
+  /**
+   */
+
+  write: function(chunk) {
+    return this._passThrough.write(chunk);
   },
 
   /**
@@ -40,8 +46,10 @@ extend(WritableStream, {
   /**
    */
 
-  end: function(chunkValue) {
-    if (chunkValue != void 0) this.write(chunkValue);
+  end: function(chunk) {
+    if (chunk != void 0) {
+      this.write(chunk);
+    }
     this._passThrough.end();
   },
 
@@ -52,6 +60,11 @@ extend(WritableStream, {
     return this._reader;
   }
 });
+
+/**
+ */
+
+WritableStream.create = require('../internal/create-object');
 
 /**
  */
