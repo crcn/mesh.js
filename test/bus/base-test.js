@@ -1,13 +1,13 @@
-var Bus = require("../..").Bus;
-var expect = require("expect.js")
-var extend = require("../../internal/extend");
+var Bus = require('../..').Bus;
+var expect = require('expect.js')
+var extend = require('../../internal/extend');
 
-describe(__filename + "#", function() {
-  it("can be created via the create() static method", function() {
+describe(__filename + '#', function() {
+  it('can be created via the create() static method', function() {
     expect(Bus.create()).to.be.an(Bus);
   });
 
-  it("copies the create() method when the bus is subclassed", function() {
+  it('copies the create() method when the bus is subclassed', function() {
     function SubBus() {
 
     }
@@ -15,7 +15,7 @@ describe(__filename + "#", function() {
     expect(SubBus.create()).to.be.an(Bus);
   });
 
-  it("can extend() a base class", function() {
+  it('can extend() a base class', function() {
     expect(Bus.extend().create()).to.be.an(Bus);
 
     function SubClass() {

@@ -1,8 +1,8 @@
 var Bus = require('./base');
 var NoopBus = require('./noop');
 var extend = require('../internal/extend');
-var AsyncResponse = require("../response/async");
-var pipe = require("../internal/pipe-stream");
+var AsyncResponse = require('../response/async');
+var pipe = require('../internal/pipe-stream');
 
 /**
  */
@@ -28,7 +28,7 @@ extend(Bus, AcceptBus, {
       return AsyncResponse.create((writable) => {
         accepted.then((yes) => {
           pipe(this._execute(yes, operation), writable, { end: true });
-        }, writable.error.bind(writable));
+        }, writable.abort.bind(writable));
       });
     }
 

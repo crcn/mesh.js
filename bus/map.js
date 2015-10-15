@@ -1,7 +1,7 @@
-var Bus = require("./base");
-var extend = require("../internal/extend");
-var AsyncResponse = require("../response/async");
-var pump = require("../internal/pump-stream");
+var Bus = require('./base');
+var extend = require('../internal/extend');
+var AsyncResponse = require('../response/async');
+var pump = require('../internal/pump-stream');
 
 /**
  */
@@ -27,9 +27,9 @@ extend(Bus, MapBus, {
           this._map(chunk.value, writable, operation);
         } catch(e) {
           // TODO - end response here. Chunks will continue to be pumped otherwise
-          writable.error(e);
+          writable.abort(e);
         }
-      }, writable.error.bind(writable));
+      }, writable.abort.bind(writable));
     });
   }
 });

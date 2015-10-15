@@ -1,25 +1,25 @@
-var mesh = require("../..");
+var mesh = require('../..');
 
 var MapBus = mesh.MapBus;
 var Bus = mesh.Bus;
 var BufferedBus = mesh.BufferedBus;
 
-var expect = require("expect.js");
-var co = require("co");
+var expect = require('expect.js');
+var co = require('co');
 
-describe(__filename + "#", function() {
+describe(__filename + '#', function() {
 
-  it("is a bus", function() {
+  it('is a bus', function() {
     expect(new MapBus()).to.be.an(Bus);
   });
 
-  it("can map a chunk of data into something else", co.wrap(function*() {
-    var bus = new MapBus(new BufferedBus(void 0, "chunk"), function(chunk, writable, operation) {
-      expect(operation.name).to.be("op");
-      chunk.split("").forEach(writable.write.bind(writable));
+  it('can map a chunk of data into something else', co.wrap(function*() {
+    var bus = new MapBus(new BufferedBus(void 0, 'chunk'), function(chunk, writable, operation) {
+      expect(operation.name).to.be('op');
+      chunk.split('').forEach(writable.write.bind(writable));
     });
 
-    var response = bus.execute({ name: "op" });
+    var response = bus.execute({ name: 'op' });
 
     var chunks = [];
     var chunk;
@@ -29,12 +29,12 @@ describe(__filename + "#", function() {
     }
 
     expect(chunks.length).to.be(5);
-    expect(chunks.join("-")).to.be("c-h-u-n-k");
+    expect(chunks.join('-')).to.be('c-h-u-n-k');
   }));
 
-  it("passes errors down", co.wrap(function*() {
+  it('passes errors down', co.wrap(function*() {
     var mapped = false;
-    var bus = new MapBus(new BufferedBus(new Error("an error")), function(chunk, writable, operation) {
+    var bus = new MapBus(new BufferedBus(new Error('an error')), function(chunk, writable, operation) {
       mapped = true;
     });
 
@@ -44,15 +44,15 @@ describe(__filename + "#", function() {
       yield bus.execute().read();
     } catch(e) { err = e; }
 
-    expect(err.message).to.be("an error");
+    expect(err.message).to.be('an error');
     expect(mapped).to.be(false);
   }));
 
-  it("catches errors in the map function and passes them down", co.wrap(function*() {
+  it('catches errors in the map function and passes them down', co.wrap(function*() {
     var mapped = false;
-    var bus = new MapBus(new BufferedBus(void 0, "chunk"), function(chunk, writable, operation) {
+    var bus = new MapBus(new BufferedBus(void 0, 'chunk'), function(chunk, writable, operation) {
       mapped = true;
-      throw new Error("an error");
+      throw new Error('an error');
     });
 
     var err;
@@ -61,7 +61,7 @@ describe(__filename + "#", function() {
       yield bus.execute().read();
     } catch(e) { err = e; }
 
-    expect(err.message).to.be("an error");
+    expect(err.message).to.be('an error');
     expect(mapped).to.be(true);
   }));
 });

@@ -1,6 +1,7 @@
 var Response = require('./base');
 var extend = require('../internal/extend');
 var Chunk = require('../internal/chunk');
+var WritableStream = require('../stream/writable');
 
 /**
  * Creates a new Streamed response
@@ -8,17 +9,21 @@ var Chunk = require('../internal/chunk');
 
 function AsyncResponse(run) {
   Response.call(this);
-  this._chunks = [];
+
+  var writer   = new WritableStream();
+  writer.then(this._resolve, this._reject);
+  this._reader = writer.getReader();
 
   // todo - pass writable instead
   if (run) {
-    var ret = run(this);
+    // var ret = run(this._writable);
+    var ret = run(writer);
 
     // thenable? Automatically end
     if (ret && ret.then) {
       ret.then(() => {
-        this.end();
-      }, this.error.bind(this));
+        writer.end();
+      }, writer.abort.bind(writer));
     }
   }
 }
@@ -29,90 +34,10 @@ function AsyncResponse(run) {
 extend(Response, AsyncResponse, {
 
   /**
-   * super private
-   */
-
-  __signalWrite: function() { },
-
-  /**
-   * super private
-   */
-
-  __signalRead: function() { },
-
-  /**
    */
 
   read: function() {
-
-    this.__signalRead();
-
-    // if there is an error, always fail
-    if (!!this._error) {
-      return Promise.reject(this._error);
-    }
-
-    if (!!this._chunks.length) {
-      var chunk = this._chunks.shift();
-      return Promise.resolve(chunk);
-    }
-
-    if (this._ended) {
-      this._resolve();
-      return Promise.resolve(new Chunk(void 0, true));
-    }
-
-    return new Promise((resolve, reject) => {
-      this.__signalWrite = () => {
-        this.__signalWrite = () => { };
-        this.read().then(resolve, reject);
-      };
-    });
-  },
-
-  /**
-   */
-
-  error: function(error) {
-    this._error = error;
-    this._reject(error); // fin
-    this.__signalWrite();
-  },
-
-  /**
-   */
-
-  write: function(value) {
-    return new Promise((resolve, reject) => {
-
-      this.__signalRead = () => {
-        this.__signalRead = () => { };
-        resolve();
-      }
-
-      this._writeChunk(new Chunk(value, false));
-    })
-  },
-
-  /**
-   */
-
-  end: function(chunk) {
-
-    if (chunk != void 0) {
-      this.write(chunk);
-    }
-
-    this._ended = true;
-    this.__signalWrite();
-  },
-
-  /**
-   */
-
-  _writeChunk: function(chunk) {
-    this._chunks.push(chunk);
-    this.__signalWrite();
+    return this._reader.read();
   }
 });
 

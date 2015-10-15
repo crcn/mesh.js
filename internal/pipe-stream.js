@@ -20,6 +20,6 @@ module.exports =  function(readable, writable, ops) {
         if (ops.end) writable.end();
         resolve();
       }
-    }, writable.error.bind(writable));
+    }, writable.abort.bind(writable));
 	});
 };

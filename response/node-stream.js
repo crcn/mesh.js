@@ -24,7 +24,7 @@ function NodeStreamResponse(stream) {
 
     stream
     .once('end', end)
-    .once('error', writable.error.bind(writable));
+    .once('error', writable.abort.bind(writable));
 
     pump();
   });

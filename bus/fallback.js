@@ -36,7 +36,7 @@ extend(Bus, FallbackBus, {
             hasChunk = true;
             writable.write(chunk.value);
           }
-        }, writable.error.bind(writable));
+        }, writable.abort.bind(writable));
       };
       next(0);
     });

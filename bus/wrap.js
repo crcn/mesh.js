@@ -38,7 +38,7 @@ extend(Bus, WrapBus, {
     if (ret && ret.read)  return ret;
     if (!ret || !ret.then) return new BufferedResponse(void 0, ret);
     if (ret.then) return new AsyncResponse(function(writable) {
-      ret.then(writable.end.bind(writable), writable.error.bind(writable));
+      ret.then(writable.end.bind(writable), writable.abort.bind(writable));
     });
   }
 });

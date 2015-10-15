@@ -1,36 +1,36 @@
-var gulp       = require("gulp");
-var istanbul   = require("gulp-istanbul");
-var mocha      = require("gulp-mocha");
-var plumber    = require("gulp-plumber");
-var jshint     = require("gulp-jshint");
-var collapser  = require("bundle-collapser/plugin");
-var browserify = require("browserify");
-var uglify     = require("gulp-uglify");
-var source     = require("vinyl-source-stream");
-var buffer     = require("vinyl-buffer");
-var jscs       = require("gulp-jscs");
-var coveralls  = require("gulp-coveralls");
-var rename     = require("gulp-rename");
-var options    = require("yargs").argv;
+var gulp       = require('gulp');
+var istanbul   = require('gulp-istanbul');
+var mocha      = require('gulp-mocha');
+var plumber    = require('gulp-plumber');
+var jshint     = require('gulp-jshint');
+var collapser  = require('bundle-collapser/plugin');
+var browserify = require('browserify');
+var uglify     = require('gulp-uglify');
+var source     = require('vinyl-source-stream');
+var buffer     = require('vinyl-buffer');
+var jscs       = require('gulp-jscs');
+var coveralls  = require('gulp-coveralls');
+var rename     = require('gulp-rename');
+var options    = require('yargs').argv;
 
-var pkg = require("./package");
+var pkg = require('./package');
 
 /**
  */
 
 var paths = {
-  testFiles   : ["test/**/*-test.js"],
-  appFiles    : ["lib/**/*.js"],
-  allJSFiles  : ["*.js", "test/*.js"],
-  allFiles    : ["*.js", "test/**", "internal/**", "bus/**", "response/**", "extra/**", "examples/**"]
+  testFiles   : ['test/**/*-test.js'],
+  appFiles    : ['lib/**/*.js'],
+  allJSFiles  : ['*.js', 'test/*.js'],
+  allFiles    : ['*.js', 'test/**', 'internal/**', 'bus/**', 'response/**', 'extra/**', 'examples/**', 'stream/**']
 };
 
 /**
  */
 
 var mochaOptions = {
-  bail     : options.bail     !== "false",
-  reporter : options.reporter || "dot",
+  bail     : options.bail     !== 'false',
+  reporter : options.reporter || 'dot',
   grep     : options.grep     || options.only,
   timeout  : 500
 };
@@ -38,135 +38,135 @@ var mochaOptions = {
 /**
  */
 
-gulp.task("test-coverage", function(complete) {
+gulp.task('test-coverage', function(complete) {
   gulp.
   src(paths.appFiles).
   pipe(istanbul()).
   pipe(istanbul.hookRequire()).
-  on("finish", function() {
+  on('finish', function() {
     gulp.
     src(paths.testFiles).
     pipe(plumber()).
     pipe(mocha(mochaOptions)).
     pipe(istanbul.writeReports({
-      reporters: ["text", "text-summary", "lcov"]
+      reporters: ['text', 'text-summary', 'lcov']
     })).
-    on("end", complete);
+    on('end', complete);
   });
 });
 
 /**
  */
 
-gulp.task("test-coveralls", ["test-coverage"], function() {
+gulp.task('test-coveralls', ['test-coverage'], function() {
   return gulp.
-  src("coverage/**/lcov.info").
+  src('coverage/**/lcov.info').
   pipe(coveralls());
 });
 
 /**
  */
 
-gulp.task("bundle", function() {
-  return browserify("./lib/index.js").
+gulp.task('bundle', function() {
+  return browserify('./lib/index.js').
   plugin(collapser).
   bundle().
-  pipe(source(pkg.name + ".js")).
+  pipe(source(pkg.name + '.js')).
   pipe(buffer()).
-  pipe(gulp.dest("./dist"));
+  pipe(gulp.dest('./dist'));
 });
 
 /**
  */
 
-gulp.task("minify", ["bundle"], function() {
+gulp.task('minify', ['bundle'], function() {
   return gulp.
-  src("./dist/" + pkg.name + ".js").
+  src('./dist/' + pkg.name + '.js').
   pipe(uglify()).
   pipe(rename(function(path) {
-    path.basename += ".min";
+    path.basename += '.min';
   })).
-  pipe(gulp.dest("./dist"));
+  pipe(gulp.dest('./dist'));
 });
 
 /**
  */
 
-gulp.task("lint", function() {
-  return gulp.run(["jshint", "jscs"]);
+gulp.task('lint', function() {
+  return gulp.run(['jshint', 'jscs']);
 });
 
 /**
  */
 
-gulp.task("jscs", function() {
+gulp.task('jscs', function() {
   return gulp.
   src(paths.allJSFiles).
   pipe(jscs({
-    "preset": "google",
-    "requireParenthesesAroundIIFE": true,
-    "maximumLineLength": 200,
-    "esnext": true,
-    "validateLineBreaks": "LF",
-    "validateIndentation": 2,
-    "validateQuoteMarks": "\"",
+    'preset': 'google',
+    'requireParenthesesAroundIIFE': true,
+    'maximumLineLength': 200,
+    'esnext': true,
+    'validateLineBreaks': 'LF',
+    'validateIndentation': 2,
+    'validateQuoteMarks': '\'',
 
-    "disallowKeywords": ["with"],
-    "disallowSpacesInsideObjectBrackets": null,
-    "disallowImplicitTypeConversion": ["string"],
-    "requireCurlyBraces": [],
+    'disallowKeywords': ['with'],
+    'disallowSpacesInsideObjectBrackets': null,
+    'disallowImplicitTypeConversion': ['string'],
+    'requireCurlyBraces': [],
 
-    "safeContextKeyword": "self"
+    'safeContextKeyword': 'self'
   }));
 });
 
 /**
  */
 
-gulp.task("jshint", function() {
+gulp.task('jshint', function() {
   return gulp.
   src(paths.allJSFiles).
   pipe(jshint({
     esnext: true,
     evil: true
   })).
-  pipe(jshint.reporter("default"));
+  pipe(jshint.reporter('default'));
 });
 
 /**
  */
 
-gulp.task("test", function(complete) {
+gulp.task('test', function(complete) {
   gulp.
   src(paths.testFiles, { read: false }).
   pipe(plumber()).
   pipe(mocha(mochaOptions)).
-  on("error", complete).
-  on("end", complete);
+  on('error', complete).
+  on('end', complete);
 });
 
-var iofwatch = process.argv.indexOf("watch");
+var iofwatch = process.argv.indexOf('watch');
 
 /**
  * runs previous tasks (1 or more)
  */
 
-gulp.task("watch", function() {
+gulp.task('watch', function() {
   gulp.watch(paths.allFiles, process.argv.slice(2, iofwatch));
 });
 
 /**
  */
 
-gulp.task("default", function() {
-  return gulp.run("test-coverage");
+gulp.task('default', function() {
+  return gulp.run('test-coverage');
 });
 
 /**
  */
 
-gulp.task("examples", function(next) {
-  require("./examples/_app");
+gulp.task('examples', function(next) {
+  require('./examples/_app');
 });
 
 /**

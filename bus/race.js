@@ -39,7 +39,7 @@ extend(Bus, RaceBus, {
             found = i;
             writable.write(chunk.value);
           }
-        }, writable.error.bind(writable));
+        }, writable.abort.bind(writable));
       });
     });
   }

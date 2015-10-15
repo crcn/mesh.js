@@ -1,17 +1,17 @@
-var mesh = require("../..");
+var mesh = require('../..');
 
 var Response = mesh.Response;
 var EmptyResponse = mesh.EmptyResponse;
-var co = require("co");
-var expect = require("expect.js");
+var co = require('co');
+var expect = require('expect.js');
 
-describe(__filename + "#", function() {
+describe(__filename + '#', function() {
 
-    it("is a Response", function() {
+    it('is a Response', function() {
       expect(new EmptyResponse()).to.be.an(Response);
     });
 
-  it("returns undefined when read is called", co.wrap(function*() {
+  it('returns undefined when read is called', co.wrap(function*() {
     var response = new EmptyResponse();
 
     // sanity check to ensure read() never returns a value
@@ -20,14 +20,14 @@ describe(__filename + "#", function() {
     }
   }));
 
-  it("calls then() immediately after it's called", co.wrap(function*() {
+  it('calls then() immediately after it\'s called', co.wrap(function*() {
     var response = new EmptyResponse();
     yield new Promise(function(resolve, reject) {
       response.then(resolve);
     });
   }));
 
-  it("can be yielded", co.wrap(function*() {
+  it('can be yielded', co.wrap(function*() {
     var response = new EmptyResponse();
     yield response;
     yield response;

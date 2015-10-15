@@ -32,7 +32,7 @@ extend(Bus, CatchErrorBus, {
           var p = this._catchError(error, operation);
           writable.end();
         } catch(e) {
-          writable.error(e);
+          writable.abort(e);
         }
       });
     });

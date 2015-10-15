@@ -34,7 +34,7 @@ extend(Bus, RetryBus, {
       var prevError;
 
       var run = (triesLeft) => {
-        if (!triesLeft) return writable.error(prevError);
+        if (!triesLeft) return writable.abort(prevError);
         var response = this._bus.execute(operation);
         pump(response, (chunk) => {
           hasChunk = true;

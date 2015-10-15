@@ -1,4 +1,4 @@
-var mesh = require("../..");
+var mesh = require('../..');
 
 var ParallelBus = mesh.ParallelBus;
 var Bus = mesh.Bus;
@@ -6,49 +6,49 @@ var BufferedBus = mesh.BufferedBus;
 var AsyncResponse = mesh.AsyncResponse;
 var EmptyResponse = mesh.EmptyResponse;
 
-var co = require("co");
-var expect = require("expect.js");
+var co = require('co');
+var expect = require('expect.js');
 
-describe(__filename + "#", function() {
+describe(__filename + '#', function() {
 
-  it("is a bus", function() {
+  it('is a bus', function() {
     expect(new ParallelBus()).to.be.an(Bus);
   });
 
-  it("executes ops against multiple busses and joins the read() data", co.wrap(function*() {
+  it('executes ops against multiple busses and joins the read() data', co.wrap(function*() {
 
     var bus = new ParallelBus([
-      new BufferedBus(void 0, "a"),
-      new BufferedBus(void 0, "b")
+      new BufferedBus(void 0, 'a'),
+      new BufferedBus(void 0, 'b')
     ]);
 
     var response = bus.execute();
 
-    expect((yield response.read()).value).to.be("a");
-    expect((yield response.read()).value).to.be("b");
+    expect((yield response.read()).value).to.be('a');
+    expect((yield response.read()).value).to.be('b');
     expect((yield response.read()).done).to.be(true);
   }));
 
-  it("can receive data from any bus in any order", co.wrap(function*() {
+  it('can receive data from any bus in any order', co.wrap(function*() {
     var bus = new ParallelBus([
       {
         execute: function() {
           return new AsyncResponse(function(writable) {
-            setTimeout(writable.end.bind(writable), 30, "a");
+            setTimeout(writable.end.bind(writable), 30, 'a');
           });
         }
       },
       {
         execute: function() {
           return new AsyncResponse(function(writable) {
-            setTimeout(writable.end.bind(writable), 20, "b");
+            setTimeout(writable.end.bind(writable), 20, 'b');
           });
         }
       },
       {
         execute: function() {
           return new AsyncResponse(function(writable) {
-            setTimeout(writable.end.bind(writable), 10, "c");
+            setTimeout(writable.end.bind(writable), 10, 'c');
           });
         }
       }
@@ -56,15 +56,15 @@ describe(__filename + "#", function() {
 
     var response = bus.execute();
 
-    expect((yield response.read()).value).to.be("c");
-    expect((yield response.read()).value).to.be("b");
-    expect((yield response.read()).value).to.be("a");
+    expect((yield response.read()).value).to.be('c');
+    expect((yield response.read()).value).to.be('b');
+    expect((yield response.read()).value).to.be('a');
     expect((yield response.read()).done).to.be(true);
   }));
 
-  it("passes errors down", co.wrap(function*() {
+  it('passes errors down', co.wrap(function*() {
     var bus = new ParallelBus([
-      new BufferedBus(new Error("error"))
+      new BufferedBus(new Error('error'))
     ]);
 
     var response = bus.execute();
@@ -74,10 +74,10 @@ describe(__filename + "#", function() {
       yield bus.execute().read();
     } catch (e) { err = e; }
 
-    expect(err.message).to.be("error");
+    expect(err.message).to.be('error');
   }));
 
-  it("can continue to execute ops if a bus is removed mid-operation", co.wrap(function*() {
+  it('can continue to execute ops if a bus is removed mid-operation', co.wrap(function*() {
     var busses;
     var bus = new ParallelBus(busses = [
       {
@@ -86,10 +86,10 @@ describe(__filename + "#", function() {
           return new EmptyResponse();
         }
       },
-      new BufferedBus(void 0, "a")
+      new BufferedBus(void 0, 'a')
     ]);
     var response = bus.execute();
-    expect((yield response.read()).value).to.be("a");
+    expect((yield response.read()).value).to.be('a');
   }));
 
 });
