@@ -27,7 +27,7 @@ extend(ReadableStream, {
     var pump = () => {
       this.read().then((item) => {
         if (item.done) {
-          writable.end();
+          if (!options.preventClose) writable.end();
         } else {
           writable.write(item.value);
           pump();

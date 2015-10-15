@@ -50,4 +50,26 @@ describe(__filename + "#", function() {
     expect(error.message).to.be('aborted');
     expect(chunks.join('')).to.be('a');
   }));
+
+  it('can prevent closure on a writable', co.wrap(function*() {
+    var w = WritableStream.create();
+    var r = w.getReader();
+    var doneCalled = false;
+    var chunks = [];
+    r.pipeTo({
+      write: chunks.push.bind(chunks),
+      end: function() {
+        doneCalled = true;
+      },
+      abort: function(err) {
+        error = err;
+      }
+    }, { preventClose: true });
+    w.write('a');
+    w.write('b');
+    w.end();
+    yield timeout(0);
+    expect(chunks.join('')).to.be('ab');
+    expect(doneCalled).to.be(false);
+  }));
 });

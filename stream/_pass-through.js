@@ -55,7 +55,6 @@ extend(PassThrough, {
   read: function() {
     this.__signalRead();
 
-
     if (this._error) {
       this._reject(this._error);
       return Promise.reject(this._error);
