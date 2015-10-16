@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/crcn/mesh.js.svg)](https://travis-ci.org/crcn/mesh.js) [![Coverage Status](https://coveralls.io/repos/crcn/mesh.js/badge.svg?branch=master)](https://coveralls.io/r/crcn/mesh.js?branch=master) [![Dependency Status](https://david-dm.org/crcn/mesh.js.svg)](https://david-dm.org/crcn/mesh.js) [![Join the chat at https://gitter.im/crcn/mesh.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/mesh.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**API Docs can be viewed [here](http://mesh.mojojs.com/docs)**
+**API Docs can be viewed [here](./docs)**
 
 
 Mesh is a flexible data synchronization library that makes it incredibly easy to make data sources interoperable with one another. Easily connect things such as [mongodb](https://www.mongodb.org/), [pubnub](http://pubnub.com/), [socket.io](http://socket.io/) `webrtc` etc to build powerful features such as rollbacks, offline-mode, realtime data, and more.

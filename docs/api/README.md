@@ -160,13 +160,13 @@ passes operations to `resolveBus` if `filter` returns true against the executed 
 
 ```javascript
 var bus = AcceptBus.create(function(operation) {
-  return operation.name = "ping";
+  return operation.action === "ping";
 }, WrapBus.create(function() {
   return "pong!";
 }))
 
-bus.execute({ name: "ping" }) // pong!
-bus.execute({ name: "pong" }) // nothing happens. This is a no-op.
+bus.execute({ action: "ping" }) // pong!
+bus.execute({ action: "pong" }) // nothing happens. This is a no-op.
 ```
 
 #### RejectBus(filter, resolveBus[, rejectBus])
@@ -248,7 +248,7 @@ import MongoDbBus from "mesh-mongo-db-bus";
 var bus = new MongoDbBus();
 var person = new PersonModel({
   bus: new AttachDefaultsBus({ collection: "people" }, bus),
-  name: "jeff"
+  action: "jeff"
 });
 
 await person.save(); // insert into mongodb
@@ -256,7 +256,7 @@ await person.save(); // insert into mongodb
 
 it("can load data into the model", async function() {
   var person = PersonModel.create({
-    bus: BufferedBus.create(void 0, { name: "Mclaren Eff One" })
+    bus: BufferedBus.create(void 0, { action: "Mclaren Eff One" })
   });
 
   await person.load();
@@ -281,6 +281,35 @@ var bus = WrapBus.create(function(operation) {
 bus = SocketIoBus.create({
   host: "//127.0.0.1:8080"
 }, AttachDefaultsBus.create({ remote: true }, bus));
+```
+
+#### RoundRobinBus([busses])
+
+
+```javascript
+var bus = RoundRobinBus.create([
+  BufferedBus.create(void 0, "worker a"),
+  BufferedBus.create(void 0, "worker b"),
+  BufferedBus.create(void 0, "worker c")
+]);
+yield bus.execute().read(); // worker a
+yield bus.execute().read(); // worker b
+yield bus.execute().read(); // worker c
+yield bus.execute().read(); // worker a
+```
+
+#### RandomBus([busses])
+
+```javascript
+var bus = RandomBus.create([
+  BufferedBus.create(void 0, "worker a"),
+  BufferedBus.create(void 0, "worker b"),
+  BufferedBus.create(void 0, "worker c")
+]);
+yield bus.execute().read(); // worker a
+yield bus.execute().read(); // worker c
+yield bus.execute().read(); // worker b
+yield bus.execute().read(); // worker c
 ```
 
 ## Response API
