@@ -30,9 +30,11 @@ module.exports = {
    * responses
    */
 
-  Response           : require('./response/base'),
+  Response           : require('./response'),
   EmptyResponse      : require('./response/empty'),
-  AsyncResponse      : require('./response/async'),
+
+  // deprecated
+  AsyncResponse      : require('./response'),
   ErrorResponse      : require('./response/error'),
   BufferedResponse   : require('./response/buffered'),
   NodeStreamResponse : require('./response/node-stream'),

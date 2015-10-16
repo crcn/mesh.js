@@ -10,11 +10,11 @@ var co = require('co');
 describe(__filename + '#', function() {
 
   it('is a bus', function() {
-    expect(new MapBus()).to.be.an(Bus);
+    expect(MapBus.create()).to.be.an(Bus);
   });
 
   it('can map a chunk of data into something else', co.wrap(function*() {
-    var bus = new MapBus(new BufferedBus(void 0, 'chunk'), function(chunk, writable, operation) {
+    var bus = MapBus.create(BufferedBus.create(void 0, 'chunk'), function(chunk, writable, operation) {
       expect(operation.name).to.be('op');
       chunk.split('').forEach(writable.write.bind(writable));
     });
@@ -34,7 +34,7 @@ describe(__filename + '#', function() {
 
   it('passes errors down', co.wrap(function*() {
     var mapped = false;
-    var bus = new MapBus(new BufferedBus(new Error('an error')), function(chunk, writable, operation) {
+    var bus = MapBus.create(BufferedBus.create(new Error('an error')), function(chunk, writable, operation) {
       mapped = true;
     });
 
@@ -50,7 +50,7 @@ describe(__filename + '#', function() {
 
   it('catches errors in the map function and passes them down', co.wrap(function*() {
     var mapped = false;
-    var bus = new MapBus(new BufferedBus(void 0, 'chunk'), function(chunk, writable, operation) {
+    var bus = MapBus.create(BufferedBus.create(void 0, 'chunk'), function(chunk, writable, operation) {
       mapped = true;
       throw new Error('an error');
     });

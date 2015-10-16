@@ -1,16 +1,13 @@
-var Response = require('./base');
-var extend = require('../internal/extend');
-var Chunk = require('../internal/chunk');
 var WritableStream = require('../stream/writable');
+var extend         = require('../internal/extend');
 
 /**
  * Creates a new Streamed response
  */
 
-function AsyncResponse(run) {
-  Response.call(this);
+function Response(run) {
 
-  var writer   = this._writer = new WritableStream();
+  var writer   = this._writer = WritableStream.create();
   this._reader = writer.getReader();
 
   // todo - pass writable instead
@@ -30,7 +27,7 @@ function AsyncResponse(run) {
 /**
  */
 
-extend(Response, AsyncResponse, {
+extend(Response, {
 
   /**
    */
@@ -51,10 +48,23 @@ extend(Response, AsyncResponse, {
 
   read: function() {
     return this._reader.read();
+  },
+
+  /**
+   */
+
+  pipeTo: function(writable, options) {
+    return this._reader.pipeTo(writable, options);
   }
 });
 
 /**
  */
 
-module.exports =  AsyncResponse;
+Response.create = require('../internal/create-object');
+Response.extend = extend;
+
+/**
+ */
+
+module.exports =  Response;

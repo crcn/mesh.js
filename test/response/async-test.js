@@ -11,11 +11,11 @@ var expect = require('expect.js');
 describe(__filename + '#', function() {
 
   it('is a Response', function() {
-    expect(new AsyncResponse()).to.be.an(Response);
+    expect(AsyncResponse.create()).to.be.an(Response);
   });
 
   it('runs the provided callback function in the constructor', co.wrap(function*() {
-    var response = new AsyncResponse(function(response) {
+    var response = AsyncResponse.create(function(response) {
       response.write('a');
       response.write('b');
       response.end();
@@ -27,7 +27,7 @@ describe(__filename + '#', function() {
   }));
 
   it('can continue to read after the response has ended', co.wrap(function*() {
-    var response = new AsyncResponse(function(response) {
+    var response = AsyncResponse.create(function(response) {
       response.end();
     });
     yield response.read();
@@ -37,7 +37,7 @@ describe(__filename + '#', function() {
   }));
 
   it('can pass an error down', co.wrap(function*() {
-    var response = new AsyncResponse(function(writable) {
+    var response = AsyncResponse.create(function(writable) {
       writable.abort(new Error('something went wrong'));
     });
 
@@ -54,7 +54,7 @@ describe(__filename + '#', function() {
 
     var writeCounts = 0;
 
-    var response = new AsyncResponse(co.wrap(function*(writable) {
+    var response = AsyncResponse.create(co.wrap(function*(writable) {
       writeCounts++;
       yield writable.write('a');
       writeCounts++;
@@ -78,7 +78,7 @@ describe(__filename + '#', function() {
   }));
 
   it('automatically ends the async response if the runnable provided returns a promise', co.wrap(function*() {
-    var response = new AsyncResponse(co.wrap(function*(writable) {
+    var response = AsyncResponse.create(co.wrap(function*(writable) {
       writable.write('a');
       writable.write('b');
     }));
@@ -89,7 +89,7 @@ describe(__filename + '#', function() {
   }));
 
   it('automatically handles errors that are thrown within an async runnable', co.wrap(function*() {
-    var response = new AsyncResponse(co.wrap(function*(writable) {
+    var response = AsyncResponse.create(co.wrap(function*(writable) {
       writable.write('a');
       writable.write('b');
       throw new Error('an error');
@@ -107,7 +107,7 @@ describe(__filename + '#', function() {
   }));
 
   it('always returns an error once set to the async response', co.wrap(function*() {
-    var response = new AsyncResponse(co.wrap(function*(writable) {
+    var response = AsyncResponse.create(co.wrap(function*(writable) {
       writable.write('a');
       throw new Error('an error');
     }));
@@ -126,7 +126,7 @@ describe(__filename + '#', function() {
   }));
 
   it('calls then() after completing', function(next) {
-    var response = new AsyncResponse(function(writable) {
+    var response = AsyncResponse.create(function(writable) {
       writable.end();
     });
 
@@ -138,7 +138,7 @@ describe(__filename + '#', function() {
   });
 
   it('calls then() when an error is emitted', function(next) {
-    var response = new AsyncResponse(function(writable) {
+    var response = AsyncResponse.create(function(writable) {
       writable.abort(new Error('an error'));
     });
 
@@ -151,7 +151,7 @@ describe(__filename + '#', function() {
   });
 
   it('calls catch() when an error is emitted', function(next) {
-    var response = new AsyncResponse(function(writable) {
+    var response = AsyncResponse.create(function(writable) {
       writable.abort(new Error('an error'));
     });
 

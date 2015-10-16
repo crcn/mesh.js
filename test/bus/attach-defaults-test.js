@@ -7,13 +7,13 @@ var BufferedResponse = mesh.BufferedResponse;
 
 describe(__filename + '#', function() {
   it('is a bus', function() {
-    expect(new AttachDefaultsBus()).to.be.an(Bus);
+    expect(AttachDefaultsBus.create()).to.be.an(Bus);
   });
 
   it('can attach default properties to a running operation', co.wrap(function*() {
-    var bus = new AttachDefaultsBus({ c: 'd' }, {
+    var bus = AttachDefaultsBus.create({ c: 'd' }, {
       execute: function(operation) {
-        return new BufferedResponse(void 0, operation);
+        return BufferedResponse.create(void 0, operation);
       }
     });
 
@@ -24,9 +24,9 @@ describe(__filename + '#', function() {
   }));
 
   it('does not override properties on the operation', co.wrap(function*() {
-    var bus = new AttachDefaultsBus({ a: 1, c: 'd' }, {
+    var bus = AttachDefaultsBus.create({ a: 1, c: 'd' }, {
       execute: function(operation) {
-        return new BufferedResponse(void 0, operation);
+        return BufferedResponse.create(void 0, operation);
       }
     });
 

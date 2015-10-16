@@ -15,19 +15,19 @@ var co = require('co');
 describe(__filename + '#', function() {
 
   it('is a bus', function() {
-    expect(new RetryBus()).to.be.an(Bus);
+    expect(RetryBus.create()).to.be.an(Bus);
   });
 
   it('can retry an operation twice if it fails', co.wrap(function*() {
 
     var retryCount = 0;
 
-    var bus = new RetryBus(
+    var bus = RetryBus.create(
       2,
       {
         execute: function(operation) {
           retryCount++;
-          return new ErrorResponse(new Error('an error'));
+          return ErrorResponse.create(new Error('an error'));
         }
       }
     );
@@ -42,14 +42,14 @@ describe(__filename + '#', function() {
   xit('can filter errors before retrying', co.wrap(function*() {
 
 
-    var bus = new RetryBus(
+    var bus = RetryBus.create(
       3,
       function(error, operation) {
         return error.message.to.be('network error');
       },
-      new FallbackBus(
-        new AcceptBus(sift({ name: 'getGenericError' }), new BufferedBus(new Error('generic error'))),
-        new AcceptBus(sift({ name: 'getNetworkError' }), new BufferedBus(new Error('network error')))
+      FallbackBus.create(
+        AcceptBus.create(sift({ name: 'getGenericError' }), BufferedBus.create(new Error('generic error'))),
+        AcceptBus.create(sift({ name: 'getNetworkError' }), BufferedBus.create(new Error('network error')))
       )
     );
 

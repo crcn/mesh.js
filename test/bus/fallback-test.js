@@ -11,15 +11,15 @@ var co = require('co');
 describe(__filename + '#', function() {
 
   it('is a bus', function() {
-    expect(new FallbackBus()).to.be.an(Bus);
+    expect(FallbackBus.create()).to.be.an(Bus);
   });
 
   it('sequentially executes busses until data is emitted by one of them', co.wrap(function*() {
 
-    var bus = new FallbackBus([
-      new BufferedBus(),
-      new BufferedBus(void 0, ['a', 'b', 'c']),
-      new BufferedBus(void 0, 'd')
+    var bus = FallbackBus.create([
+      BufferedBus.create(),
+      BufferedBus.create(void 0, ['a', 'b', 'c']),
+      BufferedBus.create(void 0, 'd')
     ]);
 
     var response = bus.execute();
@@ -31,9 +31,9 @@ describe(__filename + '#', function() {
 
   it('stops execution if an error occurs', co.wrap(function*() {
 
-    var bus = new FallbackBus([
-      new BufferedBus(new Error('an error')),
-      new BufferedBus(void 0, ['a'])
+    var bus = FallbackBus.create([
+      BufferedBus.create(new Error('an error')),
+      BufferedBus.create(void 0, ['a'])
     ]);
 
     var err;
@@ -54,13 +54,13 @@ describe(__filename + '#', function() {
       {
         execute: function(operation) {
           busses.splice(0, 1);
-          return new EmptyResponse();
+          return EmptyResponse.create();
         }
       },
-      new BufferedBus(void 0, 'a')
+      BufferedBus.create(void 0, 'a')
     ];
 
-    var bus = new FallbackBus(busses);
+    var bus = FallbackBus.create(busses);
     expect((yield bus.execute({}).read()).value).to.be('a');
   }));
 });

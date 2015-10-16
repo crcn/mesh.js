@@ -1,8 +1,6 @@
 var Bus = require('./base');
 var NoopBus = require('./noop');
-var extend = require('../internal/extend');
-var AsyncResponse = require('../response/async');
-var pipe = require('../internal/pipe-stream');
+var Response = require('../response');
 
 /**
  */
@@ -16,7 +14,7 @@ function AcceptBus(filter, acceptBus, rejectBus) {
 /**
  */
 
-extend(Bus, AcceptBus, {
+Bus.extend(AcceptBus, {
 
   /**
    */
@@ -25,9 +23,9 @@ extend(Bus, AcceptBus, {
     var accepted = this._filter(operation);
 
     if (accepted && accepted.then) {
-      return AsyncResponse.create((writable) => {
+      return Response.create((writable) => {
         accepted.then((yes) => {
-          pipe(this._execute(yes, operation), writable, { end: true });
+          this._execute(yes, operation).pipeTo(writable);
         }, writable.abort.bind(writable));
       });
     }

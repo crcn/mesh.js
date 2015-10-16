@@ -13,22 +13,22 @@ var co = require('co');
 describe(__filename + '#', function() {
 
   it('is a bus', function() {
-    expect(new RaceBus()).to.be.an(Bus);
+    expect(RaceBus.create()).to.be.an(Bus);
   });
 
   it('executes all busses at the same time and returns data from the fastest one', co.wrap(function*() {
 
-    var bus = new RaceBus([
+    var bus = RaceBus.create([
       {
         execute: function(operation) {
-          return new AsyncResponse(function(response) {
+          return AsyncResponse.create(function(response) {
             setTimeout(response.end.bind(response), 10, 'a');
           });
         }
       },
       {
         execute: function(operation) {
-          return new AsyncResponse(function(response) {
+          return AsyncResponse.create(function(response) {
             setTimeout(response.end.bind(response), 0, 'b');
           });
         }
@@ -42,9 +42,9 @@ describe(__filename + '#', function() {
 
   it('stops execution if an error occurs', co.wrap(function*() {
 
-    var bus = new RaceBus([
-      new BufferedBus(new Error('an error')),
-      new BufferedBus(void 0, ['a'])
+    var bus = RaceBus.create([
+      BufferedBus.create(new Error('an error')),
+      BufferedBus.create(void 0, ['a'])
     ]);
 
     var err;
@@ -62,23 +62,23 @@ describe(__filename + '#', function() {
       {
         execute: function(operation) {
           busses.splice(0, 1);
-          return new EmptyResponse();
+          return EmptyResponse.create();
         }
       },
-      new BufferedBus(void 0, 'a')
+      BufferedBus.create(void 0, 'a')
     ];
 
-    var bus = new RaceBus(busses);
+    var bus = RaceBus.create(busses);
     expect((yield bus.execute({}).read()).value).to.be('a');
   }));
 
   it('properly ends if there is no data', co.wrap(function*() {
     var busses = [
-      new NoopBus(),
-      new NoopBus()
+      NoopBus.create(),
+      NoopBus.create()
     ];
 
-    var bus = new RaceBus(busses);
+    var bus = RaceBus.create(busses);
     expect((yield bus.execute({}).read()).done).to.be(true);
   }));
 });

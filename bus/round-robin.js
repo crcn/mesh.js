@@ -1,5 +1,4 @@
 var Bus = require('./base');
-var extend = require('../internal/extend');
 
 /**
  */
@@ -12,7 +11,7 @@ function RoundRobinBus(busses) {
 /**
  */
 
-extend(Bus, RoundRobinBus, {
+Bus.extend(RoundRobinBus, {
 
   /**
    */

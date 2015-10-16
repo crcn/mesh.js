@@ -9,12 +9,12 @@ var expect = require('expect.js');
 describe(__filename + '#', function() {
 
   it('is a bus', function() {
-    expect(new CatchErrorBus()).to.be.an(Bus);
+    expect(CatchErrorBus.create()).to.be.an(Bus);
   });
 
   it('eats errors that have been caught', co.wrap(function*(next) {
     var caughtError;
-    var bus = new CatchErrorBus(new BufferedBus(new Error('an error')), function(error, operation) {
+    var bus = CatchErrorBus.create(BufferedBus.create(new Error('an error')), function(error, operation) {
       caughtError = error;
       expect(operation.name).to.be('op1');
     });
@@ -25,7 +25,7 @@ describe(__filename + '#', function() {
 
   it('can re-throw ', co.wrap(function*(next) {
 
-    var bus = new CatchErrorBus(new BufferedBus(new Error('an error')), function(error, operation) {
+    var bus = CatchErrorBus.create(BufferedBus.create(new Error('an error')), function(error, operation) {
       throw new Error('uncaught error');
     });
 

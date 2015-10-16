@@ -72,4 +72,7 @@ describe(__filename + "#", function() {
     expect(chunks.join('')).to.be('ab');
     expect(doneCalled).to.be(false);
   }));
+
+  xit('waits for piped wait() to resolve if there\'s a promise');
+  xit('automatically closes if there\'s an error while writing to a piped stream');
 });

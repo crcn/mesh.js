@@ -3,7 +3,7 @@
  * IE8+ compatible subclassing. See https://babeljs.io/docs/advanced/caveats/
  */
 
-module.exports =  function (parent, child) {
+module.exports = function(parent, child) {
 
   var props;
   var pi;
@@ -39,4 +39,4 @@ module.exports =  function (parent, child) {
   Object.assign(c.prototype, Object.assign.apply(Object, [{}].concat(props)));
 
   return c;
-}
+};

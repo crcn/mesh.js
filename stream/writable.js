@@ -6,8 +6,8 @@ var ReadableStream = require('./readable');
  */
 
 function WritableStream(options) {
-  this._passThrough = new PassThrough();
-  this._reader = new ReadableStream(this._passThrough);
+  this._passThrough = PassThrough.create();
+  this._reader = ReadableStream.create(this._passThrough);
 }
 
 /**
@@ -65,6 +65,7 @@ extend(WritableStream, {
  */
 
 WritableStream.create = require('../internal/create-object');
+WritableStream.extend = require('../internal/extend');
 
 /**
  */

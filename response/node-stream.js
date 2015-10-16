@@ -1,12 +1,11 @@
-var AsyncResponse = require('./async');
-var extend = require('../internal/extend');
+var Response = require('./index');
 
 /**
  */
 
 function NodeStreamResponse(stream) {
 
-  AsyncResponse.call(this, (writable) => {
+  Response.call(this, (writable) => {
 
     if (!stream) return writable.end();
 
@@ -33,7 +32,7 @@ function NodeStreamResponse(stream) {
 /**
  */
 
-extend(AsyncResponse, NodeStreamResponse);
+Response.extend(NodeStreamResponse);
 
 /**
  */

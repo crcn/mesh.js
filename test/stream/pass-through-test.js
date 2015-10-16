@@ -4,11 +4,11 @@ var expect = require('expect.js');
 
 describe(__filename + 'function', function() {
   it('it can be created', function() {
-    new PassThrough();
+    PassThrough.create();
   });
 
   it('can write & read items', co.wrap(function*() {
-    var q = new PassThrough();
+    var q = PassThrough.create();
     q.write('a');
     q.write('b');
     q.write('c');
@@ -19,7 +19,7 @@ describe(__filename + 'function', function() {
 
   it('can wait for items to be readd before enqueuing', co.wrap(function*() {
     var i = 0;
-    var q = new PassThrough();
+    var q = PassThrough.create();
     q.write('a').then(function() {
       i++;
       q.write('b').then(function() {
@@ -38,7 +38,7 @@ describe(__filename + 'function', function() {
 
   it('can wait for items to be writed before reading', co.wrap(function*() {
     var i = 0;
-    var q = new PassThrough();
+    var q = PassThrough.create();
     q.read().then(function(item) {
       expect(item.value).to.be('a');
       i++;

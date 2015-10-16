@@ -1,7 +1,5 @@
 var Bus = require('./base');
-var pump = require('../internal/pump-stream');
-var extend = require('../internal/extend');
-var AsyncResponse = require('../response/async');
+var Response = require('../response');
 
 /**
  */
@@ -14,25 +12,28 @@ function CatchErrorBus(bus, catchError) {
 /**
  */
 
-extend(Bus, CatchErrorBus, {
+ Bus.extend(CatchErrorBus, {
 
   /**
    */
 
   execute: function(operation) {
-    return new AsyncResponse((writable) => {
-      pump(this._bus.execute(operation), (chunk) => {
-        if (chunk.done) {
+    return Response.create((writable) => {
+
+      this._bus.execute(operation).pipeTo({
+        write: (value) => {
+          writable.write(value);
+        },
+        end: () => {
           writable.end();
-        } else {
-          writable.write(chunk.value);
-        }
-      }, (error) => {
-        try {
-          var p = this._catchError(error, operation);
-          writable.end();
-        } catch(e) {
-          writable.abort(e);
+        },
+        abort: (error) => {
+          try {
+            var p = this._catchError(error, operation);
+            writable.end();
+          } catch(e) {
+            writable.abort(e);
+          }
         }
       });
     });

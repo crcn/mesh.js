@@ -97,4 +97,9 @@ extend(PassThrough, {
 /**
  */
 
+PassThrough.create = require('../internal/create-object');
+
+/**
+ */
+
 module.exports = PassThrough;

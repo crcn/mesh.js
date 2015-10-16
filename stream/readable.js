@@ -32,11 +32,17 @@ extend(ReadableStream, {
           writable.write(item.value);
           pump();
         }
-      }, writable.abort.bind(writable));
+      }, options.preventAbort ? void 0 : writable.abort.bind(writable));
     };
     pump();
+    return writable;
   }
 });
+
+/**
+ */
+ 
+ReadableStream.create = require('../internal/create-object');
 
 /**
  */

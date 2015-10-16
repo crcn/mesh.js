@@ -1,5 +1,4 @@
 var BufferedResponse = require('./buffered');
-var extend = require('../internal/extend');
 
 /**
  */
@@ -12,7 +11,7 @@ function ErrorResponse(error) {
  */
 
 
-extend(BufferedResponse, ErrorResponse);
+BufferedResponse.extend(ErrorResponse);
 
 /**
  */

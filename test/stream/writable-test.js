@@ -5,11 +5,11 @@ var timeout = require('../utils/timeout');
 
 describe(__filename + '#', function() {
   it('can be created', function() {
-    new WritableStream();
+    WritableStream.create();
   });
 
   it('can write & read chunks from the stream', co.wrap(function*() {
-    var w = new WritableStream();
+    var w = WritableStream.create();
     var r = w.getReader();
     var chunks = [];
     r.read().then(chunks.push.bind(chunks));
@@ -19,7 +19,7 @@ describe(__filename + '#', function() {
   }));
 
   it('can abort a stream with a reason', co.wrap(function*() {
-    var w = new WritableStream();
+    var w = WritableStream.create();
     var r = w.getReader();
     w.write('a');
     yield r.read();
@@ -37,7 +37,7 @@ describe(__filename + '#', function() {
   }));
 
   it('aborts the stream even after chunks have been written', co.wrap(function*() {
-    var w = new WritableStream();
+    var w = WritableStream.create();
     var r = w.getReader();
     w.write('a');
     w.abort(new Error('an error'));
@@ -51,7 +51,7 @@ describe(__filename + '#', function() {
   }));
 
   it('reads all the chunks from the stream until there are no more', co.wrap(function*() {
-    var w = new WritableStream();
+    var w = WritableStream.create();
     var r = w.getReader();
     w.write('a');
     w.write('b');
@@ -68,7 +68,7 @@ describe(__filename + '#', function() {
   }));
 
   it('calls then() after the write stream has ended', co.wrap(function*() {
-    var w = new WritableStream();
+    var w = WritableStream.create();
     var r = w.getReader();
     w.write('a');
     w.write('b');

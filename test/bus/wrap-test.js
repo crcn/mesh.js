@@ -15,18 +15,18 @@ var co = require('co');
 describe(__filename + '#', function() {
 
   it('is a bus', function() {
-    expect(new WrapBus(function(){ })).to.be.an(Bus);
+    expect(WrapBus.create(function(){ })).to.be.an(Bus);
   });
 
   it('wraps a function and executes it', co.wrap(function*() {
-    var bus = new WrapBus(function(operation) {
-      return new BufferedResponse(void 0, 'a ' + operation.name);
+    var bus = WrapBus.create(function(operation) {
+      return BufferedResponse.create(void 0, 'a ' + operation.name);
     });
     expect((yield bus.execute({name: 'b'}).read()).value).to.be('a b');
   }));
 
   it('automatically catches errors thrown within the runnable', co.wrap(function*() {
-    var bus = new WrapBus(function(operation) {
+    var bus = WrapBus.create(function(operation) {
       throw new Error('an error');
     });
     var err;
@@ -37,20 +37,20 @@ describe(__filename + '#', function() {
   }));
 
   it('automatically writes the returned value of a runnable', co.wrap(function*() {
-    var bus = new WrapBus(function(operation) {
+    var bus = WrapBus.create(function(operation) {
       return 'a ' + operation.name;
     });
     expect((yield bus.execute({name: 'b'}).read()).value).to.be('a b');
   }));
 
   it('can handle an operation that doesn\'t return anything', co.wrap(function*() {
-    var bus = new WrapBus(function(operation) {
+    var bus = WrapBus.create(function(operation) {
     });
     expect((yield bus.execute({name: 'b'}).read()).done).to.be(true);
   }));
 
   it('can handle resolved data from promises in a runnable', co.wrap(function*() {
-    var bus = new WrapBus(function(operation) {
+    var bus = WrapBus.create(function(operation) {
       return new Promise(function(resolve, reject) {
         resolve('a');
       })
@@ -59,7 +59,7 @@ describe(__filename + '#', function() {
   }));
 
   it('can handle rejected data from promises in a runnable', co.wrap(function*() {
-    var bus = new WrapBus(function(operation) {
+    var bus = WrapBus.create(function(operation) {
       return new Promise(function(resolve, reject) {
         reject('an error');
       });
@@ -73,14 +73,14 @@ describe(__filename + '#', function() {
   }));
 
   it('can handle resolved data from runnables with a second next() param', co.wrap(function*() {
-    var bus = new WrapBus(function(operation, next) {
+    var bus = WrapBus.create(function(operation, next) {
       next(void 0, 'chunk');
     });
     expect((yield bus.execute().read()).value).to.be('chunk');
   }));
 
   it('can handle resolved data from runnables with a second next() param', co.wrap(function*() {
-    var bus = new WrapBus(function(operation, next) {
+    var bus = WrapBus.create(function(operation, next) {
       next(new Error('an error'));
     });
 

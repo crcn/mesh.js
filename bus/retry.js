@@ -1,7 +1,5 @@
 var Bus = require('./base');
-var extend = require('../internal/extend');
-var AsyncResponse = require('../response/async');
-var pump = require('../internal/pump-stream');
+var Response = require('../response');
 
 /**
  */
@@ -23,29 +21,31 @@ function RetryBus(maxRetries, errorFilter, bus) {
 /**
  */
 
-extend(Bus, RetryBus, {
+Bus.extend(RetryBus, {
 
   /**
    */
 
   execute: function(operation) {
-    return new AsyncResponse((writable) => {
+    return Response.create((writable) => {
       var hasChunk  = false;
       var prevError;
 
       var run = (triesLeft) => {
         if (!triesLeft) return writable.abort(prevError);
         var response = this._bus.execute(operation);
-        pump(response, (chunk) => {
-          hasChunk = true;
-          if (chunk.done) {
-            writable.write(chunk.value);
-          } else {
+        response.pipeTo({
+          write: function(value) {
+            hasChunk = true;
+            writable.write(value);
+          },
+          end: function() {
             writable.end();
+          },
+          abort: function(error) {
+            prevError = error;
+            run(triesLeft - 1);
           }
-        }, (error) => {
-          prevError = error;
-          run(triesLeft - 1);
         });
       }
 

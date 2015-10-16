@@ -7,7 +7,7 @@ var expect = require('expect.js');
 
 describe(__filename + '#', function() {
   it('returns an error', co.wrap(function*() {
-    var resp = new ErrorResponse(new Error('an error'));
+    var resp = ErrorResponse.create(new Error('an error'));
     var err;
     try {
       yield resp.read();
@@ -16,7 +16,7 @@ describe(__filename + '#', function() {
   }));
 
   it('calls catch() immediately', function(next) {
-    var resp = new ErrorResponse(new Error('an error'));
+    var resp = ErrorResponse.create(new Error('an error'));
     resp.read();
     resp.catch(function(error) {
       next();

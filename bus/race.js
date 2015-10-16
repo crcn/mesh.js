@@ -1,7 +1,5 @@
 var Bus = require('./base');
-var pump = require('../internal/pump-stream');
-var extend = require('../internal/extend');
-var AsyncResponse = require('../response/async');
+var Response = require('../response');
 
 /**
  */
@@ -13,33 +11,32 @@ function RaceBus(busses) {
 /**
  */
 
-extend(Bus, RaceBus, {
+Bus.extend(RaceBus, {
 
   /**
    */
 
   execute: function(operation) {
-    return new AsyncResponse((writable) => {
+    return Response.create((writable) => {
       var busses  = this._busses.concat();
       var numLeft = busses.length;
       var found   = -1;
       busses.forEach((bus, i) => {
         var response = bus.execute(operation);
-        pump(response, (chunk) => {
-          if (chunk.done && !~found) {
-            if ((--numLeft) === 0) {
+
+        response.pipeTo({
+          write: function(value) {
+            if ((~found && found !== i)) return;
+            found = i;
+            writable.write(value);
+          },
+          end: function() {
+            if ((~found && found === i) || (--numLeft) === 0) {
               writable.end();
             }
-            return;
-          }
-          if (~found && found !== i) return;
-          if (chunk.done) {
-            writable.end();
-          } else {
-            found = i;
-            writable.write(chunk.value);
-          }
-        }, writable.abort.bind(writable));
+          },
+          abort: writable.abort.bind(writable)
+        });
       });
     });
   }

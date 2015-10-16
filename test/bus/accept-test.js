@@ -10,14 +10,14 @@ var BufferedBus = mesh.BufferedBus;
 describe(__filename + '#', function() {
 
   it('is a bus', function() {
-    expect(new AcceptBus()).to.be.an(mesh.Bus);
+    expect(AcceptBus.create()).to.be.an(mesh.Bus);
   });
 
   it('can redirect an operation according to the accept bus filter', co.wrap(function*() {
-    var bus = new AcceptBus(
+    var bus = AcceptBus.create(
       sift({ name: 'op1' }),
-      new BufferedBus(void 0, 'a'),
-      new BufferedBus(void 0, 'b')
+      BufferedBus.create(void 0, 'a'),
+      BufferedBus.create(void 0, 'b')
     );
 
     expect((yield bus.execute({ name: 'op1' }).read()).value).to.be('a');
@@ -25,10 +25,10 @@ describe(__filename + '#', function() {
   }));
 
   it('no-ops the accept bus if it\'s null', co.wrap(function*() {
-    var bus = new mesh.AcceptBus(
+    var bus = AcceptBus.create(
       sift({ name: 'op1' }),
       void 0,
-      new BufferedBus(void 0, 'b')
+      BufferedBus.create(void 0, 'b')
     );
 
     var chunk = yield bus.execute({ name: 'op1' }).read();
@@ -38,7 +38,7 @@ describe(__filename + '#', function() {
   }));
 
   it('no-ops the reject bus if it\'s null', co.wrap(function*() {
-    var bus = new AcceptBus(
+    var bus = AcceptBus.create(
       sift({ name: 'op1' })
     );
 

@@ -1,5 +1,4 @@
 var Bus = require('./base');
-var extend = require('../internal/extend');
 var BufferedResponse = require('../response/buffered');
 
 /**
@@ -13,13 +12,13 @@ function BufferedBus(error, chunkValues) {
 /**
  */
 
-extend(Bus, BufferedBus, {
+ Bus.extend(BufferedBus, {
 
   /**
    */
-   
+
   execute: function(operation) {
-    return new BufferedResponse(this._error, this._chunkValues);
+    return BufferedResponse.create(this._error, this._chunkValues);
   }
 });
 

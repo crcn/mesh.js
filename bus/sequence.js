@@ -1,7 +1,5 @@
 var Bus = require('./base');
-var pipe = require('../internal/pipe-stream');
-var extend = require('../internal/extend');
-var AsyncResponse = require('../response/async');
+var Response = require('../response');
 
 /**
  */
@@ -13,20 +11,22 @@ function SequenceBus(busses) {
 /**
  */
 
-extend(Bus, SequenceBus, {
+Bus.extend(SequenceBus, {
 
   /**
    */
 
   execute: function(operation) {
-    return new AsyncResponse((writable) => {
+    return Response.create((writable) => {
 
       // copy incase the collection mutates (unlikely but possible)
       var busses = this._busses.concat();
 
       var next = (i) => {
         if (i === busses.length) return writable.end();
-        pipe(busses[i].execute(operation), writable, { end: false }).then(() => next(i + 1));
+        var resp = busses[i].execute(operation);
+        resp.pipeTo(writable, { preventClose: true });
+        resp.then(() => next(i + 1));
       };
 
       next(0);

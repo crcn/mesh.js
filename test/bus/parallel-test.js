@@ -12,14 +12,14 @@ var expect = require('expect.js');
 describe(__filename + '#', function() {
 
   it('is a bus', function() {
-    expect(new ParallelBus()).to.be.an(Bus);
+    expect(ParallelBus.create()).to.be.an(Bus);
   });
 
   it('executes ops against multiple busses and joins the read() data', co.wrap(function*() {
 
-    var bus = new ParallelBus([
-      new BufferedBus(void 0, 'a'),
-      new BufferedBus(void 0, 'b')
+    var bus = ParallelBus.create([
+      BufferedBus.create(void 0, 'a'),
+      BufferedBus.create(void 0, 'b')
     ]);
 
     var response = bus.execute();
@@ -30,24 +30,24 @@ describe(__filename + '#', function() {
   }));
 
   it('can receive data from any bus in any order', co.wrap(function*() {
-    var bus = new ParallelBus([
+    var bus = ParallelBus.create([
       {
         execute: function() {
-          return new AsyncResponse(function(writable) {
+          return AsyncResponse.create(function(writable) {
             setTimeout(writable.end.bind(writable), 30, 'a');
           });
         }
       },
       {
         execute: function() {
-          return new AsyncResponse(function(writable) {
+          return AsyncResponse.create(function(writable) {
             setTimeout(writable.end.bind(writable), 20, 'b');
           });
         }
       },
       {
         execute: function() {
-          return new AsyncResponse(function(writable) {
+          return AsyncResponse.create(function(writable) {
             setTimeout(writable.end.bind(writable), 10, 'c');
           });
         }
@@ -63,8 +63,8 @@ describe(__filename + '#', function() {
   }));
 
   it('passes errors down', co.wrap(function*() {
-    var bus = new ParallelBus([
-      new BufferedBus(new Error('error'))
+    var bus = ParallelBus.create([
+      BufferedBus.create(new Error('error'))
     ]);
 
     var response = bus.execute();
@@ -79,14 +79,14 @@ describe(__filename + '#', function() {
 
   it('can continue to execute ops if a bus is removed mid-operation', co.wrap(function*() {
     var busses;
-    var bus = new ParallelBus(busses = [
+    var bus = ParallelBus.create(busses = [
       {
         execute: function(operation) {
           busses.splice(0, 1);
-          return new EmptyResponse();
+          return EmptyResponse.create();
         }
       },
-      new BufferedBus(void 0, 'a')
+      BufferedBus.create(void 0, 'a')
     ]);
     var response = bus.execute();
     expect((yield response.read()).value).to.be('a');

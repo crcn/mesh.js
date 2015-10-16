@@ -8,11 +8,11 @@ var expect = require('expect.js');
 describe(__filename + '#', function() {
 
     it('is a Response', function() {
-      expect(new EmptyResponse()).to.be.an(Response);
+      expect(EmptyResponse.create()).to.be.an(Response);
     });
 
   it('returns undefined when read is called', co.wrap(function*() {
-    var response = new EmptyResponse();
+    var response = EmptyResponse.create();
 
     // sanity check to ensure read() never returns a value
     for (var i = 10; i--;) {
@@ -21,7 +21,7 @@ describe(__filename + '#', function() {
   }));
 
   it('calls then() immediately after it\'s called', co.wrap(function*() {
-    var response = new EmptyResponse();
+    var response = EmptyResponse.create();
     response.read();
     yield new Promise(function(resolve, reject) {
       response.then(resolve);
@@ -29,7 +29,7 @@ describe(__filename + '#', function() {
   }));
 
   it('can be yielded', co.wrap(function*() {
-    var response = new EmptyResponse();
+    var response = EmptyResponse.create();
     response.read();
     yield response;
     yield response;

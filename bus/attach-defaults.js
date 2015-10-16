@@ -1,5 +1,4 @@
 var Bus = require('./base');
-var extend = require('../internal/extend');
 
 /**
  */
@@ -26,7 +25,7 @@ function AttachDefaultsBus(properties, bus) {
 /**
  */
 
-extend(Bus, AttachDefaultsBus, {
+ Bus.extend(AttachDefaultsBus, {
   execute: function(operation) {
     return this._bus.execute(_defaults(operation, this._properties));
   }

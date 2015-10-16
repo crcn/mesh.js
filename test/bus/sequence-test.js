@@ -15,14 +15,14 @@ var expect = require('expect.js');
 describe(__filename + '#', function() {
 
   it('is a bus', function() {
-    expect(new SequenceBus()).to.be.an(Bus);
+    expect(SequenceBus.create()).to.be.an(Bus);
   });
 
   it('executes ops against multiple busses and joins the read() data', co.wrap(function*() {
 
-    var bus = new SequenceBus([
-      new BufferedBus(void 0, 'a'),
-      new BufferedBus(void 0, 'b')
+    var bus = SequenceBus.create([
+      BufferedBus.create(void 0, 'a'),
+      BufferedBus.create(void 0, 'b')
     ]);
 
     var response = bus.execute();
@@ -37,13 +37,13 @@ describe(__filename + '#', function() {
     var rmbus = {
       execute: function(operation) {
         busses.splice(1, 1); // remove the next bus
-        return new EmptyResponse();
+        return EmptyResponse.create();
       }
     };
 
-    var busses = [new BufferedBus(void 0, 'a'), rmbus, new BufferedBus(void 0, 'b'), new BufferedBus(void 0, 'c')];
+    var busses = [BufferedBus.create(void 0, 'a'), rmbus, BufferedBus.create(void 0, 'b'), BufferedBus.create(void 0, 'c')];
 
-    var bus = new SequenceBus(busses);
+    var bus = SequenceBus.create(busses);
     var response = bus.execute(busses);
 
     expect((yield response.read()).value).to.be('a');
@@ -52,7 +52,7 @@ describe(__filename + '#', function() {
   }));
 
   it('passes errors down', co.wrap(function*() {
-    var bus = new SequenceBus([new BufferedBus(new Error('unknown error'))]);
+    var bus = SequenceBus.create([BufferedBus.create(new Error('unknown error'))]);
     var err;
 
     try {

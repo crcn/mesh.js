@@ -1,6 +1,6 @@
 var Bus              = require('./base');
 var extend           = require('../internal/extend');
-var AsyncResponse    = require('../response/async');
+var Response         = require('../response');
 var BufferedResponse = require('../response/buffered');
 
 /**
@@ -36,8 +36,8 @@ extend(Bus, WrapBus, {
 
     // is a readable stream
     if (ret && ret.read)  return ret;
-    if (!ret || !ret.then) return new BufferedResponse(void 0, ret);
-    if (ret.then) return new AsyncResponse(function(writable) {
+    if (!ret || !ret.then) return BufferedResponse.create(void 0, ret);
+    if (ret.then) return Response.create(function(writable) {
       ret.then(writable.end.bind(writable), writable.abort.bind(writable));
     });
   }
