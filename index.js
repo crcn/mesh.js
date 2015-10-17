@@ -24,7 +24,6 @@ module.exports = {
   AttachDefaultsBus : require('./bus/attach-defaults'),
 
   // TODO
-  // TimeoutBus:require('./bus/timeout'),
   // ReduceBus:require('./bus/reduce'),
 
   /**
