@@ -4,7 +4,7 @@ var Response = require('../response');
 /**
  */
 
-function DelayedBus(ms, bus) {
+function DelayedBus(bus, ms) {
   this._ms  = ms;
   this._bus = bus;
 }

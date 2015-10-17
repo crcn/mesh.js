@@ -20,8 +20,8 @@ describe(__filename + '#', function() {
   it('executes all busses at the same time and returns data from the fastest one', co.wrap(function*() {
 
     var bus = RaceBus.create([
-      DelayedBus.create(10, BufferedBus.create(void 0, 'a')),
-      DelayedBus.create(0, BufferedBus.create(void 0, 'b'))
+      DelayedBus.create(BufferedBus.create(void 0, 'a'), 10),
+      DelayedBus.create(BufferedBus.create(void 0, 'b'), 0)
     ]);
 
     var response = bus.execute();

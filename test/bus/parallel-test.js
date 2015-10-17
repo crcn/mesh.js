@@ -33,9 +33,9 @@ describe(__filename + '#', function() {
   it('can receive data from any bus in any order', co.wrap(function*() {
 
     var bus = ParallelBus.create([
-      DelayedBus.create(30, BufferedBus.create(void 0, 'a')),
-      DelayedBus.create(20, BufferedBus.create(void 0, 'b')),
-      DelayedBus.create(10, BufferedBus.create(void 0, 'c'))
+      DelayedBus.create(BufferedBus.create(void 0, 'a'), 30),
+      DelayedBus.create(BufferedBus.create(void 0, 'b'), 20),
+      DelayedBus.create(BufferedBus.create(void 0, 'c'), 10)
     ]);
 
     var response = bus.execute();

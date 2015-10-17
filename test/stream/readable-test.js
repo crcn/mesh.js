@@ -58,7 +58,7 @@ describe(__filename + "#", function() {
     var chunks = [];
     r.pipeTo({
       write: chunks.push.bind(chunks),
-      end: function() {
+      close: function() {
         doneCalled = true;
       },
       abort: function(err) {
