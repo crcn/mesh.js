@@ -39,6 +39,11 @@ extend(PassThrough, {
    */
 
   write: function(value) {
+
+    if (this._closed) {
+      return Promise.reject(new Error('cannot write to a closed stream'));
+    }
+
     this._values.push(value);
     this.__signalWrite();
     return new Promise((resolve, reject) => {

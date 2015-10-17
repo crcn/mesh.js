@@ -55,6 +55,13 @@ extend(Response, {
 
   pipeTo: function(writable, options) {
     return this._reader.pipeTo(writable, options);
+  },
+
+  /**
+   */
+
+  cancel: function() {
+    return this._reader.cancel();
   }
 });
 

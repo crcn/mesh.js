@@ -3,7 +3,7 @@ var mesh = require('../..');
 var WrapBus = mesh.WrapBus;
 
 var Response = mesh.Response;
-var AsyncResponse = mesh.AsyncResponse;
+var AsyncResponse = mesh.Response;
 
 var co = require('co');
 var expect = require('expect.js');

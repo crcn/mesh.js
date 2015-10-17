@@ -36,6 +36,13 @@ extend(ReadableStream, {
     };
     pump();
     return writable;
+  },
+
+  /**
+   */
+
+  cancel: function() {
+    return this._passThrough.close();
   }
 });
 

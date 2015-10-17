@@ -87,4 +87,16 @@ describe(__filename + '#', function() {
     yield timeout(10);
     expect(i).to.be(1);
   }));
+
+  it('returns an error when trying to write to a closed stream', co.wrap(function*() {
+    var w = WritableStream.create();
+    w.close();
+    var err;
+    try {
+      yield w.write('chunk');
+    } catch(e) {
+      err = e;
+    }
+    expect(err.message).to.be('cannot write to a closed stream');
+  }));
 });
