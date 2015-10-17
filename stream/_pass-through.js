@@ -88,7 +88,7 @@ extend(PassThrough, {
   /**
    */
 
-  end: function() {
+  close: function() {
     this._closed = true;
     this.__signalWrite();
   }

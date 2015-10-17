@@ -11,7 +11,7 @@ describe(__filename + "#", function() {
     var doneCalled = false;
     r.pipeTo({
       write: chunks.push.bind(chunks),
-      end: function() {
+      close: function() {
         doneCalled = true;
       },
       abort: function(error) {
@@ -21,7 +21,7 @@ describe(__filename + "#", function() {
     w.write('a');
     w.write('b');
     w.write('c');
-    w.end();
+    w.close();
     yield timeout(0);
     expect(chunks.join('')).to.be('abc');
     expect(doneCalled).to.be(true);
@@ -67,7 +67,7 @@ describe(__filename + "#", function() {
     }, { preventClose: true });
     w.write('a');
     w.write('b');
-    w.end();
+    w.close();
     yield timeout(0);
     expect(chunks.join('')).to.be('ab');
     expect(doneCalled).to.be(false);

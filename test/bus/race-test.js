@@ -6,6 +6,7 @@ var Bus = mesh.Bus;
 var BufferedBus = mesh.BufferedBus;
 var AsyncResponse = mesh.AsyncResponse;
 var EmptyResponse = mesh.EmptyResponse;
+var DelayedBus    = mesh.DelayedBus;
 
 var expect = require('expect.js');
 var co = require('co');
@@ -19,20 +20,8 @@ describe(__filename + '#', function() {
   it('executes all busses at the same time and returns data from the fastest one', co.wrap(function*() {
 
     var bus = RaceBus.create([
-      {
-        execute: function(operation) {
-          return AsyncResponse.create(function(response) {
-            setTimeout(response.end.bind(response), 10, 'a');
-          });
-        }
-      },
-      {
-        execute: function(operation) {
-          return AsyncResponse.create(function(response) {
-            setTimeout(response.end.bind(response), 0, 'b');
-          });
-        }
-      }
+      DelayedBus.create(10, BufferedBus.create(void 0, 'a')),
+      DelayedBus.create(0, BufferedBus.create(void 0, 'b'))
     ]);
 
     var response = bus.execute();

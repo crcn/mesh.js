@@ -18,7 +18,7 @@ function Response(run) {
     // thenable? Automatically end
     if (ret && ret.then) {
       ret.then(() => {
-        writer.end();
+        writer.close();
       }, writer.abort.bind(writer));
     }
   }

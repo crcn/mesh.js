@@ -30,9 +30,9 @@ Bus.extend(RaceBus, {
             found = i;
             writable.write(value);
           },
-          end: function() {
+          close: function() {
             if ((~found && found === i) || (--numLeft) === 0) {
-              writable.end();
+              writable.close();
             }
           },
           abort: writable.abort.bind(writable)

@@ -56,7 +56,7 @@ describe(__filename + '#', function() {
     w.write('a');
     w.write('b');
     w.write('c');
-    w.end();
+    w.close();
 
     var buffer = [];
     var chunk;
@@ -78,7 +78,7 @@ describe(__filename + '#', function() {
       i++;
     });
 
-    w.end();
+    w.close();
 
     // then() won't get called until read() is called entirely
     yield r.read();

@@ -18,7 +18,7 @@ describe(__filename + '#', function() {
     var response = AsyncResponse.create(function(response) {
       response.write('a');
       response.write('b');
-      response.end();
+      response.close();
     });
 
     expect((yield response.read()).value).to.be('a');
@@ -28,7 +28,7 @@ describe(__filename + '#', function() {
 
   it('can continue to read after the response has ended', co.wrap(function*() {
     var response = AsyncResponse.create(function(response) {
-      response.end();
+      response.close();
     });
     yield response.read();
     yield response.read();
@@ -62,7 +62,7 @@ describe(__filename + '#', function() {
       writeCounts++;
       yield writable.write('c');
       writeCounts++;
-      yield writable.end();
+      yield writable.close();
       writeCounts++;
     }));
 
@@ -127,7 +127,7 @@ describe(__filename + '#', function() {
 
   it('calls then() after completing', function(next) {
     var response = AsyncResponse.create(function(writable) {
-      writable.end();
+      writable.close();
     });
 
     response.then(function() {

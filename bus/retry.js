@@ -39,8 +39,8 @@ Bus.extend(RetryBus, {
             hasChunk = true;
             writable.write(value);
           },
-          end: function() {
-            writable.end();
+          close: function() {
+            writable.close();
           },
           abort: function(error) {
             prevError = error;

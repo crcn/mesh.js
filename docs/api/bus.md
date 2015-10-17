@@ -1,6 +1,3 @@
-
-## Bus API
-
 #### Bus()
 
 The bus base class. Extend this if you want to create a custom bus.
@@ -285,6 +282,7 @@ bus = SocketIoBus.create({
 
 #### RoundRobinBus([busses])
 
+Alternates between `[busses]` each time an operation is executed.
 
 ```javascript
 var bus = RoundRobinBus.create([
@@ -300,6 +298,8 @@ yield bus.execute().read(); // worker a
 
 #### RandomBus([busses])
 
+Picks a bus at
+
 ```javascript
 var bus = RandomBus.create([
   BufferedBus.create(void 0, "worker a"),
@@ -310,48 +310,4 @@ yield bus.execute().read(); // worker a
 yield bus.execute().read(); // worker c
 yield bus.execute().read(); // worker b
 yield bus.execute().read(); // worker c
-```
-
-## Response API
-
-#### Response(runFunction)
-
-Returns an async response
-
-```javascript
-import { WrapBus, Response } from "mesh";
-
-var bus = WrapBus.create(function(operation) {
-  return Response.create(function(writable) {
-    writable.write("chunk");
-    writable.write("chunk");
-    writable.end();
-  });
-})
-```
-
-#### BufferedResponse(error, [chunkValues])
-
-Returns a buffered response
-
-#### EmptyResponse()
-
-Returns an empty response
-
-#### NodeStreamResponse(stream)
-
-Wraps a node stream in a `Response` object. See example above.
-
-#### ErrorResponse(error)
-
-Returns an error response
-
-```javascript
-var bus = WrapBus.create(function(operation) {
-  return ErrorResponse.create(new Error("an error"));
-});
-
-bus.execute().read().catch(function(error) {
-  console.log(error); // an error
-});
 ```

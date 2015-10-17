@@ -38,7 +38,10 @@ extend(Bus, WrapBus, {
     if (ret && ret.read)  return ret;
     if (!ret || !ret.then) return BufferedResponse.create(void 0, ret);
     if (ret.then) return Response.create(function(writable) {
-      ret.then(writable.end.bind(writable), writable.abort.bind(writable));
+      ret.then((value) => {
+        if (value != void 0) writable.write(value);
+        writable.close();
+      }, writable.abort.bind(writable));
     });
   }
 });

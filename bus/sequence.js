@@ -23,7 +23,7 @@ Bus.extend(SequenceBus, {
       var busses = this._busses.concat();
 
       var next = (i) => {
-        if (i === busses.length) return writable.end();
+        if (i === busses.length) return writable.close();
         var resp = busses[i].execute(operation);
         resp.pipeTo(writable, { preventClose: true });
         resp.then(() => next(i + 1));

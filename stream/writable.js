@@ -46,11 +46,8 @@ extend(WritableStream, {
   /**
    */
 
-  end: function(chunk) {
-    if (chunk != void 0) {
-      this.write(chunk);
-    }
-    this._passThrough.end();
+  close: function() {
+    this._passThrough.close();
   },
 
   /**

@@ -24,13 +24,13 @@ function CatchErrorBus(bus, catchError) {
         write: (value) => {
           writable.write(value);
         },
-        end: () => {
-          writable.end();
+        close: () => {
+          writable.close();
         },
         abort: (error) => {
           try {
             var p = this._catchError(error, operation);
-            writable.end();
+            writable.close();
           } catch(e) {
             writable.abort(e);
           }

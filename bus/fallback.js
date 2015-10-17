@@ -20,7 +20,7 @@ function FallbackBus(busses) {
     return Response.create((writable) => {
       var busses = this._busses.concat();
       var next = (i) => {
-        if (i === busses.length) return writable.end();
+        if (i === busses.length) return writable.close();
         var response = busses[i].execute(operation);
         var hasChunk = false;
         response.pipeTo({
@@ -28,9 +28,9 @@ function FallbackBus(busses) {
             hasChunk = true;
             writable.write(value);
           },
-          end: function() {
+          close: function() {
             if (hasChunk) {
-              writable.end();
+              writable.close();
             } else {
               next(i + 1);
             }

@@ -27,7 +27,7 @@ extend(ReadableStream, {
     var pump = () => {
       this.read().then((item) => {
         if (item.done) {
-          if (!options.preventClose) writable.end();
+          if (!options.preventClose) writable.close();
         } else {
           writable.write(item.value);
           pump();
@@ -41,7 +41,7 @@ extend(ReadableStream, {
 
 /**
  */
- 
+
 ReadableStream.create = require('../internal/create-object');
 
 /**

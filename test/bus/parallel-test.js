@@ -5,6 +5,7 @@ var Bus = mesh.Bus;
 var BufferedBus = mesh.BufferedBus;
 var AsyncResponse = mesh.AsyncResponse;
 var EmptyResponse = mesh.EmptyResponse;
+var DelayedBus    = mesh.DelayedBus;
 
 var co = require('co');
 var expect = require('expect.js');
@@ -30,28 +31,11 @@ describe(__filename + '#', function() {
   }));
 
   it('can receive data from any bus in any order', co.wrap(function*() {
+
     var bus = ParallelBus.create([
-      {
-        execute: function() {
-          return AsyncResponse.create(function(writable) {
-            setTimeout(writable.end.bind(writable), 30, 'a');
-          });
-        }
-      },
-      {
-        execute: function() {
-          return AsyncResponse.create(function(writable) {
-            setTimeout(writable.end.bind(writable), 20, 'b');
-          });
-        }
-      },
-      {
-        execute: function() {
-          return AsyncResponse.create(function(writable) {
-            setTimeout(writable.end.bind(writable), 10, 'c');
-          });
-        }
-      }
+      DelayedBus.create(30, BufferedBus.create(void 0, 'a')),
+      DelayedBus.create(20, BufferedBus.create(void 0, 'b')),
+      DelayedBus.create(10, BufferedBus.create(void 0, 'c'))
     ]);
 
     var response = bus.execute();

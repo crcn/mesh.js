@@ -26,7 +26,7 @@ Bus.extend(ParallelBus, {
         var resp = bus.execute(operation);
         resp.pipeTo(writable, { preventClose: true });
         resp.then(() => {
-          if (!(--numLeft)) writable.end();
+          if (!(--numLeft)) writable.close();
         });
       });
     });

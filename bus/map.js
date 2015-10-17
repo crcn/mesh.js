@@ -11,7 +11,7 @@ function MapBus(bus, map) {
 
 /**
  */
- 
+
  Bus.extend(MapBus, {
 
   /**
@@ -29,8 +29,8 @@ function MapBus(bus, map) {
             return Promise.reject(e);
           }
         },
-        end: () => {
-          writable.end();
+        close: () => {
+          writable.close();
         },
         abort: writable.abort.bind(writable)
       });

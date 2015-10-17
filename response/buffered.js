@@ -8,7 +8,7 @@ function BufferedResponse(error, chunkValues) {
     if (error) writable.abort(error);
     chunkValues = Array.isArray(chunkValues) ? chunkValues : chunkValues != void 0 ? [chunkValues] : [];
     chunkValues.forEach(writable.write.bind(writable));
-    writable.end();
+    writable.close();
   });
 }
 

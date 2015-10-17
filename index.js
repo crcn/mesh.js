@@ -14,6 +14,7 @@ module.exports = {
   RandomBus         : require('./bus/random'),
   AcceptBus         : require('./bus/accept'),
   RejectBus         : require('./bus/reject'),
+  DelayedBus        : require('./bus/delayed'),
   SequenceBus       : require('./bus/sequence'),
   ParallelBus       : require('./bus/parallel'),
   BufferedBus       : require('./bus/buffered'),
