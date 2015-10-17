@@ -32,9 +32,6 @@ module.exports = {
 
   Response           : require('./response'),
   EmptyResponse      : require('./response/empty'),
-
-  // deprecated
-  AsyncResponse      : require('./response'),
   ErrorResponse      : require('./response/error'),
   BufferedResponse   : require('./response/buffered'),
   NodeStreamResponse : require('./response/node-stream'),
