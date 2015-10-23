@@ -1,6 +1,3 @@
-
-## Bus API
-
 #### Bus()
 
 The bus base class. Extend this if you want to create a custom bus.

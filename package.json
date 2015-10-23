@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "5.0.15",
+  "version": "5.0.16",
   "tag": "trunk",
   "description": "data synchronization library",
   "main": "./lib/index.js",

@@ -61,7 +61,6 @@ extend(PassThrough, {
     this.__signalRead();
 
     if (this._error) {
-      this._reject(this._error);
       return Promise.reject(this._error);
     }
 
@@ -70,7 +69,6 @@ extend(PassThrough, {
     }
 
     if (this._closed) {
-      this._resolve();
       return Promise.resolve({ value: void 0, done: true });
     }
 
@@ -87,6 +85,7 @@ extend(PassThrough, {
 
   abort: function(error) {
     this._error = error;
+    this._reject(error);
     this.__signalWrite();
   },
 
@@ -95,6 +94,7 @@ extend(PassThrough, {
 
   close: function() {
     this._closed = true;
+    this._resolve();
     this.__signalWrite();
   }
 });

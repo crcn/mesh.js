@@ -99,4 +99,13 @@ describe(__filename + '#', function() {
     }
     expect(err.message).to.be('cannot write to a closed stream');
   }));
+
+  it("calls then() immediately after close()", function(next) {
+    var w = WritableStream.create();
+    w.then(function() {
+      next();
+    });
+    w.write('chunk');
+    w.close();
+  });
 });
