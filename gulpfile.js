@@ -68,8 +68,9 @@ gulp.task('test-coveralls', ['test-coverage'], function() {
  */
 
 gulp.task('bundle', function() {
-  return browserify('./lib/index.js').
+  return browserify('./index.js').
   plugin(collapser).
+  transform("babelify").
   bundle().
   pipe(source(pkg.name + '.js')).
   pipe(buffer()).
