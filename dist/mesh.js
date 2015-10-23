@@ -33,24 +33,34 @@ module.exports = {
    * responses
    */
 
-  Response: require(25),
-  EmptyResponse: require(23),
-  ErrorResponse: require(24),
-  BufferedResponse: require(22),
-  NodeStreamResponse: require(26),
+  Response: require(27),
+  EmptyResponse: require(25),
+  ErrorResponse: require(26),
+  BufferedResponse: require(24),
+  NodeStreamResponse: require(28),
 
   /**
    */
 
-  WritableStream: require(29)
+  WritableStream: require(31)
 };
 
-},{"10":10,"11":11,"12":12,"13":13,"14":14,"15":15,"16":16,"17":17,"18":18,"19":19,"2":2,"22":22,"23":23,"24":24,"25":25,"26":26,"29":29,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9}],2:[function(require,module,exports){
+if (typeof window !== "undefined") {
+
+  module.exports.noConflict = function () {
+    delete window.mesh;
+    return module.exports;
+  };
+
+  window.mesh = module.exports;
+}
+
+},{"10":10,"11":11,"12":12,"13":13,"14":14,"15":15,"16":16,"17":17,"18":18,"19":19,"2":2,"24":24,"25":25,"26":26,"27":27,"28":28,"3":3,"31":31,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9}],2:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
 var NoopBus = require(10);
-var Response = require(25);
+var Response = require(27);
 
 /**
  */
@@ -98,7 +108,7 @@ Bus.extend(AcceptBus, {
 
 module.exports = AcceptBus;
 
-},{"10":10,"25":25,"4":4}],3:[function(require,module,exports){
+},{"10":10,"27":27,"4":4}],3:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
@@ -142,7 +152,7 @@ module.exports = AttachDefaultsBus;
 },{"4":4}],4:[function(require,module,exports){
 'use strict';
 
-var extend = require(21);
+var extend = require(22);
 
 /**
  */
@@ -165,7 +175,7 @@ extend(Bus, {
 /**
  */
 
-Bus.create = require(20);
+Bus.create = require(21);
 Bus.extend = extend;
 
 /**
@@ -173,11 +183,11 @@ Bus.extend = extend;
 
 module.exports = Bus;
 
-},{"20":20,"21":21}],5:[function(require,module,exports){
+},{"21":21,"22":22}],5:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
-var BufferedResponse = require(22);
+var BufferedResponse = require(24);
 
 /**
  */
@@ -205,11 +215,11 @@ Bus.extend(BufferedBus, {
 
 module.exports = BufferedBus;
 
-},{"22":22,"4":4}],6:[function(require,module,exports){
+},{"24":24,"4":4}],6:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
-var Response = require(25);
+var Response = require(27);
 
 /**
  */
@@ -257,11 +267,11 @@ Bus.extend(CatchErrorBus, {
 
 module.exports = CatchErrorBus;
 
-},{"25":25,"4":4}],7:[function(require,module,exports){
+},{"27":27,"4":4}],7:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
-var Response = require(25);
+var Response = require(27);
 
 /**
  */
@@ -291,11 +301,11 @@ Bus.extend(DelayedBus, {
 
 module.exports = DelayedBus;
 
-},{"25":25,"4":4}],8:[function(require,module,exports){
+},{"27":27,"4":4}],8:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
-var Response = require(25);
+var Response = require(27);
 
 /**
  */
@@ -346,11 +356,11 @@ Bus.extend(FallbackBus, {
 
 module.exports = FallbackBus;
 
-},{"25":25,"4":4}],9:[function(require,module,exports){
+},{"27":27,"4":4}],9:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
-var Response = require(25);
+var Response = require(27);
 
 /**
  */
@@ -396,11 +406,11 @@ Bus.extend(MapBus, {
 
 module.exports = MapBus;
 
-},{"25":25,"4":4}],10:[function(require,module,exports){
+},{"27":27,"4":4}],10:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
-var EmptyResponse = require(23);
+var EmptyResponse = require(25);
 
 /**
  */
@@ -425,11 +435,11 @@ Bus.extend(NoopBus, {
 
 module.exports = NoopBus;
 
-},{"23":23,"4":4}],11:[function(require,module,exports){
+},{"25":25,"4":4}],11:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
-var Response = require(25);
+var Response = require(27);
 
 /**
  */
@@ -470,11 +480,11 @@ Bus.extend(ParallelBus, {
 
 module.exports = ParallelBus;
 
-},{"25":25,"4":4}],12:[function(require,module,exports){
+},{"27":27,"4":4}],12:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
-var Response = require(25);
+var Response = require(27);
 
 /**
  */
@@ -524,7 +534,7 @@ Bus.extend(RaceBus, {
 
 module.exports = RaceBus;
 
-},{"25":25,"4":4}],13:[function(require,module,exports){
+},{"27":27,"4":4}],13:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
@@ -580,7 +590,7 @@ module.exports = RejectBus;
 'use strict';
 
 var Bus = require(4);
-var Response = require(25);
+var Response = require(27);
 
 /**
  */
@@ -642,7 +652,7 @@ Bus.extend(RetryBus, {
 
 module.exports = RetryBus;
 
-},{"25":25,"4":4}],16:[function(require,module,exports){
+},{"27":27,"4":4}],16:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
@@ -679,7 +689,7 @@ module.exports = RoundRobinBus;
 'use strict';
 
 var Bus = require(4);
-var Response = require(25);
+var Response = require(27);
 
 /**
  */
@@ -723,11 +733,11 @@ Bus.extend(SequenceBus, {
 
 module.exports = SequenceBus;
 
-},{"25":25,"4":4}],18:[function(require,module,exports){
+},{"27":27,"4":4}],18:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
-var Response = require(25);
+var Response = require(27);
 
 /**
  */
@@ -779,13 +789,13 @@ Bus.extend(TailableBus, {
 
 module.exports = TailableBus;
 
-},{"25":25,"4":4}],19:[function(require,module,exports){
+},{"27":27,"4":4}],19:[function(require,module,exports){
 'use strict';
 
 var Bus = require(4);
-var extend = require(21);
-var Response = require(25);
-var BufferedResponse = require(22);
+var extend = require(22);
+var Response = require(27);
+var BufferedResponse = require(24);
 
 /**
 */
@@ -835,7 +845,21 @@ extend(Bus, WrapBus, {
 
 module.exports = WrapBus;
 
-},{"21":21,"22":22,"25":25,"4":4}],20:[function(require,module,exports){
+},{"22":22,"24":24,"27":27,"4":4}],20:[function(require,module,exports){
+"use strict";
+
+module.exports = function (to) {
+  var fromObjects = Array.prototype.slice.call(arguments, 1);
+  for (var i = 0, n = fromObjects.length; i < n; i++) {
+    var fm = fromObjects[i];
+    for (var key in fm) {
+      to[key] = fm[key];
+    }
+  }
+  return to;
+};
+
+},{}],21:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -844,13 +868,14 @@ module.exports = function () {
   return object;
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
+'use strict';
+
+var copy = require(20);
 
 /**
  * IE8+ compatible subclassing. See https://babeljs.io/docs/advanced/caveats/
  */
-
-'use strict';
 
 module.exports = function (parent, child) {
 
@@ -880,20 +905,28 @@ module.exports = function (parent, child) {
     this.constructor = c;
   }
 
-  Object.assign(c, p); // copy static props
+  copy(c, p); // copy static props
 
   ctor.prototype = p.prototype;
   c.prototype = new ctor();
 
-  Object.assign(c.prototype, Object.assign.apply(Object, [{}].concat(props)));
+  copy(c.prototype, copy.apply(Object, [{}].concat(props)));
 
   return c;
 };
 
-},{}],22:[function(require,module,exports){
+},{"20":20}],23:[function(require,module,exports){
+"use strict";
+
+module.exports = function (target) {
+  return Object.prototype.toString.call(target) === "[object Array]";
+};
+
+},{}],24:[function(require,module,exports){
 'use strict';
 
-var Response = require(25);
+var Response = require(27);
+var isArray = require(23);
 
 /**
  */
@@ -901,7 +934,7 @@ var Response = require(25);
 function BufferedResponse(error, chunkValues) {
   Response.call(this, function (writable) {
     if (error) writable.abort(error);
-    chunkValues = Array.isArray(chunkValues) ? chunkValues : chunkValues != void 0 ? [chunkValues] : [];
+    chunkValues = isArray(chunkValues) ? chunkValues : chunkValues != void 0 ? [chunkValues] : [];
     chunkValues.forEach(writable.write.bind(writable));
     writable.close();
   });
@@ -917,11 +950,11 @@ Response.extend(BufferedResponse);
 
 module.exports = BufferedResponse;
 
-},{"25":25}],23:[function(require,module,exports){
+},{"23":23,"27":27}],25:[function(require,module,exports){
 'use strict';
 
-var BufferedResponse = require(22);
-var extend = require(21);
+var BufferedResponse = require(24);
+var extend = require(22);
 
 /**
  */
@@ -940,10 +973,10 @@ BufferedResponse.extend(EmptyResponse);
 
 module.exports = EmptyResponse;
 
-},{"21":21,"22":22}],24:[function(require,module,exports){
+},{"22":22,"24":24}],26:[function(require,module,exports){
 'use strict';
 
-var BufferedResponse = require(22);
+var BufferedResponse = require(24);
 
 /**
  */
@@ -962,11 +995,11 @@ BufferedResponse.extend(ErrorResponse);
 
 module.exports = ErrorResponse;
 
-},{"22":22}],25:[function(require,module,exports){
+},{"24":24}],27:[function(require,module,exports){
 'use strict';
 
-var WritableStream = require(29);
-var extend = require(21);
+var WritableStream = require(31);
+var extend = require(22);
 
 /**
  * Creates a new Streamed response
@@ -1035,7 +1068,7 @@ extend(Response, {
 /**
  */
 
-Response.create = require(20);
+Response.create = require(21);
 Response.extend = extend;
 
 /**
@@ -1043,10 +1076,10 @@ Response.extend = extend;
 
 module.exports = Response;
 
-},{"20":20,"21":21,"29":29}],26:[function(require,module,exports){
+},{"21":21,"22":22,"31":31}],28:[function(require,module,exports){
 'use strict';
 
-var Response = require(25);
+var Response = require(27);
 
 /**
  */
@@ -1085,10 +1118,10 @@ Response.extend(NodeStreamResponse);
 
 module.exports = NodeStreamResponse;
 
-},{"25":25}],27:[function(require,module,exports){
+},{"27":27}],29:[function(require,module,exports){
 'use strict';
 
-var extend = require(21);
+var extend = require(22);
 
 /**
  */
@@ -1195,17 +1228,17 @@ extend(PassThrough, {
 /**
  */
 
-PassThrough.create = require(20);
+PassThrough.create = require(21);
 
 /**
  */
 
 module.exports = PassThrough;
 
-},{"20":20,"21":21}],28:[function(require,module,exports){
+},{"21":21,"22":22}],30:[function(require,module,exports){
 'use strict';
 
-var extend = require(21);
+var extend = require(22);
 
 /**
  */
@@ -1258,19 +1291,19 @@ extend(ReadableStream, {
 /**
  */
 
-ReadableStream.create = require(20);
+ReadableStream.create = require(21);
 
 /**
  */
 
 module.exports = ReadableStream;
 
-},{"20":20,"21":21}],29:[function(require,module,exports){
+},{"21":21,"22":22}],31:[function(require,module,exports){
 'use strict';
 
-var extend = require(21);
-var PassThrough = require(27);
-var ReadableStream = require(28);
+var extend = require(22);
+var PassThrough = require(29);
+var ReadableStream = require(30);
 
 /**
  */
@@ -1331,12 +1364,12 @@ extend(WritableStream, {
 /**
  */
 
-WritableStream.create = require(20);
-WritableStream.extend = require(21);
+WritableStream.create = require(21);
+WritableStream.extend = require(22);
 
 /**
  */
 
 module.exports = WritableStream;
 
-},{"20":20,"21":21,"27":27,"28":28}]},{},[1]);
+},{"21":21,"22":22,"29":29,"30":30}]},{},[1]);

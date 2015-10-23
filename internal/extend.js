@@ -1,3 +1,4 @@
+var copy = require("./copy");
 
 /**
  * IE8+ compatible subclassing. See https://babeljs.io/docs/advanced/caveats/
@@ -31,12 +32,12 @@ module.exports = function(parent, child) {
     this.constructor = c;
   }
 
-  Object.assign(c, p); // copy static props
+  copy(c, p); // copy static props
 
   ctor.prototype  = p.prototype;
   c.prototype = new ctor();
 
-  Object.assign(c.prototype, Object.assign.apply(Object, [{}].concat(props)));
+  copy(c.prototype, copy.apply(Object, [{}].concat(props)));
 
   return c;
 };
