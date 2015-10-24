@@ -194,6 +194,34 @@ bus.execute({ }).catch(function(error) {
 });
 ```
 
+#### RetryBus(count, bus)
+
+Re-executes operations against `bus` `count` times if an error occurs.
+
+```javascript
+
+var apiBus = WrapBus.create(function(operation) {
+  return new Promise(function(resolve, reject) {
+    request({
+      url: "//apihost.com/" + operation.path,
+      method: operation.action
+    }, function(error, data) {
+      if (error) return reject(error);
+      resolve(data);
+    });
+  });
+});
+
+var bus = RetryBus(5, apiBus);
+
+bus.execute({
+  path: "/api/users",
+  action: "GET"
+}).readAll().then(function(users) {
+  
+});
+```
+
 #### NoopBus()
 
 No-operation bus.
