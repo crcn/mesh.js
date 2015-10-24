@@ -110,13 +110,50 @@ bus = AcceptBus(function(operation) {
 React.render(<TodoListComponent bus={bus} />, document.body);
 ```
 
-<!--The cool thing about this particular example is that it supports asynchronous & realtime data out of the box. If we want to extend this app further to support something like pubnub, websockets, or some other realtime service, all we'd need to do is add a realtime bus adapter. Here's an example:
+The cool thing about this particular example is that it supports asynchronous & realtime data out of the box. If we want to extend this app further to support something like pubnub, websockets, or some other realtime service, all we'd need to do is add a realtime bus adapter. Here's vanilla realtime bus you can use for just about any protocol:
 
 ```javascript
 var RealtimeBus = function(localBus) {
+    
+  // received when some other client sends an operation
+  remoteProtocol.onmessage = function(message) {
+  
+    // pass to the remote operation to the local bus
+    localBus.execute(JSON.parse(message));
+  }
   
   return {
-    execute: 
+    execute: function(operation) {
+      remoteProtocol.send(JSON.stringify(operation));
+      return localBus.execute(operation); // pass through to the local bus
+    }
   };
 }
-```-->
+```
+
+With the above implementation, we can go ahead and plug it into our application bus:
+
+```javascript
+var bus = {
+  execute: function(operation) {
+    // same execute handling code as above
+  }
+};
+
+// make the bus tailable so that listeners can do stuff *after* an operation executes
+bus = TailableBus.create(bus);
+
+// register addTail as an action handler. Redirect all actions to the route handlers
+bus = AcceptBus(function(operation) {
+  return operation.action === "tail";
+}, bus.addTail.bind(bus), bus);
+
+// make it realtime!
+bus = RealtimeBus(bus);
+
+React.render(<TodoListComponent bus={bus} />, document.body);
+```
+
+That's it - just one line of code. 
+
+
