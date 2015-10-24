@@ -1,4 +1,4 @@
-Mesh works very well with React, and compliments its unidirectional data-flow philosophy. It be use as a replacement to the flux dispatcher, and used in a similar fashion. Here's a basic example:
+Mesh works very well with React, and compliments its unidirectional data-flow philosophy. Here's a basic example:
 
 ```javascript
 import React from "react";
