@@ -4,19 +4,19 @@ The `Bus` is your operation handler. They're designed to building blocks that en
 
 #### creating a bus
 
-Busses are composed of two parts: an `execute` method which handles operations, and a [response](#Response) which is returned by the execute method. You can use whatever method you want so long as you stick to those core patterns.
+Busses are composed of two parts: an `execute` method which handles operations, and a [response](#Response) which is returned by the execute method. You write busses however you want so long as you stick to those core patterns.
 
-There are a number of ways to create a bus. Probably the easiest method is to extend the base class. Here's a simple example:
+There are a number of ways to create a bus. Probably the easiest way is to extend the base class. Here's a simple example:
 
 ```javascript
-var mesh = require("mesh");
+var mesh = require('mesh');
 var Bus = mesh.Bus;
 var BufferedResponse = mesh.BufferedResponse;
 
 // extend the base class. Base is a class, so if you're using
 var HelloBus = Bus.extend({
   execute: function(operation) {
-    return BufferedResponse.create(void 0, "hello " + operation.name + "!");
+    return BufferedResponse.create(void 0, 'hello ' + operation.name + '!');
   }
 });
 
@@ -25,7 +25,7 @@ var bus = HelloBus.create();
 
 // execute an operation
 var response = bus.execute({
-  name: "John"
+  name: 'John'
 });
 
 // read one chunk
@@ -37,7 +37,7 @@ response.read().then(function(value) {
 You can also go the more functional route like so:
 
 ```javascript
-var EmptyResponse = require("mesh").EmptyResponse;
+var EmptyResponse = require('mesh').EmptyResponse;
 
 function createBus(options) {
   return {
@@ -57,12 +57,12 @@ bus.execute().then(function() {
 
 #### WrapBus(executeFunction)
 
-Wraps `executeFunction` as a bus. This class is useful if you're looking to incorporate other libraries with Mesh. Here are a few examples of how you can use this class:
+Wraps `executeFunction` as a bus. This class is useful if you're looking to incorporate other libraries into Mesh. Here are a few examples of how you can use this class:
 
 
 ```javascript
-import { WrapBus } from "mesh";
-import fs from "fs";
+import { WrapBus } from 'mesh';
+import fs from 'fs';
 
 // simple bus out of an object
 var readFileBus = WrapBus.create(function(operation) {
@@ -86,25 +86,25 @@ var bus = WrapBus.create(async function(operation) {
 
 // support for node style callbacks
 var bus = WrapBus.create(function(operation, complete) {
-  complete(void 0, "chunk"); // complete with data
-  // complete(new Error("an error")); 1st param reserved for errors
+  complete(void 0, 'chunk'); // complete with data
+  // complete(new Error('an error')); 1st param reserved for errors
 });
 
 // support for synchronous handlers
 var bus = WrapBus.create(function(operation) {
-  // throw new Error("an error");
-  return "chunk"; // resolve data
+  // throw new Error('an error');
+  return 'chunk'; // resolve data
 });
 
 // support for promises
 var bus = WrapBus.create(function(operation) {
   return new Promise(function(resolve, reject) {
-    resolve("chunk");
+    resolve('chunk');
   });
 });
 
 var response = bus.execute({
-  action: "doSomething"
+  action: 'doSomething'
 });
 
 response.read().then(function(chunk) {
@@ -117,20 +117,20 @@ response.read().then(function(chunk) {
 Executes an operation against multiple busses at the same time. Chunk data emitted by each bus is then merged into a single response in an un-ordered fashion.
 
 ```javascript
-import { ParallelBus } from "mesh";
+import { ParallelBus } from 'mesh';
 
 var allWorkersBus = ParallelBus.create([
-  WorkerBus.create({ script: __dirname + "/worker.js" }),
-  WorkerBus.create({ script: __dirname + "/worker.js" })
+  WorkerBus.create({ script: __dirname + '/worker.js' }),
+  WorkerBus.create({ script: __dirname + '/worker.js' })
 ]);
 
 // ping all workers
 var pingResponse = allWorkersBus.execute({
-  action: "ping"
+  action: 'ping'
 });
 
-pingResponse.readAll().then(function(err, pongs) {
-  //
+pingResponse.readAll().then(function(pongs) {
+  // handle pong data
 });
 ```
 
@@ -140,9 +140,9 @@ Executes operations against a each bus one at a time. Data is merged into one st
 
 ```javascript
 var bus = SequenceBus.create([
-  BufferedBus.create(void 0, "a"),
-  BufferedBus.create(void 0, "b"),
-  BufferedBus.create(void 0, "c")
+  BufferedBus.create(void 0, 'a'),
+  BufferedBus.create(void 0, 'b'),
+  BufferedBus.create(void 0, 'c')
 ]);
 
 bus.execute().read(function(chunks) {
@@ -156,23 +156,43 @@ bus.execute().read(function(chunks) {
 Executes one operation against all busses sequentially until one bus emits data.
 
 ```javascript
-var bus = FallbackBus([
-  APIBus.create("https://sever1.com"),
-  APIBus.create("https://sever2.com")
+var bus = FallbackBus.create([
+  APIBus.create('https://server1.com'),
+  APIBus.create('https://server2.com')
 ]);
+
+var response = bus.execute({ method: 'GET', path: '/api/users' });
+response.readAll().then(function(response) {
+  // handle response by one of the busses
+});
 ```
 
 #### RaceBus([busses])
 
 Executes one operation against all busses in parallel until one bus emits data. The response data from the fastest bus is returned.
 
-#### RetryBus(count, bus)
-
-Re-executes an operation if it fails against `bus` until `count` is 0.
-
 #### CatchBus(bus, catchErrorFunction)
 
-Catches an error emitted by `bus`.
+Catches an error if one is emitted by the provided bus.
+
+```javascript
+var someBus = WrapBus.create(function() {
+  throw new Error("whoops something went wrong!");
+});
+
+var bus = CatchBus.create(someBus, function(error) {
+
+  // track error here
+
+  // re-throw the error so it gets passed downstream
+  throw error;
+});
+
+
+bus.execute({ }).catch(function(error) {
+  // handle error
+});
+```
 
 #### NoopBus()
 
@@ -189,22 +209,22 @@ bus.execute().then(function() {
 
 #### AcceptBus(filter, resolveBus[, rejectBus])
 
-passes operations to `resolveBus` if `filter` returns true against the executed operation. Otherwise the operation gets sent to `rejectBus`.
+passes operations to `resolveBus` if `filter` returns `TRUE` against the executed operation. Otherwise the operation gets sent to `rejectBus`.
 
 ```javascript
 var bus = AcceptBus.create(function(operation) {
-  return operation.name = "ping";
+  return operation.name = 'ping';
 }, WrapBus.create(function() {
-  return "pong!";
+  return 'pong!';
 }))
 
-bus.execute({ name: "ping" }) // pong!
-bus.execute({ name: "pong" }) // nothing happens. This is a no-op.
+bus.execute({ name: 'ping' }) // pong!
+bus.execute({ name: 'pong' }) // nothing happens. This is a no-op.
 ```
 
 #### RejectBus(filter, resolveBus[, rejectBus])
 
-Similar to accept bus
+Similar to `AcceptBus`, but passes operations to `resolveBus` if `filter` returns `FALSE`.
 
 #### MapBus(bus, mapFunction)
 
@@ -215,10 +235,10 @@ var bus = WrapBus.create(function(operation) {
   return operation.echo;
 });
 bus = MapBus.create(bus, function(chunkValue, writable, operation) {
-  chunkValue.split("").forEach(writable.write.bind(writable));
+  chunkValue.split('').forEach(writable.write.bind(writable));
 });
 
-bus.execute({ echo: "hello" }); // ["h", "e", "l", "l", "o"]
+bus.execute({ echo: 'hello' }); // ['h', 'e', 'l', 'l', 'o']
 ```
 
 #### BufferedBus(error, [chunkValues])
@@ -227,8 +247,8 @@ Returns data specified in the constructor. Useful for testing.
 
 ```javascript
 
-import expect from "expect.js";
-import { BufferedBus } from "mesh";
+import expect from 'expect.js';
+import { BufferedBus } from 'mesh';
 
 // simple example of how you can use Mesh with models
 class PersonModel {
@@ -236,23 +256,23 @@ class PersonModel {
     return this._id ? this.insert() : this.update();
   }
   insert() {
-    return this._run("insert", {
+    return this._run('insert', {
       data: this
     });
   }
   update() {
-    return this._run("update", {
+    return this._run('update', {
       data  : this,
       query : { _id: this._id }
     });
   }
   load() {
-    return this._run("load", {
+    return this._run('load', {
       query: { _id: this._id }
     });
   }
   remove() {
-    return this._run("remove", {
+    return this._run('remove', {
       query: { _id: this._id }
     });
   }
@@ -277,34 +297,34 @@ class PersonModel {
 }
 
 /*
-import MongoDbBus from "mesh-mongo-db-bus";
+import MongoDbBus from 'mesh-mongo-db-bus';
 var bus = new MongoDbBus();
 var person = new PersonModel({
-  bus: new AttachDefaultsBus({ collection: "people" }, bus),
-  name: "jeff"
+  bus: new AttachDefaultsBus({ collection: 'people' }, bus),
+  name: 'jeff'
 });
 
 await person.save(); // insert into mongodb
 */
 
-it("can load data into the model", async function() {
+it('can load data into the model', async function() {
   var person = PersonModel.create({
-    bus: BufferedBus.create(void 0, { name: "Mclaren Eff One" })
+    bus: BufferedBus.create(void 0, { name: 'Mclaren Eff One' })
   });
 
   await person.load();
 
-  expect(person.name).to.be("Mclaren Eff One");
+  expect(person.name).to.be('Mclaren Eff One');
 });
 ```
 
 #### AttachDefaultsBus(operationDefaults, bus)
 
-Attaches default properties onto executed operations.
+Attaches default properties to executed operations.
 
 ```javascript
-import { AttachDefaultsBus, WrapBus } from "mesh";
-import SocketIoBus from "mesh-socket-io-bus";
+import { AttachDefaultsBus, WrapBus } from 'mesh';
+import SocketIoBus from 'mesh-socket-io-bus';
 
 var bus = WrapBus.create(function(operation) {
   console.log(operation.remote); // true
@@ -312,23 +332,25 @@ var bus = WrapBus.create(function(operation) {
 
 // each operation pushed from socket.io will be tagged as remote here
 bus = SocketIoBus.create({
-  host: "//127.0.0.1:8080"
+  host: '//127.0.0.1:8080'
 }, AttachDefaultsBus.create({ remote: true }, bus));
 ```
 
 ## Response API
+
+
 
 #### Response(runFunction)
 
 Returns an async response
 
 ```javascript
-import { WrapBus, Response } from "mesh";
+import { WrapBus, Response } from 'mesh';
 
 var bus = WrapBus.create(function(operation) {
   return Response.create(function(writable) {
-    writable.write("chunk");
-    writable.write("chunk");
+    writable.write('chunk');
+    writable.write('chunk');
     writable.end();
   });
 })
@@ -336,7 +358,7 @@ var bus = WrapBus.create(function(operation) {
 
 #### BufferedResponse(error, [chunkValues])
 
-Returns a buffered response
+Returns a response with pre-defined data
 
 #### EmptyResponse()
 
@@ -352,7 +374,7 @@ Returns an error response
 
 ```javascript
 var bus = WrapBus.create(function(operation) {
-  return ErrorResponse.create(new Error("an error"));
+  return ErrorResponse.create(new Error('an error'));
 });
 
 bus.execute().read().catch(function(error) {
