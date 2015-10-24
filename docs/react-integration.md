@@ -110,13 +110,14 @@ bus = AcceptBus(function(operation) {
 React.render(<TodoListComponent bus={bus} />, document.body);
 ```
 
-The cool thing about this particular example is that it supports asynchronous & realtime data out of the box. If we want to extend this app further to support something like pubnub, websockets, or some other realtime service, all we'd need to do is add a realtime bus adapter. Here's vanilla realtime bus you can use for just about any protocol:
+The cool thing about this particular example is that it supports asynchronous & realtime data out of the box. If we want to extend this app further to support something like pubnub, websockets, or some other realtime service, all we'd need to do is add a realtime bus adapter. Here's vanilla `realtime-bus.js` stub you can use for just about any protocol:
+
 
 ```javascript
-var RealtimeBus = function(localBus) {
+export function create(localBus) {
     
   // received when some other client sends an operation
-  remoteProtocol.onmessage = function(message) {
+  remote.onmessage = function(message) {
   
     // pass to the remote operation to the local bus
     localBus.execute(JSON.parse(message));
@@ -124,16 +125,18 @@ var RealtimeBus = function(localBus) {
   
   return {
     execute: function(operation) {
-      remoteProtocol.send(JSON.stringify(operation));
+      remote.send(JSON.stringify(operation));
       return localBus.execute(operation); // pass through to the local bus
     }
   };
 }
 ```
 
-With the above implementation, we can go ahead and plug it into our application bus:
+With the above implementation, we can go ahead and plug it into our application:
 
 ```javascript
+import { * as RealtimeBus } from "./realtime-bus";
+
 var bus = {
   execute: function(operation) {
     // same execute handling code as above
@@ -149,7 +152,7 @@ bus = AcceptBus(function(operation) {
 }, bus.addTail.bind(bus), bus);
 
 // make it realtime!
-bus = RealtimeBus(bus);
+bus = RealtimeBus.create(bus);
 
 React.render(<TodoListComponent bus={bus} />, document.body);
 ```
