@@ -8,8 +8,6 @@ Simple example:
 
 ```javascript
 import { ParallelBus } from "mesh";
-import MeshLocalStorageDbBus from "mesh-local-storage-db-bus";
-import MeshSocketIoBus from "mesh-socket-io-bus";
 
 // use any one of these database adapters. They all handle
 // the same CRUD operations

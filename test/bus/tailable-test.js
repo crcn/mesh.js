@@ -10,7 +10,7 @@ describe(__filename + '#', function() {
   it('can tailable operations on a bus', co.wrap(function*() {
     var bus = TailableBus.create(BufferedBus.create(void 0, 'ab'));
     var i = 0;
-    bus.addTail().read().then(function(chunk) {
+    bus.createTail().read().then(function(chunk) {
       expect(chunk.value.action).to.be('insert');
       i++;
     });
@@ -26,7 +26,7 @@ describe(__filename + '#', function() {
   it('can close a tail', co.wrap(function*() {
     var bus = TailableBus.create(NoopBus.create());
     var i = 0;
-    var tail = bus.addTail();
+    var tail = bus.createTail();
     function pump() {
       return tail.read().then(function(chunk) {
         if (chunk.done) return Promise.resolve();

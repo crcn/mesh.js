@@ -17,7 +17,7 @@ Bus.extend(TailableBus, {
   /**
    */
 
-  addTail: function(operation) {
+  createTail: function(operation) {
     return Response.create((writable) => {
       this._tails.push(writable);
       writable.then(() => {

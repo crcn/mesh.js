@@ -250,6 +250,26 @@ bus.execute({ name: 'ping' }) // pong!
 bus.execute({ name: 'pong' }) // nothing happens. This is a no-op.
 ```
 
+#### TailableBus(bus)
+
+Creates a bus that can be tailed for all operations executed against it.
+
+```javascript
+var bus = TailableBus.create(NoopBus.create());
+var tail = bus.createTail();
+
+tail.pipeTo({
+  write: function(operation) {
+    // handle tailed operation - { action: "doSomething" }
+  },
+  close: function() { },
+  abort: function() { }
+});
+
+// trigger tail
+bus.execute({ action: "doSomething" });
+```
+
 #### RejectBus(filter, resolveBus[, rejectBus])
 
 Similar to `AcceptBus`, but passes operations to `resolveBus` if `filter` returns `FALSE`.
