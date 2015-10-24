@@ -109,3 +109,14 @@ bus = AcceptBus(function(operation) {
 // actually render the component now
 React.render(<TodoListComponent bus={bus} />, document.body);
 ```
+
+<!--The cool thing about this particular example is that it supports asynchronous & realtime data out of the box. If we want to extend this app further to support something like pubnub, websockets, or some other realtime service, all we'd need to do is add a realtime bus adapter. Here's an example:
+
+```javascript
+var RealtimeBus = function(localBus) {
+  
+  return {
+    execute: 
+  };
+}
+```-->
