@@ -4,14 +4,10 @@ open a ticket, or submit a pull request.
 
 - [API](./api.md)
 - Guides
+  - [ReactJS integration](./react-integration.md)
   - RxJS integration
-  - React.js integration
   - Models
   - APIs
   - Database integration
   - Building realtime apps
   - Testing
-
-#### What is Mesh?
-
-#### What is Mesh intended for?
