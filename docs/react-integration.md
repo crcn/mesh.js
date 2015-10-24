@@ -4,7 +4,7 @@ Here's a basic example of how you can integrate Mesh with React:
 
 ```javascript
 import React from "react";
-import { TailableBus, WrapBus, EmptyResponse } from "mesh"
+import ApplicationBus from "./application-bus"; 
 
 var TodoListComponent = React.createClass({
   getInitialState: function() {
@@ -73,41 +73,50 @@ var TodoItemFooter = React.createClass({
   }
 });
 
-// bus implementation. Note that this code is here just for clarity. It'd
-// better to move this logic into separate files in a real application.
-var todoItems = [];
-
-var handlers = {
-  addTodoItem: WrapBus.create(function(operation) {
-    todoItems.push(operation.data);
-  }),
-  getTodoItems: WrapBus.create(function(operation) {
-    return todoItems;
-  }),
-  removeTodoItem: WrapBus.create(function(operation) {
-    todoItems.splice(todoItems.indexOf(operation.data), 1);
-  })
-};
-
-// create a simple bus which routes operations according to the operation
-// action. If no handler exists, then no-op it.
-var bus = {
-  execute: function(operation) {
-    var handler = handlers[operation.action];
-    return handler ? handler.execute(operation) : EmptyResponse.create();
-  }
-};
-
-// make the bus tailable so that listeners can do stuff *after* an operation executes
-bus = TailableBus.create(bus);
-
-// register addTail as an action handler. Redirect all actions to the route handlers
-bus = AcceptBus(function(operation) {
-  return operation.action === "tail";
-}, bus.addTail.bind(bus), bus);
-
 // actually render the component now
-React.render(<TodoListComponent bus={bus} />, document.body);
+React.render(<TodoListComponent bus={ApplicationBus.create()} />, document.body);
+```
+
+application-bus.js:
+
+```javascript
+import { TailableBus, WrapBus, EmptyResponse } from "mesh"
+
+export function create() {
+
+  var todoItems = [];
+  
+  var handlers = {
+    addTodoItem: WrapBus.create(function(operation) {
+      todoItems.push(operation.data);
+    }),
+    getTodoItems: WrapBus.create(function(operation) {
+      return todoItems;
+    }),
+    removeTodoItem: WrapBus.create(function(operation) {
+      todoItems.splice(todoItems.indexOf(operation.data), 1);
+    })
+  };
+  
+  // create a simple bus which routes operations according to the operation
+  // action. If no handler exists, then no-op it.
+  var bus = {
+    execute: function(operation) {
+      var handler = handlers[operation.action];
+      return handler ? handler.execute(operation) : EmptyResponse.create();
+    }
+  };
+  
+  // make the bus tailable so that listeners can do stuff *after* an operation executes
+  bus = TailableBus.create(bus);
+  
+  // register addTail as an action handler. Redirect all actions to the route handlers
+  bus = AcceptBus(function(operation) {
+    return operation.action === "tail";
+  }, bus.addTail.bind(bus), bus);
+  
+  return bus;
+}
 ```
 
 The cool thing about this particular example is that it supports asynchronous & realtime data out of the box. If we want to extend this app further to support something like pubnub, websockets, or some other realtime service, all we'd need to do is add a realtime bus adapter. Here's vanilla `realtime-bus.js` stub you can use with just about any protocol:
