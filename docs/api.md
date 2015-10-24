@@ -218,7 +218,7 @@ bus.execute({
   path: "/api/users",
   action: "GET"
 }).readAll().then(function(users) {
-  
+
 });
 ```
 
@@ -366,7 +366,7 @@ bus = SocketIoBus.create({
 
 ## Response API
 
-Responses are objects which are returned by [Busses](#bus) whenever an operation is executed. They also provide a streamable interface similar to the upcoming [stream spec](http://streams.spec.whatwg.org).
+Responses are objects which are returned by [Busses](#bus-api) whenever an operation is executed. They also provide a streamable interface similar to the upcoming [stream spec](http://streams.spec.whatwg.org).
 
 #### Response(runFunction)
 
