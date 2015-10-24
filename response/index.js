@@ -53,6 +53,21 @@ extend(Response, {
   /**
    */
 
+  readAll: function() {
+    var buffer = [];
+    // return new
+    return new Promise((resolve, reject) => {
+      this.pipeTo({
+        write: buffer.push.bind(buffer),
+        close: resolve.bind(this, buffer),
+        abort: reject
+      });
+    });
+  },
+
+  /**
+   */
+
   pipeTo: function(writable, options) {
     return this._reader.pipeTo(writable, options);
   },

@@ -18,4 +18,16 @@ describe(__filename + '#', function() {
   it('can extend() a base class', function() {
     expect(Response.extend().create()).to.be.an(Response);
   });
+
+  it("can readAll()", function(next) {
+    var response = Response.create(function(writable) {
+      writable.write("a");
+      writable.write("b");
+      writable.close();
+    });
+    response.readAll().then(function(chunks) {
+      expect(chunks.join("")).to.be("ab");
+      next();
+    });
+  });
 });

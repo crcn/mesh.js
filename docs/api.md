@@ -1,64 +1,61 @@
 ### Bus API
 
-The `Bus` routes requests to one or many subscribers according to a set of rules. It Also returns one single or merged response immediately upon execution.
+The `Bus` handles operations, and also routes them according to whatever rules you specify. The `Bus` embodies the decorator pattern - you can easily mix & match whatever you want to solve sophisticated data flows.
 
-Below are a set of built-in utilities you can use to route requests.
+#### creating a bus
 
-#### Bus()
-
-This is the base class for all built-in bus
-
-es6-style:
+There are a number of ways to create a bus. Probably the easiest method is to extend bus base class. Here's a simple example:
 
 ```javascript
-import { Bus, NodeStreamResponse } from "mesh";
+var mesh = require("mesh");
+var Bus = mesh.Bus;
+var BufferedResponse = mesh.BufferedResponse;
 
-class ReadFileBus extends Bus {
-  execute(request) {
-
-    // handle the request, and
-    return NodeStreamResponse.create(fs.createReadStream(request.path));
+// extend the base class. Base is a class, so if you're using
+var HelloBus = Bus.extend({
+  execute: function(operation) {
+    return new BufferedResponse(void 0, "hello " + operation.name + "!");
   }
-}
+});
 
-var bus = ReadFileBus.create();
+// you can also call new HelloBus.
+var bus = HelloBus.create();
 
-var response = bus.execute({ path: __filename });
+// execute an operation
+var response = bus.execute({
+  name: "John"
+});
 
-response.read().then(function(chunk) {
-  // do something with chunk.value
+// read one chunk
+response.read().then(function(value) {
+  console.log(value); // hello John!
 });
 ```
 
-or es5-style:
-
-```javascript
-function MyBus() {
-  Bus.call(this);
-}
-
-Bus.extend(MyBus, {
-  // props
-});
-```
 
 #### WrapBus(executeFunction)
 
-Wraps `executeFunction` as a bus.
+Wraps `executeFunction` as a bus. Here's an example of all the variations you can use with the WrapBus class.
 
 Simple example:
 
 ```javascript
 import { WrapBus } from "mesh";
+import fs from "fs";
 
-var readFileBus = ReadFileBus.create();
+// simple bus out of an object
+var readFileBus = WrapBus.create(function(operation) {
+  return NodeStreamResponse.create(fs.readFile(operation.name));
+});
 
 // support for es7 await
-var bus = WrapBus.create(async function(request) {
+var bus = WrapBus.create(async function(operation) {
   var buffer = [];
   var value;
   var done;
-  var response = readFileBus.execute({ path: request.path });
+
+  
+  var response = readFileBus.execute({ path: operation.path });
 
   while(({value, done} = await response.read()) && !done) {
     buffer.push(value);
@@ -68,19 +65,19 @@ var bus = WrapBus.create(async function(request) {
 });
 
 // suprt for node style callbacks
-var bus = WrapBus.create(function(request, complete) {
+var bus = WrapBus.create(function(operation, complete) {
   complete(void 0, "chunk"); // complete with data
   // complete(new Error("an error")); 1st param reserved for errors
 });
 
 // support for synchronous handlers
-var bus = WrapBus.create(function(request) {
+var bus = WrapBus.create(function(operation) {
   // throw new Error("an error");
   return "chunk"; // resolve data
 });
 
 // support for promises
-var bus = WrapBus.create(function(request) {
+var bus = WrapBus.create(function(operation) {
   return new Promise(function(resolve, reject) {
     resolve("chunk");
   });
@@ -91,13 +88,13 @@ var response = bus.execute({
 });
 
 response.read().then(function(chunk) {
-
+  // do something with chunk
 });
 ```
 
 #### ParallelBus([busses])
 
-Executes requests in parallel against `[busses]`, and merges all `chunks` from `[busses]` into one response in an un-ordered fashion.
+Executes operations in parallel against `[busses]`, and merges all `chunks` from `[busses]` into one response in an un-ordered fashion.
 
 ```javascript
 import { ParallelBus } from "mesh";
@@ -122,7 +119,7 @@ while(({ value, done } = await pingResponse.read()) && !done) {
 
 #### SequenceBus([busses])
 
-Executes requests against all `[busses]` sequentially. All `chunks` are merged into the returned streamed.
+Executes operations against all `[busses]` sequentially. All `chunks` are merged into the returned streamed.
 
 <!-- TODO - different example here -->
 ```javascript
@@ -139,15 +136,15 @@ allWorkersBus.execute({
 
 #### FallbackBus([busses])
 
-Executes an request against `[busses]` sequentially until *one* of them returns a chunk.
+Executes an operation against `[busses]` sequentially until *one* of them returns a chunk.
 
 #### RaceBus([busses])
 
-Executes an request against `[busses]` in parallel until *one* emits a chunk.
+Executes an operation against `[busses]` in parallel until *one* emits a chunk.
 
 #### RetryBus(count, bus)
 
-Re-executes an request if it fails against `bus` until `count` is 0.
+Re-executes an operation if it fails against `bus` until `count` is 0.
 
 #### CatchBus(bus, catchErrorFunction)
 
@@ -155,15 +152,15 @@ Catches an error emitted by `bus`.
 
 #### NoopBus()
 
-No-request bus.
+No-operation bus.
 
 #### AcceptBus(filter, resolveBus[, rejectBus])
 
-passes requests to `resolveBus` if `filter` returns true against the executed request. Otherwise the request gets sent to `rejectBus`.
+passes operations to `resolveBus` if `filter` returns true against the executed operation. Otherwise the operation gets sent to `rejectBus`.
 
 ```javascript
-var bus = AcceptBus.create(function(request) {
-  return request.name = "ping";
+var bus = AcceptBus.create(function(operation) {
+  return operation.name = "ping";
 }, WrapBus.create(function() {
   return "pong!";
 }))
@@ -181,10 +178,10 @@ Similar to accept bus
 Maps the response chunks from `bus`.
 
 ```javascript
-var bus = WrapBus.create(function(request) {
-  return request.echo;
+var bus = WrapBus.create(function(operation) {
+  return operation.echo;
 });
-bus = MapBus.create(bus, function(chunkValue, writable, request) {
+bus = MapBus.create(bus, function(chunkValue, writable, operation) {
   chunkValue.split("").forEach(writable.write.bind(writable));
 });
 
@@ -228,7 +225,7 @@ class PersonModel {
   }
   async _run(action, ops) {
 
-    // execute the request
+    // execute the operation
     var response = this.bus.execute(Object.assign({
       action     : action
     }, ops));
@@ -268,19 +265,19 @@ it("can load data into the model", async function() {
 });
 ```
 
-#### AttachDefaultsBus(requestDefaults, bus)
+#### AttachDefaultsBus(operationDefaults, bus)
 
-Attaches default properties onto executed requests.
+Attaches default properties onto executed operations.
 
 ```javascript
 import { AttachDefaultsBus, WrapBus } from "mesh";
 import SocketIoBus from "mesh-socket-io-bus";
 
-var bus = WrapBus.create(function(request) {
-  console.log(request.remote); // true
+var bus = WrapBus.create(function(operation) {
+  console.log(operation.remote); // true
 });
 
-// each request pushed from socket.io will be tagged as remote here
+// each operation pushed from socket.io will be tagged as remote here
 bus = SocketIoBus.create({
   host: "//127.0.0.1:8080"
 }, AttachDefaultsBus.create({ remote: true }, bus));
@@ -295,7 +292,7 @@ Returns an async response
 ```javascript
 import { WrapBus, Response } from "mesh";
 
-var bus = WrapBus.create(function(request) {
+var bus = WrapBus.create(function(operation) {
   return Response.create(function(writable) {
     writable.write("chunk");
     writable.write("chunk");
@@ -321,7 +318,7 @@ Wraps a node stream in a `Response` object. See example above.
 Returns an error response
 
 ```javascript
-var bus = WrapBus.create(function(request) {
+var bus = WrapBus.create(function(operation) {
   return ErrorResponse.create(new Error("an error"));
 });
 

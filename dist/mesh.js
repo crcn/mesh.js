@@ -45,7 +45,7 @@ module.exports = {
   WritableStream: require(31)
 };
 
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
 
   module.exports.noConflict = function () {
     delete window.mesh;
@@ -1048,6 +1048,23 @@ extend(Response, {
 
   read: function read() {
     return this._reader.read();
+  },
+
+  /**
+   */
+
+  readAll: function readAll() {
+    var _this = this;
+
+    var buffer = [];
+    // return new
+    return new Promise(function (resolve, reject) {
+      _this.pipeTo({
+        write: buffer.push.bind(buffer),
+        close: resolve.bind(_this, buffer),
+        abort: reject
+      });
+    });
   },
 
   /**
