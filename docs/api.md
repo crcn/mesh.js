@@ -338,27 +338,128 @@ bus = SocketIoBus.create({
 
 ## Response API
 
-
+Responses are objects which are returned by [Busses](#bus) whenever an operation is executed. They also provide a streamable interface similar to the upcoming [stream spec](http://streams.spec.whatwg.org).
 
 #### Response(runFunction)
 
-Returns an async response
+The base response class. Upon instantiation, `runFunction` is called immediately with a `writable` object provided in the first parameter. The `writable` implements `write`, `close`, and `abort` methods. These methods provide all the data for the response. Also note that `close`, or `abort` *must* be called to end the response.
 
 ```javascript
 import { WrapBus, Response } from 'mesh';
 
-var bus = WrapBus.create(function(operation) {
-  return Response.create(function(writable) {
-    writable.write('chunk');
-    writable.write('chunk');
-    writable.end();
-  });
+var response = return Response.create(function(writable) {
+  writable.write('chunk');
+  writable.write('chunk');
+  writable.close();
+});
+
+response.read().then(function(chunk) {
+  console.log(chunk.vaue); // done
+});
+
+response.read().then(function(chunk) {
+  console.log(chunk.value); // chunk
 })
+
+
+```
+
+#### Promise response.read()
+
+Reads one chunk written to the response. The chunk contains a `value` and `done` property. Done is set to `TRUE` if the response has closed.
+
+```javascript
+var response = Response.create(function(writable) {
+  writable.write("pong");
+  writable.close();
+});
+var chunk;
+for ((chunk = response.read()) && !chunk.done) {
+  console.log(chunk.value); // pong
+}
+```
+
+#### Promise response.readAll()
+
+Reads all the chunks from the response.
+
+```javascript
+var response = Response.create(function(writable) {
+  writable.write("a");
+  writable.write("b");
+  writable.close();
+});
+
+response.readAll().then(function(buffer) {
+  console.log(buffer); // [a, b]
+});
+```
+
+#### response.pipeTo(writable)
+
+Pipes the response to a writable stream.
+
+```javascript
+NodeStreamResponse
+.create(fs.createReadStream(__filename))
+.pipeTo({
+  write: function(value) {
+    // handle chunk value
+  },
+  close: function() {
+
+  },
+  abort: function(error) {
+
+  }
+})
+```
+
+#### response.then(closeCallback)
+
+Calls `closeCallback` once the response has closed.
+
+```javascript
+var response = Response.create(function(writable) {
+  writable.write("a");
+  writable.close();
+});
+
+response.then(function() {
+  // response closed
+});
+```
+
+#### response.catch(abortCallback)
+
+Calls `abortCallback` if the response has been aborted, or an error occurs.
+
+```javascript
+var response = Response.create(function(writable) {
+  writable.abort(new Error("some error"))
+});
+
+response.catch(function(error) {
+  console.log(error.message); // some error
+});
 ```
 
 #### BufferedResponse(error, [chunkValues])
 
 Returns a response with pre-defined data
+
+```javascript
+var response = BufferedResponse.create(void 0, ["a", "b", "c"]);
+response.read().then(function(chunk) {
+  console.log(chunk.value); // a
+});
+
+// aborted response
+var response = BufferedResponse.create(new Error("an error!"));
+response.read().catch(function(error) {
+
+});
+```
 
 #### EmptyResponse()
 
@@ -366,7 +467,14 @@ Returns an empty response
 
 #### NodeStreamResponse(stream)
 
-Wraps a node stream in a `Response` object. See example above.
+Wraps a node stream in a `Response` object.
+
+```javascript
+var response = NodeStreamResponse.create(fs.createReadStream(__filename));
+response.read().then(function(chunk) {
+  // handle chunk
+});
+```
 
 #### ErrorResponse(error)
 
@@ -381,5 +489,3 @@ bus.execute().read().catch(function(error) {
   console.log(error); // an error
 });
 ```
-
-## Stream API
