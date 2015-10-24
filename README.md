@@ -42,11 +42,11 @@ mainBus.execute({
 
 #### Resources
 
+- [Documentation](https://github.com/crcn/mesh.js/tree/master/docs)
+  - [Core API](https://github.com/crcn/mesh.js/blob/master/docs/api.md)
 - Discuss
   - [Google group](https://groups.google.com/forum/#!forum/meshjs)
   - [Gitter chat](https://gitter.im/crcn/mesh.js)
-- Documentation
-  - [Core API](./docs/api)
 - Companies using Mesh
   - [HelloSign](https://www.hellosign.com/)
 - Articles
