@@ -157,6 +157,6 @@ bus = RealtimeBus.create(bus);
 React.render(<TodoListComponent bus={bus} />, document.body);
 ```
 
-That's it - just one line of code. 
+That's it - just one line of code and you have a realtime single page application. 
 
 
