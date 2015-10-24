@@ -2,7 +2,7 @@ Mesh works very well with React, and compliments its unidirectional data-flow ph
 
 ```javascript
 import React from "react";
-import { TailableBus, WrapBus, EmptyResponse) from "mesh"
+import { TailableBus, WrapBus, EmptyResponse } from "mesh"
 
 var TodoListComponent = React.createClass({
   getInitialState: function() {
