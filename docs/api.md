@@ -1,10 +1,12 @@
 ### Bus API
 
-The `Bus` handles operations, and also routes them according to whatever rules you specify. The `Bus` embodies the decorator pattern - you can easily mix & match whatever you want to solve sophisticated data flows.
+The `Bus` is your operation handler. They're designed to building blocks that enable you to mix & match them however you want.
 
 #### creating a bus
 
-There are a number of ways to create a bus. Probably the easiest method is to extend bus base class. Here's a simple example:
+Busses are composed of two parts: an `execute` method which handles operations, and a [response](#Response) which is returned by the execute method. You can use whatever method you want so long as you stick to those core patterns.
+
+There are a number of ways to create a bus. Probably the easiest method is to extend the base class. Here's a simple example:
 
 ```javascript
 var mesh = require("mesh");
@@ -14,7 +16,7 @@ var BufferedResponse = mesh.BufferedResponse;
 // extend the base class. Base is a class, so if you're using
 var HelloBus = Bus.extend({
   execute: function(operation) {
-    return new BufferedResponse(void 0, "hello " + operation.name + "!");
+    return BufferedResponse.create(void 0, "hello " + operation.name + "!");
   }
 });
 
@@ -32,12 +34,31 @@ response.read().then(function(value) {
 });
 ```
 
+You can also go the more functional route like so:
+
+```javascript
+var EmptyResponse = require("mesh").EmptyResponse;
+
+function createBus(options) {
+  return {
+    execute: function(operation) {
+      // do something with operation here
+      return EmptyResponse.create();
+    }
+  };
+}
+
+var bus = createBus(options);
+bus.execute().then(function() {
+  // operation completed
+});
+```
+
 
 #### WrapBus(executeFunction)
 
-Wraps `executeFunction` as a bus. Here's an example of all the variations you can use with the WrapBus class.
+Wraps `executeFunction` as a bus. This class is useful if you're looking to incorporate other libraries with Mesh. Here are a few examples of how you can use this class:
 
-Simple example:
 
 ```javascript
 import { WrapBus } from "mesh";
@@ -54,7 +75,6 @@ var bus = WrapBus.create(async function(operation) {
   var value;
   var done;
 
-  
   var response = readFileBus.execute({ path: operation.path });
 
   while(({value, done} = await response.read()) && !done) {
@@ -64,7 +84,7 @@ var bus = WrapBus.create(async function(operation) {
   return buffer;
 });
 
-// suprt for node style callbacks
+// support for node style callbacks
 var bus = WrapBus.create(function(operation, complete) {
   complete(void 0, "chunk"); // complete with data
   // complete(new Error("an error")); 1st param reserved for errors
@@ -94,7 +114,7 @@ response.read().then(function(chunk) {
 
 #### ParallelBus([busses])
 
-Executes operations in parallel against `[busses]`, and merges all `chunks` from `[busses]` into one response in an un-ordered fashion.
+Executes an operation against multiple busses at the same time. Chunk data emitted by each bus is then merged into a single response in an un-ordered fashion.
 
 ```javascript
 import { ParallelBus } from "mesh";
@@ -109,38 +129,42 @@ var pingResponse = allWorkersBus.execute({
   action: "ping"
 });
 
-var value;
-var done;
-
-while(({ value, done } = await pingResponse.read()) && !done) {
-  console.log(value); // response from workers
-}
+pingResponse.readAll().then(function(err, pongs) {
+  //
+});
 ```
 
 #### SequenceBus([busses])
 
-Executes operations against all `[busses]` sequentially. All `chunks` are merged into the returned streamed.
+Executes operations against a each bus one at a time. Data is merged into one stream according to the order of each bus.
 
-<!-- TODO - different example here -->
 ```javascript
-var allWorkersBus = SequenceBus.create([
-  WorkerBus.create({ script: __dirname + "/worker.js" }),
-  WorkerBus.create({ script: __dirname + "/worker.js" })
+var bus = SequenceBus.create([
+  BufferedBus.create(void 0, "a"),
+  BufferedBus.create(void 0, "b"),
+  BufferedBus.create(void 0, "c")
 ]);
 
-// restart all workers sequentially
-allWorkersBus.execute({
-  action: "restart"
+bus.execute().read(function(chunks) {
+  console.log(chunks); // [a, b, c]
 });
 ```
 
+
 #### FallbackBus([busses])
 
-Executes an operation against `[busses]` sequentially until *one* of them returns a chunk.
+Executes one operation against all busses sequentially until one bus emits data.
+
+```javascript
+var bus = FallbackBus([
+  APIBus.create("https://sever1.com"),
+  APIBus.create("https://sever2.com")
+]);
+```
 
 #### RaceBus([busses])
 
-Executes an operation against `[busses]` in parallel until *one* emits a chunk.
+Executes one operation against all busses in parallel until one bus emits data. The response data from the fastest bus is returned.
 
 #### RetryBus(count, bus)
 
@@ -153,6 +177,15 @@ Catches an error emitted by `bus`.
 #### NoopBus()
 
 No-operation bus.
+
+```javascript
+var bus = NoopBus.create();
+
+// does nothing
+bus.execute().then(function() {
+
+});
+```
 
 #### AcceptBus(filter, resolveBus[, rejectBus])
 
