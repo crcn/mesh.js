@@ -1,6 +1,6 @@
 ### Bus API
 
-The `Bus` is your operation handler. They're designed to building blocks that enable you to mix & match them however you want.
+The `Bus` is your operation handler. Busses are designed to be building blocks, so mix & match them however you want.
 
 #### creating a bus
 

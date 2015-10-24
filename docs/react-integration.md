@@ -1,1 +1,1 @@
-Mesh works very well with React, and compliments it's unidirectional data-flow philosophy.
+Mesh works very well with React, and compliments its unidirectional data-flow philosophy.
