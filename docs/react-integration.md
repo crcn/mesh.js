@@ -137,6 +137,8 @@ With the above implementation, we can go ahead and plug it into our application:
 ```javascript
 import { * as RealtimeBus } from "./realtime-bus";
 
+// bus impl here
+
 var bus = {
   execute: function(operation) {
     // same execute handling code as above
