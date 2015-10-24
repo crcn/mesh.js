@@ -1,4 +1,4 @@
-Mesh works very well with React, and compliments its unidirectional data-flow philosophy. In ReactJS-land, you can think of Mesh as a a sort-of beefed up Flux dispatcher. 
+Mesh works well with React, and compliments its unidirectional data-flow philosophy. In ReactJS-land, you can think of Mesh as a a sort-of beefed up Flux dispatcher. 
 
 Here's a basic example of how you can integrate Mesh with React:
 
