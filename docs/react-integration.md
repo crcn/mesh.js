@@ -157,7 +157,7 @@ var bus = {
 // make the bus tailable so that listeners can do stuff *after* an operation executes
 bus = TailableBus.create(bus);
 
-// register addTail as an action handler. Redirect all actions to the route handlers
+// register addTail as an action handler. Redirect all other actions to the route handlers
 bus = AcceptBus(function(operation) {
   return operation.action === "tail";
 }, bus.addTail.bind(bus), bus);
