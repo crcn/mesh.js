@@ -1,9 +1,12 @@
 ### Bus API
 
+The `Bus` routes requests to one or many subscribers according to a set of rules. It Also returns one single or merged response immediately upon execution.
+
+Below are a set of built-in utilities you can use to route requests.
 
 #### Bus()
 
-The bus base class. Extend this if you want to create a custom bus.
+This is the base class for all built-in bus
 
 es6-style:
 
@@ -11,10 +14,10 @@ es6-style:
 import { Bus, NodeStreamResponse } from "mesh";
 
 class ReadFileBus extends Bus {
-  execute(operation) {
+  execute(request) {
 
-    // return response immediately
-    return NodeStreamResponse.create(fs.createReadStream(operation.path));
+    // handle the request, and
+    return NodeStreamResponse.create(fs.createReadStream(request.path));
   }
 }
 
@@ -51,11 +54,11 @@ import { WrapBus } from "mesh";
 var readFileBus = ReadFileBus.create();
 
 // support for es7 await
-var bus = WrapBus.create(async function(operation) {
+var bus = WrapBus.create(async function(request) {
   var buffer = [];
   var value;
   var done;
-  var response = readFileBus.execute({ path: operation.path });
+  var response = readFileBus.execute({ path: request.path });
 
   while(({value, done} = await response.read()) && !done) {
     buffer.push(value);
@@ -65,19 +68,19 @@ var bus = WrapBus.create(async function(operation) {
 });
 
 // suprt for node style callbacks
-var bus = WrapBus.create(function(operation, complete) {
+var bus = WrapBus.create(function(request, complete) {
   complete(void 0, "chunk"); // complete with data
   // complete(new Error("an error")); 1st param reserved for errors
 });
 
 // support for synchronous handlers
-var bus = WrapBus.create(function(operation) {
+var bus = WrapBus.create(function(request) {
   // throw new Error("an error");
   return "chunk"; // resolve data
 });
 
 // support for promises
-var bus = WrapBus.create(function(operation) {
+var bus = WrapBus.create(function(request) {
   return new Promise(function(resolve, reject) {
     resolve("chunk");
   });
@@ -94,7 +97,7 @@ response.read().then(function(chunk) {
 
 #### ParallelBus([busses])
 
-Executes operations in parallel against `[busses]`, and merges all `chunks` from `[busses]` into one response in an un-ordered fashion.
+Executes requests in parallel against `[busses]`, and merges all `chunks` from `[busses]` into one response in an un-ordered fashion.
 
 ```javascript
 import { ParallelBus } from "mesh";
@@ -119,7 +122,7 @@ while(({ value, done } = await pingResponse.read()) && !done) {
 
 #### SequenceBus([busses])
 
-Executes operations against all `[busses]` sequentially. All `chunks` are merged into the returned streamed.
+Executes requests against all `[busses]` sequentially. All `chunks` are merged into the returned streamed.
 
 <!-- TODO - different example here -->
 ```javascript
@@ -136,15 +139,15 @@ allWorkersBus.execute({
 
 #### FallbackBus([busses])
 
-Executes an operation against `[busses]` sequentially until *one* of them returns a chunk.
+Executes an request against `[busses]` sequentially until *one* of them returns a chunk.
 
 #### RaceBus([busses])
 
-Executes an operation against `[busses]` in parallel until *one* emits a chunk.
+Executes an request against `[busses]` in parallel until *one* emits a chunk.
 
 #### RetryBus(count, bus)
 
-Re-executes an operation if it fails against `bus` until `count` is 0.
+Re-executes an request if it fails against `bus` until `count` is 0.
 
 #### CatchBus(bus, catchErrorFunction)
 
@@ -152,15 +155,15 @@ Catches an error emitted by `bus`.
 
 #### NoopBus()
 
-No-operation bus.
+No-request bus.
 
 #### AcceptBus(filter, resolveBus[, rejectBus])
 
-passes operations to `resolveBus` if `filter` returns true against the executed operation. Otherwise the operation gets sent to `rejectBus`.
+passes requests to `resolveBus` if `filter` returns true against the executed request. Otherwise the request gets sent to `rejectBus`.
 
 ```javascript
-var bus = AcceptBus.create(function(operation) {
-  return operation.name = "ping";
+var bus = AcceptBus.create(function(request) {
+  return request.name = "ping";
 }, WrapBus.create(function() {
   return "pong!";
 }))
@@ -178,10 +181,10 @@ Similar to accept bus
 Maps the response chunks from `bus`.
 
 ```javascript
-var bus = WrapBus.create(function(operation) {
-  return operation.echo;
+var bus = WrapBus.create(function(request) {
+  return request.echo;
 });
-bus = MapBus.create(bus, function(chunkValue, writable, operation) {
+bus = MapBus.create(bus, function(chunkValue, writable, request) {
   chunkValue.split("").forEach(writable.write.bind(writable));
 });
 
@@ -225,7 +228,7 @@ class PersonModel {
   }
   async _run(action, ops) {
 
-    // execute the operation
+    // execute the request
     var response = this.bus.execute(Object.assign({
       action     : action
     }, ops));
@@ -265,19 +268,19 @@ it("can load data into the model", async function() {
 });
 ```
 
-#### AttachDefaultsBus(operationDefaults, bus)
+#### AttachDefaultsBus(requestDefaults, bus)
 
-Attaches default properties onto executed operations.
+Attaches default properties onto executed requests.
 
 ```javascript
 import { AttachDefaultsBus, WrapBus } from "mesh";
 import SocketIoBus from "mesh-socket-io-bus";
 
-var bus = WrapBus.create(function(operation) {
-  console.log(operation.remote); // true
+var bus = WrapBus.create(function(request) {
+  console.log(request.remote); // true
 });
 
-// each operation pushed from socket.io will be tagged as remote here
+// each request pushed from socket.io will be tagged as remote here
 bus = SocketIoBus.create({
   host: "//127.0.0.1:8080"
 }, AttachDefaultsBus.create({ remote: true }, bus));
@@ -292,7 +295,7 @@ Returns an async response
 ```javascript
 import { WrapBus, Response } from "mesh";
 
-var bus = WrapBus.create(function(operation) {
+var bus = WrapBus.create(function(request) {
   return Response.create(function(writable) {
     writable.write("chunk");
     writable.write("chunk");
@@ -318,7 +321,7 @@ Wraps a node stream in a `Response` object. See example above.
 Returns an error response
 
 ```javascript
-var bus = WrapBus.create(function(operation) {
+var bus = WrapBus.create(function(request) {
   return ErrorResponse.create(new Error("an error"));
 });
 

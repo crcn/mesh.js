@@ -43,12 +43,12 @@ module.exports = {
   WritableStream     : require('./stream/writable')
 };
 
-if (typeof window !== "undefined") {
-  
+if (typeof window !== 'undefined') {
+
   module.exports.noConflict = function() {
     delete window.mesh;
     return module.exports;
   };
 
-  window.mesh = module.exports
+  window.mesh = module.exports;
 }
