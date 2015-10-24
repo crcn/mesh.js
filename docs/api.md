@@ -1,3 +1,6 @@
+### Bus API
+
+
 #### Bus()
 
 The bus base class. Extend this if you want to create a custom bus.
@@ -323,3 +326,5 @@ bus.execute().read().catch(function(error) {
   console.log(error); // an error
 });
 ```
+
+## Stream API
