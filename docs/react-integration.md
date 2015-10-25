@@ -6,7 +6,7 @@ TODO
 - "models" section
 -->
 
-Mesh can easily be used with React as a flux replacement. Here's an example of how you might integrate the two libraries:
+Mesh can easily be used with React. Here's an example of how you might integrate the two libraries:
 
 ```javascript
 import React from "react";
