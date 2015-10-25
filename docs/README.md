@@ -4,9 +4,9 @@ open a ticket, or submit a pull request.
 
 - [API](./api.md)
 - Guides
-  - [ReactJS integration](./react-integration.md)
-  - [RxJS integration](./rxjs-integration.md)
-  - [Writing models with mesh](./models.md)
+  - [ReactJS integration](./guides/react-integration.md)
+  - [RxJS integration](./guides/rxjs-integration.md)
+  - [Writing models with mesh](./guides/models.md)
   - APIs
   - Database integration
   - Building realtime apps
