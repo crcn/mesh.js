@@ -166,7 +166,7 @@ describe(__filename + "#", function() {
 });
 ```
 
-This test example is really only to demonstrate how easy it use to mock bus code. Here's another way we can go about testing our base model with a re-usable [collection bus](https://gist.github.com/crcn/e049575c298826223e6c):
+This test example is really only to demonstrate how easy it is to mock bus code. Here's another way we can go about testing our base model with a re-usable [collection bus](https://gist.github.com/crcn/e049575c298826223e6c):
 
 ```javascript
 var bus;
