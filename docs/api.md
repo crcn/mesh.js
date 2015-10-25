@@ -222,6 +222,20 @@ bus.execute({
 });
 ```
 
+#### DelayedBus(ms, bus)
+
+Delays execution on the target bus for `ms` milliseconds. 
+
+```javascript
+var bus = DelayedBus.create(500, {
+  execute: function(operation) {
+    return BufferedResponse.create(void 0, "Hello World!");
+  }
+});
+
+console.log(await bus.execute().read()); // Hello World!
+```
+
 #### NoopBus()
 
 No-operation bus.
