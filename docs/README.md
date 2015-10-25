@@ -6,7 +6,7 @@ open a ticket, or submit a pull request.
 - Guides
   - [ReactJS integration](./react-integration.md)
   - [RxJS integration](./rxjs-integration.md)
-  - Models
+  - [Writing models with mesh](./models.md)
   - APIs
   - Database integration
   - Building realtime apps

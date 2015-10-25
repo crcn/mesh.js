@@ -1,4 +1,4 @@
-Mesh can be used as the transport layer for models that represent data. Here's a simple example of how to setup this integration:
+Mesh can be used as the transport layer for models that represent data stored in some database. Here's a simple example of how to create this integration:
 
 ```javascript
 class Model {
@@ -122,7 +122,7 @@ model.insert().then(function() {
   console.log(model.data); // { _id: MongoId, name: "Tony" }
 });
 ```
-This example attaches a `collection` property for each model operation since Mongodb needs to know where to create, read, update, and delete data from. By using the `AttachDefaultsBus` we can safely define this information *outside* of the model so that this adapter-specific code doesn't end up in our model base class. This pattern makes our base model, again, pretty adaptable many different use cases.
+This example attaches a `collection` property for each operation since Mongodb needs to know where to create, read, update, and delete data from. By using the `AttachDefaultsBus` we can safely define this information *outside* of the model so that this adapter-specific code doesn't end up in our model base class. This pattern makes our base model, again, pretty adaptable many different use cases.
 
 Creating a model base class that works with any data source is one thing. Making it testable is also important. Easy enough:
 
@@ -166,7 +166,7 @@ describe(__filename + "#", function() {
 });
 ```
 
-This test example is really only cto demonstrate how easy it use to mock bus code. Here's another way we can go about testing our base model with a re-usable [collection bus](https://gist.github.com/crcn/e049575c298826223e6c):
+This test example is really only to demonstrate how easy it use to mock bus code. Here's another way we can go about testing our base model with a re-usable [collection bus](https://gist.github.com/crcn/e049575c298826223e6c):
 
 ```javascript
 var bus;
@@ -184,3 +184,5 @@ it("loads data on the model", async function() {
   expect(model.getProperty("name")).to.be("joe");
 });
 ```
+
+This example is a more reliable way of testing our model code since the `CollectionBus` implements all of the CRUD operations that are also used by the production database adapter. The other notable thing about this method is that it's fast, which makes TDD possible.
