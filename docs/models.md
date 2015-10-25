@@ -1,4 +1,4 @@
-Mesh can be used as the transport layer for models that represent data. Here's a simple example of how to create this integration:
+Mesh can be used as the transport layer for models that represent data. Here's a simple example of how to setup this integration:
 
 ```javascript
 class Model {
