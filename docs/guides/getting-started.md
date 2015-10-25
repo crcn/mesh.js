@@ -9,7 +9,7 @@ After that you can start using the library.
 
 #### How to use Mesh
 
-Mesh can be thought of a publish/subscribe library, where you `execute` operations against a bus, which typically has one or many handlers (subscribers). The response returned from the bus handler should be a `Response`. Here's a basic example:
+Mesh can be thought of a publish/subscribe library - operations get published to a bus, when then get passed to a subscriber. The subscriber then returns a streamable response to the publisher. Here's an example:
 
 ```javascript
 var EmptyResponse = require("mesh").EmptyResponse;
@@ -24,7 +24,49 @@ var helloBus = {
 helloBus.execute(); // logs hello world!
 ```
 
-<!-- A `response` is a streamable bject -->
+The response can also stream back chunks of data. For example:
+
+```javascript
+var fs = require("fs");
+var NodeStreamResponse = require("mesh").NodeStreamResponse;
+var readFileBus = {
+  execute: function(operation) {
+    return NodeStreamResponse.create(fs.createReadStream(operation.path));
+  }
+};
+
+var response = readFileBus.execute({ path: __filename });
+
+response.read().then(function(chunk) {
+  console.log(chunk.value);
+})
+```
+
+The `read` method reads *one* chunk emitted by the response. If you want to read all of the chunks, you can simple call `response.read()` until `chunk.done` is true. Like so:
+
+```javascript
+var buffer = [];
+function readAll(response, done) {
+  response.read().then(function(chunk) {
+    if (chunk.done) return done(void 0, buffer);
+    pump(response, done);
+  })
+}
+
+readAll(readFileBus.execute({ path: __filename }), function(err, buffer) {
+  //
+});
+```
+
+You can also simply call the `readAll()` property on the response:
+
+```javascript
+readFileBus.execute({ path: __filename }).readAll().then(function(buffer) {
+  //
+});
+```
+
+<!-- more info on busses -->
 
 #### Organization
 
