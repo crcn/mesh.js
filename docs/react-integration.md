@@ -83,7 +83,7 @@ var TodoItemFooter = React.createClass({
 React.render(<TodoListComponent bus={ApplicationBus.create()} />, document.body);
 ```
 
-This basic example is similar to the [Flux](https://facebook.github.io/flux/) architecture where you have one root component that executes an update for the entire application. The `tail` action above is where all the magic happens. Basically, the tail gets triggered whenever an operation gets executed against the bus. When that happens, the component, and all of its sub-components get rendered.
+This basic example is similar to the [Flux](https://facebook.github.io/flux/) architecture where you have one root component that executes an update for the entire application. The `tail` action above is where all the magic happens. Basically, the tail gets triggered whenever an operation gets executed against the bus. When that happens, the component, and all of its sub-components get re-rendered.
 
 <!-- diagram here -->
 
