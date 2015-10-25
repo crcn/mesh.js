@@ -45,12 +45,16 @@ response.read().then(function(chunk) {
 The `read` method resolves *one* chunk of data from the response. If you want to read all of the chunks, you can simple call `response.read()` until `chunk.done` is true. Like so:
 
 ```javascript
-var buffer = [];
 function readAll(response, done) {
-  response.read().then(function(chunk) {
-    if (chunk.done) return done(void 0, buffer);
-    pump(response, done);
-  })
+  var buffer = [];
+  function pump() {
+    response.read().then(function(chunk) {
+      if (chunk.done) return done(void 0, buffer);
+      buffer.push(chunk.value);
+      pump();
+    })
+  }
+  pump();
 }
 
 readAll(readFileBus.execute({ path: __filename }), function(err, buffer) {
