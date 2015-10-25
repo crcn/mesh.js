@@ -4,6 +4,7 @@ open a ticket, or submit a pull request.
 
 - [API](./api.md)
 - Guides
+  - [Getting Started](./guides/getting-started.md)
   - [ReactJS integration](./guides/react-integration.md)
   - [RxJS integration](./guides/rxjs-integration.md)
   - [Writing models with mesh](./guides/models.md)
