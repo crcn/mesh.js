@@ -5,7 +5,7 @@ open a ticket, or submit a pull request.
 - [API](./api.md)
 - Guides
   - [ReactJS integration](./react-integration.md)
-  - RxJS integration
+  - [RxJS integration](./rxjs-integration.md)
   - Models
   - APIs
   - Database integration
