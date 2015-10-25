@@ -8,7 +8,9 @@ open a ticket, or submit a pull request.
   - [ReactJS integration](./guides/react-integration.md)
   - [RxJS integration](./guides/rxjs-integration.md)
   - [Writing models with mesh](./guides/models.md)
-  <!-- - APIs
-  - Database integration
-  - Building realtime apps
-  - Testing -->
+
+  
+<!-- - APIs
+- Database integration
+- Building realtime apps
+- Testing -->
