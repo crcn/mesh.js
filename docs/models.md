@@ -186,3 +186,19 @@ it("loads data on the model", async function() {
 ```
 
 This example is a more reliable way of testing our model code since the `CollectionBus` implements all of the CRUD operations that are also used by the production database adapter. The other notable thing about this method is that it's fast, which makes TDD possible.
+
+<!--
+Wrapping all of this stuff up, here's how we might actually implement a base class:
+
+```javascript
+class TodoItem extends Model {
+  markAsRead() {
+    this.setProperties({
+      read: this.
+    })
+  }
+}
+
+var model = new TodoItem(
+```
+-->
