@@ -7,6 +7,25 @@ npm install bower
 
 After that you can start using the library.
 
+#### How to use Mesh
+
+Mesh can be thought of a publish/subscribe library, where you `execute` operations against a bus, which typically has one or many handlers (subscribers). The response returned from the bus handler should be a `Response`. Here's a basic example:
+
+```javascript
+var EmptyResponse = require("mesh").EmptyResponse;
+
+var helloBus = {
+  execute: function() {
+    console.log("hello world!");
+    return EmptyResponse.create();
+  }
+};
+
+helloBus.execute(); // logs hello world!
+```
+
+<!-- A `response` is a streamable bject -->
+
 #### Organization
 
 This is just my preference, but I typically only have **one** main bus which is used throughout the application. This bus handles all operations executed by other parts of the application. Here's how I typically organize my bus code:
@@ -16,6 +35,7 @@ src/ - application source
   bus/ - ALL bus code
     index.js - the file which ties everything together
     commands/ - application commands
+      index.js
       users.js - user specific commands such as signup, resetPassword, etc
       ...
     database/ - bus database adapters
@@ -39,4 +59,84 @@ The additional folders above: `models`, and `components` are included to demonst
 
 #### Implementation
 
-TODO
+The main bus should tie everything together. Here's what `bus/index.js` might look like based on the folder structure above:
+
+```javascript
+import { * as CommandsBus } from "./commands";
+import { * as DatabaseBus } from "./database";
+
+export function create(options) {
+
+  // create the database bus with the options
+  var bus = DatabaseBus.create(options);
+
+  // commands are interface the database. Database should never by exposed directly
+  bus = CommandsBus.create(options, bus);
+  return bus;
+}
+```
+
+`database/index.js` bus:
+
+```javascript
+import MongoDbBus from "./mongo";
+import MockDbBus  from "./mock";
+
+var dbBusClasses = {
+  mongo: MongoDbBus,
+  mock: MockDbBus
+};
+
+export function create(options) {
+  var dbBusClass = dbBusClasses[options.db.type];
+  return dbBusClass.create(options);
+}
+```
+
+`commands/index.js` bus:
+
+```javascript
+import { create as createUserCommands } from "./users";
+import { create as createOrganizationCommands } from "./organization";
+import { NoopBus } from "mesh";
+
+export function create(options, internalBus) {
+
+  var allCommands = Object.assign(
+    {
+      noop: NoopBus.create()
+    },
+    createUserCommands(options, internalBus),
+    createOrganizationCommands(options, internalBus)
+  );
+
+  return {
+    execute: function(operation) {
+      var commandBus = (allCommands[operation.action] || allCommands.noop);
+      return commandBus.execute(operation);
+    }
+  }
+}
+```
+
+`commands/users.js`:
+
+```javascript
+import { WrapBus, EmptyResponse } from "mesh";
+import User from "models/user";
+import httperr from "httperr";
+
+export function create(options) {
+  return {
+    resetPassword: WrapBus.create(async function(operation) {
+      var user;
+
+      if (!(user = await User.findOne(operation.query.user))) {
+        throw new httperr.NotFound("user not found");
+      }
+
+      // impl reset password code here
+    })
+  };
+}
+```
