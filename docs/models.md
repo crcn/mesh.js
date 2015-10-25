@@ -122,7 +122,7 @@ model.insert().then(function() {
   console.log(model.data); // { _id: MongoId, name: "Tony" }
 });
 ```
-This example attaches a `collection` property for each operation since Mongodb needs to know where to create, read, update, and delete data from. By using the `AttachDefaultsBus` we can safely define this information *outside* of the model so that this adapter-specific code doesn't end up in our model base class. This pattern makes our base model, again, pretty adaptable many different use cases.
+This example attaches a `collection` property for each model operation since Mongodb needs to know where to create, read, update, and delete data from. By using the `AttachDefaultsBus` we can safely define this information *outside* of the model so that this adapter-specific code doesn't end up in our model base class. This pattern makes our base model, again, pretty adaptable many different use cases.
 
 Creating a model base class that works with any data source is one thing. Making it testable is also important. Easy enough:
 
