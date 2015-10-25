@@ -1,10 +1,18 @@
-Mesh works well with React, and compliments its unidirectional data-flow philosophy. In ReactJS-land, you can think of Mesh as a a sort-of beefed up Flux dispatcher. 
+<!--
+TODO
+- information on async data
+- change & elaborate wording up top
+- elaborate on why we're using "tail" here
+- "models" section
+-->
+
+Mesh works well with React, and compliments its unidirectional data-flow philosophy. In ReactJS-land, you can think of Mesh as a a sort-of beefed up Flux dispatcher.
 
 Here's a basic example of how you can integrate Mesh with React:
 
 ```javascript
 import React from "react";
-import ApplicationBus from "./application-bus"; 
+import ApplicationBus from "./application-bus";
 
 var TodoListComponent = React.createClass({
   getInitialState: function() {
@@ -85,7 +93,7 @@ import { TailableBus, WrapBus, EmptyResponse } from "mesh"
 export function create() {
 
   var todoItems = [];
-  
+
   var handlers = {
     addTodoItem: WrapBus.create(function(operation) {
       todoItems.push(operation.data);
@@ -97,7 +105,7 @@ export function create() {
       todoItems.splice(todoItems.indexOf(operation.data), 1);
     })
   };
-  
+
   // create a simple bus which routes operations according to the operation
   // action. If no handler exists, then no-op it.
   var bus = {
@@ -106,18 +114,19 @@ export function create() {
       return handler ? handler.execute(operation) : EmptyResponse.create();
     }
   };
-  
+
   // make the bus tailable so that listeners can do stuff *after* an operation executes
   bus = TailableBus.create(bus);
-  
+
   // register addTail as an action handler. Redirect all actions to the route handlers
   bus = AcceptBus(function(operation) {
     return operation.action === "tail";
   }, bus.addTail.bind(bus), bus);
-  
+
   return bus;
 }
 ```
+
 
 <!-- TODO - illustration here -->
 
@@ -126,14 +135,14 @@ The cool thing about this particular example is that it supports asynchronous & 
 
 ```javascript
 export function create(localBus) {
-    
+
   // received when some other client sends an operation
   remote.onmessage = function(message) {
-  
+
     // pass to the remote operation to the local bus
     localBus.execute(JSON.parse(message));
   }
-  
+
   return {
     execute: function(operation) {
       remote.send(JSON.stringify(operation));
@@ -170,5 +179,4 @@ bus = RealtimeBus.create(bus);
 React.render(<TodoListComponent bus={bus} />, document.body);
 ```
 
-That's it - just one line of code and you have a realtime single page application. 
-
+That's it - just one line of code and you have a realtime single page application.
