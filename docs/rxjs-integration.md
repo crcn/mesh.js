@@ -1,19 +1,19 @@
 ```javascript
 var Observable = require("rx").Observable;
 
-function fromStream(busStream) {
+function fromStream(stream) {
   return Observable.create(function(observer) {
-    busStream.pipeTo(WrapWriter.create({
+    stream.pipeTo({
       write: function(data) {
         observer.onNext(data);
       },
+      close: function() {
+        observer.onCompleted();
+      },
       abort: functon(error) {
         observer.onError(error);
-      },
-      end: function() {
-        observer.onCompleted();
       }
-    }));
+    });
   });
 }
 
