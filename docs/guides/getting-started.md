@@ -9,7 +9,7 @@ After that you can start using the library.
 
 #### How to use Mesh
 
-Mesh can be thought of a publish/subscribe library - operations get published to a bus, when then get passed to a subscriber. The subscriber then returns a streamable response to the publisher. Here's an example:
+Mesh is basically a beefed-up pub-sub library. Here's a plain example of how you use it:
 
 ```javascript
 var EmptyResponse = require("mesh").EmptyResponse;
@@ -24,7 +24,7 @@ var helloBus = {
 helloBus.execute(); // logs hello world!
 ```
 
-The response can also stream back chunks of data. For example:
+The response can also stream chunks of data. For example:
 
 ```javascript
 var fs = require("fs");
@@ -42,7 +42,7 @@ response.read().then(function(chunk) {
 })
 ```
 
-The `read` method reads *one* chunk emitted by the response. If you want to read all of the chunks, you can simple call `response.read()` until `chunk.done` is true. Like so:
+The `read` method resolves *one* chunk of data from the response. If you want to read all of the chunks, you can simple call `response.read()` until `chunk.done` is true. Like so:
 
 ```javascript
 var buffer = [];
@@ -58,7 +58,7 @@ readAll(readFileBus.execute({ path: __filename }), function(err, buffer) {
 });
 ```
 
-You can also simply call the `readAll()` property on the response:
+The response object also contains a `readAll()` method which can be used like so:
 
 ```javascript
 readFileBus.execute({ path: __filename }).readAll().then(function(buffer) {
