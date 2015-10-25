@@ -6,9 +6,7 @@ TODO
 - "models" section
 -->
 
-Mesh works well with React, and compliments its unidirectional data-flow philosophy. In ReactJS-land, you can think of Mesh as a a sort-of beefed up Flux dispatcher.
-
-Here's a basic example of how you can integrate Mesh with React:
+Mesh can easily be used with React as a message bus. Here's an example of how you might integrate the two libraries:
 
 ```javascript
 import React from "react";
@@ -85,7 +83,11 @@ var TodoItemFooter = React.createClass({
 React.render(<TodoListComponent bus={ApplicationBus.create()} />, document.body);
 ```
 
-application-bus.js:
+This basic example is similar to the [Flux](https://facebook.github.io/flux/) architecture where you have one root component that executes an update for the entire application. The `tail` action above is where all the magic happens. Basically, the tail gets triggered whenever an operation gets executed against the bus. When that happens, the component, and all of its sub-components get rendered.
+
+<!-- diagram here -->
+
+Here's the `application-bus.js` implementation:
 
 ```javascript
 import { TailableBus, WrapBus, EmptyResponse } from "mesh"
@@ -126,6 +128,7 @@ export function create() {
   return bus;
 }
 ```
+
 
 
 <!-- TODO - illustration here -->
