@@ -386,7 +386,7 @@ bus = SocketIoBus.create({
 
 ## Response API
 
-Responses are objects which are returned by [Busses](#bus-api) whenever an operation is executed. They also provide a streamable interface similar to the upcoming [stream spec](http://streams.spec.whatwg.org).
+Responses are objects which are returned by [busses](#bus-api) whenever an operation is executed. They also provide a streamable interface similar to the upcoming [stream spec](http://streams.spec.whatwg.org).
 
 #### Response(runFunction)
 
