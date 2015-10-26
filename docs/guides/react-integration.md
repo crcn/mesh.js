@@ -12,7 +12,7 @@ Mesh can easily be used with React. Here's an example of how you might integrate
 import React from "react";
 import ApplicationBus from "./application-bus";
 
-var TodoList = React.createClass({
+var TodoListComponent = React.createClass({
   getInitialState: function() {
     return {
       todoItems : []
