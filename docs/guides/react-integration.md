@@ -12,7 +12,7 @@ Mesh can easily be used with React. Here's an example of how you might integrate
 import React from "react";
 import ApplicationBus from "./application-bus";
 
-var TodoListComponent = React.createClass({
+var TodoList = React.createClass({
   getInitialState: function() {
     return {
       todoItems : []
@@ -44,7 +44,7 @@ var TodoListComponent = React.createClass({
         })}
       </ul>
 
-      <TodoItemFooter {...this.props} />
+      <TodoFooterComponent {...this.props} />
     </div>
   }
 });
@@ -63,7 +63,7 @@ var TodoItemComponent = React.createClass({
   }
 });
 
-var TodoItemFooter = React.createClass({
+var TodoFooterComponent = React.createClass({
   addTodoItem: function() {
     this.props.bus.execute({
       action: "addTodoItem",
