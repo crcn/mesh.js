@@ -194,6 +194,38 @@ bus.execute({ }).catch(function(error) {
 });
 ```
 
+#### RandomBus([busses])
+
+Picks one bus at random and executes an operation against it.
+
+```javascript
+var bus = RandomBus.create([
+  BufferedBus.create(void 0, "a")
+  BufferedBus.create(void 0, "b")
+  BufferedBus.create(void 0, "c")
+]);
+await bus.execute().read(); // c
+await bus.execute().read(); // a
+await bus.execute().read(); // b
+await bus.execute().read(); // b
+```
+
+#### RoundRobinBus([busses])
+
+Picks one bus in rotation and executes an operation against it.
+
+```javascript
+var bus = RoundRobinBus.create([
+  BufferedBus.create(void 0, "a")
+  BufferedBus.create(void 0, "b")
+  BufferedBus.create(void 0, "c")
+]);
+await bus.execute().read(); // a
+await bus.execute().read(); // b
+await bus.execute().read(); // c
+await bus.execute().read(); // a
+```
+
 #### RetryBus(count, bus)
 
 Re-executes operations against `bus` `count` times if an error occurs.
@@ -220,6 +252,20 @@ bus.execute({
 }).readAll().then(function(users) {
 
 });
+```
+
+#### DelayedBus(ms, bus)
+
+Delays execution on the target bus for `ms` milliseconds. 
+
+```javascript
+var bus = DelayedBus.create(500, {
+  execute: function(operation) {
+    return BufferedResponse.create(void 0, "Hello World!");
+  }
+});
+
+console.log(await bus.execute().read()); // Hello World!
 ```
 
 #### NoopBus()

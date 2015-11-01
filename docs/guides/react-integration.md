@@ -44,7 +44,7 @@ var TodoListComponent = React.createClass({
         })}
       </ul>
 
-      <TodoItemFooter {...this.props} />
+      <TodoFooterComponent {...this.props} />
     </div>
   }
 });
@@ -63,7 +63,7 @@ var TodoItemComponent = React.createClass({
   }
 });
 
-var TodoItemFooter = React.createClass({
+var TodoFooterComponent = React.createClass({
   addTodoItem: function() {
     this.props.bus.execute({
       action: "addTodoItem",
