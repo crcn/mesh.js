@@ -1,4 +1,4 @@
-This bus enables you to execute operations against a remote bus.
+This bus enables you to execute operations against a remote bus using websockets.
 
 ```javascript
 var localBus = WrapBus.create(function() {
