@@ -8,7 +8,7 @@ Simple example:
 
 ```javascript
 // var storage = FakeStorageBus.create();
-var storageBus = LocalStorageDbBus.create();
+var storageBus = LocalStorageDsBus.create();
 
 // persist all operations to socket.io & any operations from socket.io
 // back to local storage.
@@ -36,6 +36,7 @@ mainBus.execute({
 #### Resources
 
 - [Documentation](https://github.com/crcn/mesh.js/tree/master/docs)
+- [Examples](./examples)
 - Discuss
   - [Google group](https://groups.google.com/forum/#!forum/meshjs)
   - [Gitter chat](https://gitter.im/crcn/mesh.js)
