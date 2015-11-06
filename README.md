@@ -37,6 +37,8 @@ mainBus.execute({
 
 - [Documentation](https://github.com/crcn/mesh.js/tree/master/docs)
 - [Examples](./examples)
+- Modules
+  - [in-memory data store bus](./packages/mesh-memory-ds-bus)
 - Discuss
   - [Google group](https://groups.google.com/forum/#!forum/meshjs)
   - [Gitter chat](https://gitter.im/crcn/mesh.js)
