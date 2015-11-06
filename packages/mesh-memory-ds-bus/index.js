@@ -37,10 +37,12 @@ Object.assign(MemoryCollection.prototype, {
   },
 
   load: function(operation) {
+
     var items = sift(operation.query || function() {
       return true;
     }, _clone(this._items));
-    return _response(_oneOrMany(operation, items));
+
+    return _response(items);
   },
 
   remove: function(operation) {
@@ -65,7 +67,6 @@ Object.assign(MemoryCollection.prototype, {
     return _response(items);
   }
 })
-
 
 function MemoryDs(initialData) {
 

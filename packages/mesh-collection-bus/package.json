@@ -1,5 +1,5 @@
 {
-  "name": "mesh-memory-ds-bus",
+  "name": "mesh-collection-bus",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mesh": "^5.0.19"
+    "mesh": "^5.0.20"
   },
   "devDependencies": {
     "mesh-ds-bus-test-cases": "^1.0.0"

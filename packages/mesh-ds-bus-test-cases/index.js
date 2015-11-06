@@ -23,6 +23,10 @@ exports.create = function(createBus) {
     return yield bus.execute({ collection: collection, action: 'load', query: query }).read();
   }
 
+  function load(collection, query) {
+    return bus.execute({ collection: collection, action: 'load', query: query });
+  }
+
   function *removeOne(collection, query) {
     return yield bus.execute({ collection: collection, action: 'remove', query: query }).read();
   }
@@ -48,6 +52,20 @@ exports.create = function(createBus) {
     var item = yield updateOne('letters', { name: 'a' }, { name: 'b', last: 'c' });
     expect(item.value.name).to.be('b');
     // expect(item.value.name).to.be('a');
+  });
+
+  it('can load() multiple items from a collection', function*() {
+
+    yield insert('letters', { name: 'a', last: 'b' });
+    yield insert('letters', { name: 'a', last: 'c' });
+    yield insert('letters', { name: 'a', last: 'd' });
+    yield insert('letters', { name: 'a', last: 'e' });
+
+    var cursor = load('letters', { name: 'a' });
+    expect((yield cursor.read()).value.last).to.be('b');
+    expect((yield cursor.read()).value.last).to.be('c');
+    expect((yield cursor.read()).value.last).to.be('d');
+    expect((yield cursor.read()).value.last).to.be('e');
   });
 
   return cases;
