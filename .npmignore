@@ -1,0 +1,8 @@
+test/
+packages/
+examples/
+docs/
+.coveralls.yml
+changelog.md
+gulpfile.js
+README.md
