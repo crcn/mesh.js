@@ -55,11 +55,12 @@ Object.assign(MemoryCollection.prototype, {
 
   update: function(operation) {
 
+    var items = [];
+
     sift(operation.query, this._items).forEach(function(item) {
       Object.assign(item, operation.data);
+      items.push(item);
     });
-
-    var items = sift(operation.query, this._items);
 
     return _response(items);
   }
