@@ -1,7 +1,7 @@
 {
   "name": "mesh",
   "version": "5.0.19",
-  "tag": "trunk",
+  "tag": "latest",
   "description": "data synchronization library",
   "main": "./lib/index.js",
   "keywords": [
