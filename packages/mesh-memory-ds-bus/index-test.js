@@ -1,7 +1,6 @@
 var dsTestCases = require('mesh-ds-bus-test-cases');
+var MemoryDsBus = require('./index');
 
-console.log(dsTestCases);
-
-dsTestCases.forEach(function(tc) {
+dsTestCases.create(MemoryDsBus).forEach(function(tc) {
     it(tc.description, tc.run);
 });
