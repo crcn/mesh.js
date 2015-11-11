@@ -1,56 +1,37 @@
-Streamable database adapter for [LokiJS](http://lokijs.org/#/), an in-memory JavaScript database. Operation docs on this library can be viewed here: http://meshjs.herokuapp.com/docs/database-adapters.
+Streamable data store bus for [LokiJS](http://lokijs.org/#/), an in-memory JavaScript database. Operation docs on this library can be viewed here: https://github.com/crcn/mesh.js/blob/master/docs/adapters/data-stores.md.
+
+basic example:
 
 ```javascript
-var mesh   = require("mesh");
-var lokidb = require("crudlet-loki");
-var loki   = require("loki");
-var _      = require("highland");
+var mesh      = require("mesh");
+var LokiDsBus = require('mesh-loki-ds-bus');
+var loki      = require('lokijs');
 
 // setup the DB
-var db = lokidb(new loki(__dirname + "/db.json"));
-// db = lokidb(__dirname + "/db.json"); // also works
+var dsBus = LokiDsBus.create({
+  target: new loki(__dirname + "/db.json")
+});
 
-// setup the child collection
-var peopleDb = crud.child(db, { collection: "people" });
-
-// insert one, or many items
-peopleDb("insert", {
-  data: [
+var cursor = dsBus.execute({
+  collection : 'people',
+  action     : 'name',
+  data       : [
     { name: "Sleipnir"    , legs: 8 },
     { name: "Jormungandr" , legs: 0 },
     { name: "Hel"         , legs: 2 }
   ]
-).
+});
 
-// collect all the inserted items & put them in an array using HighlandJS
-// this is similar to something like cursor.toArray() in mongodb
-pipe(_pipeline(_.collect())).
-
-// wait for the data to be emitted
-on("data", function(people) {
-
-  // load all people who have more than 0 legs
-  peopleDb("load", {
-    multi: true,
-    query: {
-      legs: { $gt: 0 }
-    }
-  }).
-  pipe(_().collect()).
-  on("data", function(people) {
-      // do stuff with loaded people
-  });
+cursor.readAll().then(function(people) {
 
 });
 ```
 
-#### db lokidb(targetOrOptions)
+#### LokiDsBus.create(options)
 
-Creates a new crudlet-based db
+Creates a new loki data store bus.
 
-- `targetOrOptions` - the target loki DB or the options for a new loki db
+- `options`
+  - `target` - the target loki instance.
 
-```javascript
-var db = lokidb(__dirname + "/db.json");
-var db = lokidb(new loki(__dirname + "/db.json"));
-```
+  
