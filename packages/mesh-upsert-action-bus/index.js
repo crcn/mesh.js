@@ -3,7 +3,6 @@ import sift from 'sift';
 
 export default {
   create: function(bus) {
-
     return AcceptBus.create(sift({ action: 'upsert' }), {
       execute: function(operation) {
         return Response.create(async function(writable) {
