@@ -39,6 +39,4 @@ var todos = await bus.execute({ action: 'load', collection: 'todos' });
 
 // HIT memory ds
 var todos = await bus.execute({ action: 'load', collection: 'todos' });
-
-
 ```

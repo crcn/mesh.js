@@ -1,14 +1,11 @@
 {
-  "name": "mesh-tailable-bus",
-  "version": "1.0.2",
+  "name": "mesh-upsert-action-bus",
+  "version": "0.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "mesh": "^5.0.21"
-  }
+  "license": "ISC"
 }

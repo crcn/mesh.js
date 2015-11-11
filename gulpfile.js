@@ -12,8 +12,22 @@ var jscs       = require('gulp-jscs');
 var coveralls  = require('gulp-coveralls');
 var rename     = require('gulp-rename');
 var options    = require('yargs').argv;
+var fs         = require('fs');
+var co         = require('co');
+var exec       = require('child_process').exec;
+var path       = require('path');
+
 
 var pkg = require('./package');
+
+var packagesDir = __dirname + '/packages';
+
+var packages = fs.readdirSync(packagesDir).map(function(dirname) {
+  try {
+    return require(__dirname + '/packages/' + dirname + '/package.json');
+  } catch(e) { return void 0 }
+}).filter(function(pkg) { return !!pkg; });
+
 
 /**
  */
@@ -168,6 +182,56 @@ gulp.task('default', function() {
 
 gulp.task('examples', function(next) {
   require('./examples/_app');
+});
+
+/**
+ */
+
+gulp.task('bump-packages', function(next) {
+  co(function*() {
+    for (var i = packages.length; i--;) {
+
+      var pkg      = packages[i];
+      var pathname = path.join(packagesDir, pkg.name);
+
+      console.log('bump %s', pathname);
+
+      yield {
+        then: function(resolve, reject) {
+          exec('/usr/local/bin/npm version patch', { cwd: pathname }, function(err, stdout) {
+            if (err) return reject(err);
+            process.stdout.write(stdout);
+            resolve();
+          });
+        }
+      }
+    }
+  }).then(next, next);
+});
+
+/**
+ */
+
+gulp.task('publish-packages', ['bump-packages'], function(next) {
+  co(function*() {
+    for (var i = packages.length; i--;) {
+
+      var pkg      = packages[i];
+      var pathname = path.join(packagesDir, pkg.name);
+
+      console.log('publish %s', pathname);
+
+      yield {
+        then: function(resolve, reject) {
+          exec('/usr/local/bin/npm publish', { cwd: pathname }, function(err, stdout) {
+            if (err) return reject(err);
+            process.stdout.write(stdout);
+            resolve();
+          });
+        }
+      }
+    }
+  }).then(next, next);
 });
 
 /**
