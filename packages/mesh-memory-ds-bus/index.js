@@ -43,7 +43,7 @@ Object.assign(MemoryCollection.prototype, {
       return true;
     }, _clone(this._items));
 
-    return _response(items);
+    return _response(operation.multi ? items : items.shift());
   },
 
   remove: function(operation) {
@@ -58,11 +58,14 @@ Object.assign(MemoryCollection.prototype, {
 
   update: function(operation) {
 
-    var items = [];
+    var items = sift(operation.query || function() {
+      return true;
+    }, this._items);
 
-    sift(operation.query, this._items).forEach(function(item) {
+    items = (operation.multi ? items : items.length ? [items[0]] : []);
+
+    items.forEach(function(item) {
       Object.assign(item, operation.data);
-      items.push(item);
     });
 
     return _response(items);
@@ -87,7 +90,6 @@ Object.assign(MemoryDs.prototype, {
     return this._collections[name] || (this._collections[name] = new MemoryCollection(this));
   }
 });
-
 
 function MemoryDsBus(initialData) {
   Bus.call(this);

@@ -1,10 +1,15 @@
-var mesh = require('../..');
-var TailableBus = mesh.TailableBus;
+var mesh = require('mesh');
+var TailableBus = require('./index');
 var BufferedBus = mesh.BufferedBus;
 var NoopBus     = mesh.NoopBus;
 var expect = require('expect.js');
 var co = require('co');
-var timeout = require('../utils/timeout');
+
+function *timeout(ms) {
+  return new Promise(function(resolve) {
+    setTimeout(resolve, ms);
+  });
+}
 
 describe(__filename + '#', function() {
   it('can tailable operations on a bus', co.wrap(function*() {

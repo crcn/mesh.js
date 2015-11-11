@@ -10,7 +10,7 @@ describe(__filename + "#", function() {
   }).forEach(function(tc) {
       it(tc.description, tc.run);
   });
-  
+
   it('throws a descriptive error message if data doesn\'t exist on insert', co.wrap(function*() {
     var err;
 

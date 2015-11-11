@@ -1,5 +1,5 @@
 {
-  "name": "mesh-loki-ds-bus",
+  "name": "mesh-tailable-bus",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,11 +8,7 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "mesh-ds-bus-test-cases": "^1.0.1"
-  },
   "dependencies": {
-    "lokijs": "^1.3.10",
     "mesh": "^5.0.21"
   }
 }

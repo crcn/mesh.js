@@ -1,4 +1,3 @@
-var cases  = [];
 var expect = require('expect.js');
 var mesh   = require('mesh');
 var co     = require('co');
@@ -6,6 +5,8 @@ var co     = require('co');
 exports.create = function(createBus, options) {
 
   if (!options) options = {};
+
+  var cases = [];
 
   function it(desc, run) {
     cases.push({ description: desc, run: co.wrap(run) });
@@ -25,8 +26,12 @@ exports.create = function(createBus, options) {
     return yield bus.execute({ collection: collection, action: 'load', query: query }).read();
   }
 
-  function load(collection, query) {
-    return bus.execute({ collection: collection, action: 'load', query: query });
+  function *loadOne(collection, query) {
+    return yield bus.execute({ collection: collection, action: 'load', query: query }).read();
+  }
+
+  function *loadMulti(collection, query, options) {
+    return yield bus.execute(Object.assign({ collection: collection, action: 'load', query: query, multi: true }, options || {})).readAll();
   }
 
   function *removeOne(collection, query) {
@@ -37,6 +42,10 @@ exports.create = function(createBus, options) {
     return yield bus.execute({ collection: collection, action: 'update', query: query, data: data }).read();
   }
 
+  function *updateMultiple(collection, query, data) {
+    return yield bus.execute({ collection: collection, action: 'update', multi: true, query: query, data: data }).readAll();
+  }
+
   it('can insert() data into a collection', function*() {
     yield insert('letters', { name: 'a' });
     var item = yield loadOne('letters', { name: 'a' });
@@ -45,15 +54,33 @@ exports.create = function(createBus, options) {
 
   it('can remove() one item from a collection', function*() {
     yield insert('letters', { name: 'a' });
-    var item = yield removeOne('letters', { name: 'a' });
-    expect(item.value.name).to.be('a');
+    yield removeOne('letters', { name: 'a' });;
+    expect((yield loadOne('letters', { name: 'a' })).done).to.be(true);
   });
 
-  it('can update() one item from a collection', function*() {
+  it('can update() one item in a collection', function*() {
     yield insert('letters', { name: 'a', last: 'b' });
+    yield insert('letters', { name: 'a', last: 'd' });
     var item = yield updateOne('letters', { name: 'a' }, { name: 'b', last: 'c' });
-    expect(item.value.name).to.be('b');
-    // expect(item.value.name).to.be('a');
+    expect(item.value.last).to.be('c');
+    var item = (yield loadOne('letters', { name: 'a' })).value;
+    expect(item).not.to.be(void 0);
+  });
+
+  it('can update() multiple items in a collection', function*() {
+    yield insert('letters', { name: 'a', last: 'b' });
+    yield insert('letters', { name: 'a', last: 'd' });
+    var items = yield updateMultiple('letters', { name: 'a' }, { name: 'b', last: 'c' });
+    expect(items.length).to.be(2);
+    var item = (yield loadOne('letters', { name: 'a' })).value;
+    expect(item).to.be(void 0);
+  });
+
+  it('loads one item if multi isn not true', function*() {
+      yield insert('letters', { name: 'a', last: 'b' });
+      yield insert('letters', { name: 'a', last: 'c' });
+      var items = yield loadMulti('letters', { name: 'a' }, { multi: false });
+      expect(items.length).to.be(1);
   });
 
   it('can load() multiple items from a collection', function*() {
@@ -63,11 +90,8 @@ exports.create = function(createBus, options) {
     yield insert('letters', { name: 'a', last: 'd' });
     yield insert('letters', { name: 'a', last: 'e' });
 
-    var cursor = load('letters', { name: 'a' });
-    expect((yield cursor.read()).value.last).to.be('b');
-    expect((yield cursor.read()).value.last).to.be('c');
-    expect((yield cursor.read()).value.last).to.be('d');
-    expect((yield cursor.read()).value.last).to.be('e');
+    var items = yield loadMulti('letters', { name: 'a' });
+    expect(items.length).to.be(4);
   });
 
   if (options.hasCollections) {

@@ -1,5 +1,6 @@
-var Bus = require('./base');
-var Response = require('../response');
+var mesh     = require('mesh');
+var Bus      = mesh.Bus;
+var Response = mesh.Response;
 
 /**
  */

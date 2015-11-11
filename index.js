@@ -19,7 +19,6 @@ module.exports = {
   ParallelBus       : require('./bus/parallel'),
   BufferedBus       : require('./bus/buffered'),
   FallbackBus       : require('./bus/fallback'),
-  TailableBus       : require('./bus/tailable'),
   CatchErrorBus     : require('./bus/catch-error'),
   RoundRobinBus     : require('./bus/round-robin'),
   AttachDefaultsBus : require('./bus/attach-defaults'),
