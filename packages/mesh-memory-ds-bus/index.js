@@ -31,6 +31,7 @@ Object.assign(MemoryCollection.prototype, {
   },
 
   insert: function(operation) {
+    if (!operation.data) throw new Error('data must exist for insert operations');
     var item = _clone(operation.data);
     this._items.push(item);
     return _response(_clone([item]));

@@ -3,7 +3,9 @@ var expect = require('expect.js');
 var mesh   = require('mesh');
 var co     = require('co');
 
-exports.create = function(createBus) {
+exports.create = function(createBus, options) {
+
+  if (!options) options = {};
 
   function it(desc, run) {
     cases.push({ description: desc, run: co.wrap(run) });
@@ -67,6 +69,18 @@ exports.create = function(createBus) {
     expect((yield cursor.read()).value.last).to.be('d');
     expect((yield cursor.read()).value.last).to.be('e');
   });
+
+  if (options.hasCollections) {
+    it('throws an error if "collection" doesn\'t exist in the operation', function*() {
+      var err;
+      try {
+        yield insert(void 0, {});
+      } catch(e) {
+        err = e;
+      }
+      expect(err).not.to.be(void 0);
+    });
+  }
 
   return cases;
 }
