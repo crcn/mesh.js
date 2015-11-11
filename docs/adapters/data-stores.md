@@ -2,6 +2,20 @@ Mesh comes with a number of data store adapters including Mongodb, Lokijs, Rethi
 adapters share a similar API to ensure interoperability with other mesh plugins. Individual data store adapters *may* implement custom
 APIs specific to the service they're interfacing. Checkout the package of whatever DS you're using for additional functionality.
 
+### Adapters
+
+- [lokijs](https://github.com/crcn/mesh.js/tree/master/packages/mesh-loki-ds-bus) - [lokijs](//lokijs.org/) - in-memory adapter
+- [memory](https://github.com/crcn/mesh.js/tree/master/packages/mesh-memory-ds-bus) - simple in-memory data store.
+- [mongodb](https://github.com/crcn/mesh.js/tree/master/packages/mesh-mongo-ds-bus) - [mongodb](//:mongodb.org) adapter.
+
+
+### Other Plugins
+
+- [upsert action](https://github.com/crcn/mesh.js/tree/master/packages/mesh-upsert-action-bus) - adds upsert functionality to data stores.
+- [tailable bus](https://github.com/crcn/mesh.js/tree/master/packages/mesh-tailable-bus) - makes the bus tailable for operations
+
+### API
+
 Below are a set of actions you can execute against **all** data store adapters.
 
 #### execute({ action: 'insert', data: data, collection: collectionName })
