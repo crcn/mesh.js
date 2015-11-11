@@ -6,7 +6,7 @@ APIs specific to the service they're interfacing. Checkout the package of whatev
 
 - [lokijs](https://github.com/crcn/mesh.js/tree/master/packages/mesh-loki-ds-bus) - [lokijs](//lokijs.org/) - in-memory adapter
 - [memory](https://github.com/crcn/mesh.js/tree/master/packages/mesh-memory-ds-bus) - simple in-memory data store.
-- [mongodb](https://github.com/crcn/mesh.js/tree/master/packages/mesh-mongo-ds-bus) - [mongodb](//:mongodb.org) adapter.
+- [mongodb](https://github.com/crcn/mesh.js/tree/master/packages/mesh-mongo-ds-bus) - [mongodb](//mongodb.org) adapter.
 
 
 ### Other Plugins
