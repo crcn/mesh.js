@@ -1,0 +1,19 @@
+{
+  "name": "mesh-local-storage-ds-bus",
+  "version": "1.0.2",
+  "description": "[![Build Status](https://travis-ci.org/mojo-js/mesh-local-storage.svg)](https://travis-ci.org/mojo-js/mesh-local-storage) [![Coverage Status](https://coveralls.io/repos/mojo-js/mesh-local-storage/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/mesh-local-storage?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/mesh-local-storage.svg)](https://david-dm.org/mojo-js/mesh-local-storage)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mesh": "^6.0.0",
+    "mesh-ds-bus-test-cases": "^2.0.0"
+  },
+  "devDependencies": {
+    "co": "^4.6.0",
+    "expect.js": "^0.3.1"
+  }
+}

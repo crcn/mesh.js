@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "tag": "latest",
   "description": "data synchronization library",
   "main": "./lib/index.js",
@@ -46,5 +46,8 @@
     "vinyl-source-stream": "^1.1.0",
     "yargs": "^3.6.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "mesh-memory-ds-bus": "^1.0.4",
+    "store": "^1.3.17"
+  }
 }

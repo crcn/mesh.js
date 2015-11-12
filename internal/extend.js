@@ -16,7 +16,7 @@ module.exports = function(parent, child) {
     pi = 2;
   } else {
     if (typeof p === 'object') {
-      c = function() { }
+      c = function() { p.apply(this, arguments); }
       pi = 0;
     } else {
       c = p || function() { };

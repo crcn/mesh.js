@@ -1,49 +1,39 @@
 var MemoryDsBus = require("mesh-memory-ds-bus");
+var Bus        = require('mesh/bus/base');
 
-var store  = process.browser ? require("store") : {
+
+var _store  = process.browser ? require("store") : {
   get: function() { },
   set: function() { }
 };
 
-/**
- */
-
-function LocalStorageDatabase(options) {
-
+function MeshLocalStorageDsBus(options) {
   if (!options) options = {};
-  if (!options.name) options.name = "localStorage";
-  this.constructor.parent.call(this, options);
 
-  this.storageKey = this.options.storageKey || "cdb";
-  this.store      = this.options.store      || store;
+  Bus.call(this);
 
-  this.db         = this.store.get(this.storageKey) || {};
-
-  var self = this;
+  this.key   = options.key || 'mesh-data';
+  this.store = options.store || _store;
+  this._bus  = MemoryDsBus.create({
+    source: this.store.get(this.key) || {}
+  });
 }
 
 /**
- */
+*/
 
-MemoryDatabase.extend(LocalStorageDatabase, {
-  run: function(operation, onRun) {
-    var self = this;
+Bus.extend(MeshLocalStorageDsBus, {
+  execute(operation) {
+    var ret = this._bus.execute(operation);
 
-    this.constructor.parent.prototype.run.call(this, operation, function(err, result) {
+    if (/remove|update|insert/.test(operation.action)) {
+      ret.then(() => {
+        this.store.set(this.key, this._bus.toJSON());
+      });
+    }
 
-      if (!/load/.test(operation.name)) {
-        self._save();
-      }
-
-      onRun.apply(self, arguments);
-    });
-  },
-  _save: function() {
-    this.store.set(this.storageKey, this.db);
+    return ret;
   }
 });
 
-/**
- */
-
-module.exports = MemoryDatabase.getStreamer(LocalStorageDatabase);
+module.exports = MeshLocalStorageDsBus;

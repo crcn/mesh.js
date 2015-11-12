@@ -19,6 +19,12 @@ function _oneOrMany(operation, items) {
   return !operation.multi && !!items.length ? [items[0]] : items;
 }
 
+function _recordData(records) {
+  return records.map(function(record) {
+    return record.data;
+  });
+}
+
 function MemoryCollection(db) {
   this._db    = db;
   this._items = [];
@@ -26,78 +32,90 @@ function MemoryCollection(db) {
 
 Object.assign(MemoryCollection.prototype, {
 
-  execute: function(operation) {
+  execute(operation) {
     return this[operation.action](operation);
   },
 
-  insert: function(operation) {
+  toJSON() {
+    return this._items;
+  },
+
+  insert(operation) {
     if (!operation.data) throw new Error('data must exist for insert operations');
     var item = _clone(operation.data);
-    this._items.push(item);
+    this._items.push({ data: operation.data });
     return _response(_clone([item]));
   },
 
-  load: function(operation) {
-
-    var items = sift(operation.query || function() {
-      return true;
-    }, _clone(this._items));
-
-    return _response(operation.multi ? items : items.shift());
+  load(operation) {
+    return _response(_oneOrMany(operation, this._find(operation).map(function(record) {
+      return _clone(record.data);
+    })));
   },
 
-  remove: function(operation) {
-    var items = sift(operation.query, this._items);
-    items     = _oneOrMany(operation, items);
-    items.forEach((item) => {
+  remove(operation) {
+    var records = _oneOrMany(operation, this._find(operation));
+    records.forEach((item) => {
       var i = this._items.indexOf(item);
       if (~i) this._items.splice(i, 1);
     });
-    return _response(items);
+    return _response(_recordData(records));
   },
 
-  update: function(operation) {
+  update(operation) {
 
-    var items = sift(operation.query || function() {
-      return true;
-    }, this._items);
+    var records = _oneOrMany(operation, this._find(operation));
 
-    items = (operation.multi ? items : items.length ? [items[0]] : []);
-
-    items.forEach(function(item) {
-      Object.assign(item, operation.data);
+    records.forEach(function(record) {
+      Object.assign(record.data, operation.data);
     });
 
-    return _response(items);
+    return _response(_recordData(records));
+  },
+
+  _find(operation) {
+    return this._items.filter(sift({ data: operation.query || function() {
+      return true;
+    }}));
   }
 })
 
-function MemoryDs(initialData) {
-
-    this._collections = {};
-    if (initialData) {
-      for (var collectionName in initialData) {
-        this.collection(collectionName)._items = _clone(initialData[collectionName]);
-      }
+function MemoryDs(options) {
+  this._collections = {};
+  if (options.source) {
+    for (var collectionName in options.source) {
+      this.collection(collectionName)._items = _clone(options.source[collectionName]);
     }
+  }
 }
 
 Object.assign(MemoryDs.prototype, {
-  collection: function(name) {
+  collection(name) {
     if (name == void 0) {
       throw new Error('collection name must not be undefined');
     }
     return this._collections[name] || (this._collections[name] = new MemoryCollection(this));
+  },
+  toJSON() {
+    var data = {};
+    for (var collectionName in this._collections) {
+      data[collectionName] = this._collections[collectionName].toJSON();
+    }
+    return data;
   }
 });
 
-function MemoryDsBus(initialData) {
+function MemoryDsBus(options) {
+  if (!options) options = {};
   Bus.call(this);
-  this._db = new MemoryDs(initialData);
+  this._db = new MemoryDs(options);
 }
 
 Bus.extend(MemoryDsBus, {
-  execute: function(operation) {
+  toJSON() {
+    return this._db.toJSON();
+  },
+  execute(operation) {
     return /insert|load|remove|update/.test(operation.action)    ?
     this._db.collection(operation.collection).execute(operation) :
     EmptyResponse.create();
