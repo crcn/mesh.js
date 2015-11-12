@@ -51,8 +51,8 @@ mainBus.execute({
       - [http bus](./packages/mesh-http-bus) - HTTP request bus
     - Other Busses
       - [upsert ds action](./packages/mesh-webrtc-bus) - adds upsert (insert/update) action for DS busses
-      - [Tailable bus](./packages/mesh-tailable-bus) - adds ability to listen for all executed operations
-      - [Remote protocol adapter bus](./packages/mesh-remote-bus) - adapter bus for any realtime protocol
+      - [tailable bus](./packages/mesh-tailable-bus) - adds ability to listen for all executed operations
+      - [remote protocol adapter bus](./packages/mesh-remote-bus) - adapter bus for any realtime protocol
 - Discuss
   - [Google group](https://groups.google.com/forum/#!forum/meshjs)
   - [Gitter chat](https://gitter.im/crcn/mesh.js)
