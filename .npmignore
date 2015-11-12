@@ -2,6 +2,7 @@ test/
 packages/
 examples/
 docs/
+coverage/
 .coveralls.yml
 changelog.md
 gulpfile.js
