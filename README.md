@@ -42,7 +42,7 @@ mainBus.execute({
       - [in-memory data store bus](./packages/mesh-memory-ds-bus)
       - [mongodb bus](./packages/mesh-mongo-ds-bus)
       - [lokijs bus](./packages/mesh-loki-ds-bus) - lokijs in-memory adapter
-      - [local storate bus](./packages/mesh-local-storage-bus) - local storage DS adapter
+      - [local storate bus](./packages/mesh-local-storage-ds-bus) - local storage DS adapter
       - [array bus](./packages/mesh-collection-bus) - persist DS operations to an array collection
     - Realtime Protocol Adapters
       - [socket.io bus](./packages/mesh-socket-io-bus)
