@@ -1,5 +1,7 @@
 Streamable data store bus for [LokiJS](http://lokijs.org/#/), an in-memory JavaScript database. Operation docs on this library can be viewed here: https://github.com/crcn/mesh.js/blob/master/docs/adapters/data-stores.md.
 
+Installation: `npm install mesh-loki-ds-bus`
+
 basic example:
 
 ```javascript
