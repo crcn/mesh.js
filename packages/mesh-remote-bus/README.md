@@ -1,6 +1,8 @@
-This bus is an adapter for remote protocols such as socket.io, websockets, pubnub, and more. 
+This bus is an adapter bus for remote protocols such as socket.io, websockets, pubnub, etc.
 
-Bus example:
+**Installation**: `npm install mesh-remote-bus`
+
+Example:
 
 ```javascript
 import RemoteBus from 'mesh-remote-bus';
