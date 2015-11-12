@@ -1,13 +1,11 @@
 [![Build Status](https://travis-ci.org/crcn/mesh.js.svg)](https://travis-ci.org/crcn/mesh.js) [![Coverage Status](https://coveralls.io/repos/crcn/mesh.js/badge.svg?branch=master&service=github)](https://coveralls.io/github/crcn/mesh.js?branch=master) [![Join the chat at https://gitter.im/crcn/mesh.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/mesh.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Mesh is a message bus library that makes it easy to create complex data flows. Easily connect things together such as [mongodb](https://www.mongodb.org/), [pubnub](http://pubnub.com/), [socket.io](http://socket.io/) `webrtc` and more to build powerful features such as rollbacks, offline-mode, and realtime data.
+Mesh is a utility library that makes it easy to rangle sophisticated data flows. Easily connect things together such as [mongodb](https://www.mongodb.org/), [pubnub](http://pubnub.com/), [socket.io](http://socket.io/) `webrtc` and more to build powerful features such as rollbacks, offline-mode, and realtime data.
 
-Mesh is just a bundle of utility functions, and doesn't have much of an opinion about how you should use it.
-
-Simple example:
+Here's a basic example:
 
 ```javascript
-// var storage = FakeStorageBus.create();
+// var mongoBus = MongoDsBus.create();
 var storageBus = LocalStorageDsBus.create();
 
 // persist all operations to socket.io & any operations from socket.io

@@ -1,7 +1,8 @@
-var stream       = require("obj-stream");
-var extend       = require("xtend/mutable");
+var mesh         = require('mesh');
 var EventEmitter = require("events").EventEmitter;
 var MongoClient  = require("mongodb").MongoClient;
+var Response     = mesh.Response;
+var Bus          = mesh.Bus;
 
 /**
  */
@@ -102,6 +103,9 @@ function _toArray(value) {
   if (value == void 0) return [];
   return Object.prototype.toString.call(value) === "[object Array]" ? value : [value];
 }
+
+
+
 
 /**
  */
