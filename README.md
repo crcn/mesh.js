@@ -38,7 +38,19 @@ mainBus.execute({
 - [Documentation](https://github.com/crcn/mesh.js/tree/master/docs)
 - [Examples](./examples)
 - Modules
-  - [in-memory data store bus](./packages/mesh-memory-ds-bus)
+    - Data Store Adapters
+      - [in-memory data store bus](./packages/mesh-memory-ds-bus)
+      - [mongodb bus](./packages/mesh-mongo-ds-bus)
+      - [lokijs bus](./packages/mesh-loki-ds-bus)
+      - [http bus](./packages/mesh-http-bus)
+      - [socket.io bus](./packages/mesh-socket-io-bus)
+      - [webrtc bus](./packages/mesh-webrtc-bus)
+      - [local storate bus](./packages/mesh-local-storage-bus)
+      - [array bus](./packages/mesh-collection-bus)
+    - Other
+      - [upsert ds action](./packages/mesh-webrtc-bus)
+      - [Tailable Bus](./packages/mesh-tailable-bus)
+      - [Tailable Bus](./packages/mesh-tailable-bus)
 - Discuss
   - [Google group](https://groups.google.com/forum/#!forum/meshjs)
   - [Gitter chat](https://gitter.im/crcn/mesh.js)
