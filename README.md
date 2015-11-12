@@ -41,16 +41,18 @@ mainBus.execute({
     - Data Store Adapters
       - [in-memory data store bus](./packages/mesh-memory-ds-bus)
       - [mongodb bus](./packages/mesh-mongo-ds-bus)
-      - [lokijs bus](./packages/mesh-loki-ds-bus)
-      - [http bus](./packages/mesh-http-bus)
+      - [lokijs bus](./packages/mesh-loki-ds-bus) - lokijs in-memory adapter
+      - [local storate bus](./packages/mesh-local-storage-bus) - local storage DS adapter
+      - [array bus](./packages/mesh-collection-bus) - persist DS operations to an array collection
+    - Realtime Protocol Adapters
       - [socket.io bus](./packages/mesh-socket-io-bus)
       - [webrtc bus](./packages/mesh-webrtc-bus)
-      - [local storate bus](./packages/mesh-local-storage-bus)
-      - [array bus](./packages/mesh-collection-bus)
-    - Other
-      - [upsert ds action](./packages/mesh-webrtc-bus)
-      - [Tailable Bus](./packages/mesh-tailable-bus)
-      - [Tailable Bus](./packages/mesh-tailable-bus)
+    - Other Adapters
+      - [http bus](./packages/mesh-http-bus) - HTTP request bus
+    - Other Busses
+      - [upsert ds action](./packages/mesh-webrtc-bus) - adds upsert (insert/update) action for DS busses
+      - [Tailable bus](./packages/mesh-tailable-bus) - adds ability to listen for all executed operations
+      - [Remote protocol adapter bus](./packages/mesh-remote-bus) - adapter bus for any realtime protocol
 - Discuss
   - [Google group](https://groups.google.com/forum/#!forum/meshjs)
   - [Gitter chat](https://gitter.im/crcn/mesh.js)
