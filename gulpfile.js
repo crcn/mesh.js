@@ -24,7 +24,7 @@ var packagesDir = __dirname + '/packages';
 var packages = fs.readdirSync(packagesDir).map(function(dirname) {
   try {
     return require(__dirname + '/packages/' + dirname + '/package.json');
-  } catch (e) { return void 0 }
+  } catch (e) { return void 0; }
 }).filter(function(pkg) { return !!pkg; });
 
 /**
@@ -52,7 +52,7 @@ var mochaOptions = {
 
 gulp.task('test-coverage', function(complete) {
   gulp.
-  src(paths.appFiles).
+  src(paths.appFiles, { read: false }).
   pipe(istanbul()).
   pipe(istanbul.hookRequire()).
   on('finish', function() {
@@ -202,7 +202,7 @@ gulp.task('bump-packages', function(next) {
             resolve();
           });
         }
-      }
+      };
     }
   }).then(next, next);
 });
@@ -227,7 +227,7 @@ gulp.task('publish-packages', ['bump-packages'], function(next) {
             resolve();
           });
         }
-      }
+      };
     }
   }).then(next, next);
 });
