@@ -13,7 +13,7 @@
   "scripts": {
     "test": "gulp test",
     "clean": "find ./ -name node_modules -exec rm -rf {} \\;",
-    "prepublish": "if [[ -e packages ]]; then DIRNAME=`pwd`; for FILE in `find packages -name mesh-*`; do cd $DIRNAME/$FILE; npm install; done; fi"
+    "prepublish": "./install-packages.sh"
   },
   "repository": {
     "type": "git",
