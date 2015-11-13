@@ -17,7 +17,6 @@ var co         = require('co');
 var exec       = require('child_process').exec;
 var path       = require('path');
 
-
 var pkg = require('./package');
 
 var packagesDir = __dirname + '/packages';
@@ -25,9 +24,8 @@ var packagesDir = __dirname + '/packages';
 var packages = fs.readdirSync(packagesDir).map(function(dirname) {
   try {
     return require(__dirname + '/packages/' + dirname + '/package.json');
-  } catch(e) { return void 0 }
+  } catch (e) { return void 0 }
 }).filter(function(pkg) { return !!pkg; });
-
 
 /**
  */
