@@ -1,6 +1,6 @@
 {
   "name": "mesh-collection-bus",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mesh": "^5.0.20"
+    "mesh": "^6.0.0"
   },
   "devDependencies": {
     "mesh-ds-bus-test-cases": "^1.0.0"

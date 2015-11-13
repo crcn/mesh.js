@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "6.0.1",
+  "version": "6.0.9",
   "tag": "latest",
   "description": "data synchronization library",
   "main": "./lib/index.js",
@@ -11,7 +11,9 @@
     "flow"
   ],
   "scripts": {
-    "test": "gulp lint test-coveralls"
+    "test": "gulp lint test-coveralls",
+    "clean": "find ./ -name node_modules -exec rm -rf {} \\;",
+    "postinstall": "if [[ -e packages ]]; then DIRNAME=`pwd`; for FILE in `find packages -name mesh-*`; do cd $DIRNAME/$FILE; npm install; done; fi"
   },
   "repository": {
     "type": "git",
@@ -29,9 +31,9 @@
     "bundle-collapser": "^1.2.0",
     "co": "^4.6.0",
     "expect.js": "^0.3.1",
-    "gulp": "^3.8.11",
+    "gulp": "^3.9.0",
     "gulp-coveralls": "^0.1.3",
-    "gulp-istanbul": "^0.7.0",
+    "gulp-istanbul": "^0.10.2",
     "gulp-jscs": "^1.4.0",
     "gulp-jsdoc-to-markdown": "^1.1.1",
     "gulp-jshint": "^1.9.4",
@@ -46,8 +48,5 @@
     "vinyl-source-stream": "^1.1.0",
     "yargs": "^3.6.0"
   },
-  "dependencies": {
-    "mesh-memory-ds-bus": "^1.0.4",
-    "store": "^1.3.17"
-  }
+  "dependencies": {}
 }

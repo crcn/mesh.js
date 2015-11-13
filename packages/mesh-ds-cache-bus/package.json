@@ -1,0 +1,11 @@
+{
+  "name": "mesh-ds-cache-bus",
+  "version": "1.0.0",
+  "description": "This example takes responses from a remote data store & caches them in a local store. For example:",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

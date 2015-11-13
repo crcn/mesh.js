@@ -12,6 +12,10 @@ function CollectionBus(target) {
   this.target = target || [];
 }
 
+function _oneOrMany(operation, items) {
+  return operation.multi ? items : items.length ? [items[0]] : [];
+}
+
 Bus.extend(CollectionBus, {
 
   /**
@@ -73,7 +77,7 @@ Bus.extend(CollectionBus, {
    */
 
   _find(operation) {
-    return this.target.filter(sift(operation.query));
+    return _oneOrMany(operation, this.target.filter(sift(operation.query)));
   }
 });
 

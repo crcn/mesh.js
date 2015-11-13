@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mesh": "^5.0.21"
+    "mesh": "^6.0.0"
   }
 }
