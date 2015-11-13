@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "6.0.10",
+  "version": "6.0.11",
   "tag": "latest",
   "description": "data synchronization library",
   "main": "./lib/index.js",
@@ -13,7 +13,7 @@
   "scripts": {
     "test": "gulp test",
     "clean": "find ./ -name node_modules -exec rm -rf {} \\;",
-    "prepublish": "./install-packages.sh"
+    "prepublish": "DIRNAME=`pwd`; for FILE in `find packages -name mesh-*`; do cd $DIRNAME/$FILE; npm install; done;"
   },
   "repository": {
     "type": "git",
