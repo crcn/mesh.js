@@ -11,7 +11,7 @@
     "flow"
   ],
   "scripts": {
-    "test": "gulp lint test-coveralls",
+    "test": "gulp test",
     "clean": "find ./ -name node_modules -exec rm -rf {} \\;",
     "postinstall": "if [[ -e packages ]]; then DIRNAME=`pwd`; for FILE in `find packages -name mesh-*`; do cd $DIRNAME/$FILE; npm install; done; fi"
   },
