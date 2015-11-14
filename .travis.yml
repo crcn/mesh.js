@@ -10,6 +10,9 @@ branches:
   only:
     - master
 
+services: 
+  - mongodb
+
 env:
   global:
     - SAUCE_USERNAME: gRqb+PFgsDPeXnmgkoNPxIIhm1zcXqA7n68Nj+e7vT12PJKIWF58J/Izi484hOhlzaOQNM5IZhHdRuvM22qlifxjfqwoWN25H5cNSwyueLKl6d5bBJuJwGPXP0wJCha1IXWbwNgukemF7+m8XRd5Fk3hlaLnW+DsmzHbZm2Ak0M=

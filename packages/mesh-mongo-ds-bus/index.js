@@ -16,7 +16,7 @@ function Adapter(options) {
 /**
  */
 
-extend(Adapter.prototype, EventEmitter.prototype, {
+Object.assign(Adapter.prototype, EventEmitter.prototype, {
 
   /**
    */
@@ -24,7 +24,7 @@ extend(Adapter.prototype, EventEmitter.prototype, {
   run: function(operation, onRun) {
     if (!this.target) return this.once("connect", this.run.bind(this, operation, onRun));
     if (!operation.collection) return onRun(new Error("a collection must exist"));
-    var method = this[operation.name];
+    var method = this[operation.action];
     if (!method) return onRun();
     var collection = this._collection(operation);
     method.call(this, collection, operation, onRun);
@@ -104,55 +104,33 @@ function _toArray(value) {
   return Object.prototype.toString.call(value) === "[object Array]" ? value : [value];
 }
 
+function MongoDsBus(options) {
+  this.adapter = new Adapter(options);
+}
 
-
-
-/**
- */
-
-module.exports = function(options) {
-
-  var adapter = new Adapter(options);
-
-  var ret = function(operation) {
-    var writable = stream.writable();
-
-    process.nextTick(function() {
-      adapter.run(operation, function(err, result) {
-        if (err) return writable.reader.emit("error", err);
-
+Bus.extend(MongoDsBus, {
+  execute: function(operation) {
+    return Response.create((writable) => {
+      this.adapter.run(operation, (err, result) => {
+        if (err) return writable.abort(err);
         if (result && result.each) {
-
           var next = function() {
-            result.nextObject(function(err, item) {
-              if (err) return writable.reader.emit("error", err);
-              if (!item) return writable.end();
-              writable.write(item);
-              if (!writable.reader.isPaused()) {
-                next();
-              } else {
-                writable.reader.once("drain", next);
-              }
-            });
+            result.nextObject((err, item) => {
+              if (err) return writable.abort(err);
+              if (!item) return writable.close();
+              writable.write(item).then(next);
+            })
           };
-
           next();
         } else {
-          // TODO - check for cursor
-          _toArray(result).forEach(function(value) {
+          _toArray(result).forEach((value) => {
             writable.write(value);
           });
-
-          writable.end();
+          writable.close();
         }
-
       });
     });
+  }
+});
 
-    return writable.reader;
-  };
-
-  ret.adapter = adapter;
-
-  return ret;
-};
+module.exports = MongoDsBus;

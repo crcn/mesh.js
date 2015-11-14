@@ -14,7 +14,7 @@ var mesh = require("mesh");
 var mongodb = require("mesh-mongodb");
 
 var db = mongodb("mongodb://localhost:27017/mesh-test");
-db(mesh.op("insert", { data: { name: "blarg"}})).on("data", function() {
+db(mesh.op("insert", { data: { name: "blarg" }})).on("data", function() {
 
 });
 ```
