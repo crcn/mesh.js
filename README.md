@@ -6,6 +6,7 @@ Here's a basic example:
 
 ```javascript
 import LocalStorageDsBus from 'mesh-local-storage-ds-bus';
+import SocketIoBus from 'mesh-socket-io-bus';
 import { ParallelBus } from 'mesh';
 
 // var mongoBus = MongoDsBus.create();
