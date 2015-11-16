@@ -5,6 +5,9 @@ Mesh is a utility library that makes it easy to rangle sophisticated data flows.
 Here's a basic example:
 
 ```javascript
+import LocalStorageDsBus from 'mesh-local-storage-ds-bus';
+import { ParallelBus } from 'mesh';
+
 // var mongoBus = MongoDsBus.create();
 var storageBus = LocalStorageDsBus.create();
 
