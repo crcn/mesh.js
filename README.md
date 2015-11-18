@@ -1,6 +1,6 @@
-<div style="text-align:center;">
+<p align="center">
   <img width="200px" style="margin:0px auto" src="https://cloud.githubusercontent.com/assets/757408/11253633/a825c1c8-8df1-11e5-972d-e9256d9b2e13.png">
-</div>
+</p>
 
 [![Build Status](https://travis-ci.org/crcn/mesh.js.svg)](https://travis-ci.org/crcn/mesh.js) [![Coverage Status](https://coveralls.io/repos/crcn/mesh.js/badge.svg?branch=master&service=github)](https://coveralls.io/github/crcn/mesh.js?branch=master) [![Join the chat at https://gitter.im/crcn/mesh.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/mesh.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
