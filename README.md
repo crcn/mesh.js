@@ -12,7 +12,6 @@ Here's a basic example:
 ```javascript
 import SocketIoBus from 'mesh-socket-io-bus';
 import LocalStorageDsBus from 'mesh-local-storage-ds-bus';
-
 import { ParallelBus } from 'mesh';
 
 // var mongoBus = MongoDsBus.create();
