@@ -1,5 +1,6 @@
 var Bus = require('./base');
 var Response = require('../response');
+var EmptyResponse = require('../response/empty');
 
 /**
  */
@@ -24,7 +25,7 @@ Bus.extend(SequenceBus, {
 
       var next = (i) => {
         if (i === busses.length) return writable.close();
-        var resp = busses[i].execute(operation);
+        var resp = busses[i].execute(operation) || EmptyResponse.create();
         resp.pipeTo(writable, { preventClose: true });
         resp.then(() => next(i + 1));
       };

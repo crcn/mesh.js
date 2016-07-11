@@ -70,4 +70,18 @@ describe(__filename + '#', function() {
     var bus = RaceBus.create(busses);
     expect((yield bus.execute({}).read()).done).to.be(true);
   }));
+
+  it('can execute an operation against a bus that does not response a response', co.wrap(function*() {
+    var bus = RaceBus.create([
+      { execute() { }}
+    ]);
+
+    var err;
+
+    try {
+      yield bus.execute({}).read();
+    } catch(e) { err = e; }
+
+    expect(err).to.be(void 0);
+  }));
 });

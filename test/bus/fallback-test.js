@@ -63,4 +63,19 @@ describe(__filename + '#', function() {
     var bus = FallbackBus.create(busses);
     expect((yield bus.execute({}).read()).value).to.be('a');
   }));
+
+
+  it('can execute an operation against a bus that does not response a response', co.wrap(function*() {
+    var bus = FallbackBus.create([
+      { execute() { }}
+    ]);
+
+    var err;
+
+    try {
+      yield bus.execute({});
+    } catch(e) { err = e; }
+
+    expect(err).to.be(void 0);
+  }));
 });

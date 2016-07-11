@@ -61,4 +61,18 @@ describe(__filename + '#', function() {
 
     expect(err.message).to.be('unknown error');
   }));
+
+  it('can execute an operation against a bus that does not response a response', co.wrap(function*() {
+    var bus = SequenceBus.create([
+      { execute() { }}
+    ]);
+
+    var err;
+
+    try {
+      yield bus.execute({}).read();
+    } catch(e) { err = e; }
+
+    expect(err).to.be(void 0);
+  }));
 });

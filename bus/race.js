@@ -1,5 +1,6 @@
 var Bus = require('./base');
 var Response = require('../response');
+var EmptyResponse = require('../response/empty');
 
 /**
  */
@@ -22,7 +23,7 @@ Bus.extend(RaceBus, {
       var numLeft = busses.length;
       var found   = -1;
       busses.forEach((bus, i) => {
-        var response = bus.execute(operation);
+        var response = bus.execute(operation) || EmptyResponse.create();
 
         response.pipeTo({
           write: function(value) {

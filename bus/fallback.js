@@ -1,5 +1,6 @@
 var Bus = require('./base');
 var Response = require('../response');
+var EmptyResponse = require('../response/empty');
 
 /**
  */
@@ -21,7 +22,7 @@ function FallbackBus(busses) {
       var busses = this._busses.concat();
       var next = (i) => {
         if (i === busses.length) return writable.close();
-        var response = busses[i].execute(operation);
+        var response = busses[i].execute(operation) || EmptyResponse.create();
         var hasChunk = false;
         response.pipeTo({
           write: function(value) {

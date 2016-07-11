@@ -1,4 +1,5 @@
 var Bus = require('./base');
+var EmptyResponse = require('../response/empty');
 
 /**
  */

@@ -1,5 +1,6 @@
 var Bus = require('./base');
 var Response = require('../response');
+var EmptyResponse = require('../response/empty');
 
 /**
  */
@@ -16,7 +17,7 @@ Bus.extend(DelayedBus, {
   execute: function(operation) {
     return Response.create((writable) => {
       setTimeout(() => {
-        this._bus.execute(operation).pipeTo(writable);
+        (this._bus.execute(operation) || EmptyResponse.create()).pipeTo(writable);
       }, this._ms);
     });
   }

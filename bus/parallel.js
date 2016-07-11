@@ -1,5 +1,6 @@
 var Bus = require('./base');
 var Response = require('../response');
+var EmptyResponse = require('../response/empty');
 
 /**
  */
@@ -23,7 +24,7 @@ Bus.extend(ParallelBus, {
       var numLeft = busses.length;
 
       busses.forEach((bus) => {
-        var resp = bus.execute(operation);
+        var resp = bus.execute(operation) || EmptyResponse.create();
         resp.pipeTo(writable, { preventClose: true });
         resp.then(() => {
           if (!(--numLeft)) writable.close();
