@@ -15,8 +15,8 @@ describe(__filename + '#', function() {
   function createAdapter(em) {
     if (!em) em = new EventEmitter();
     return {
-      addMessageListener : em.on.bind(em, 'message'),
-      sendMessage        : em.emit.bind(em, 'message')
+      addListener : em.on.bind(em, 'message'),
+      send        : em.emit.bind(em, 'message')
     };
   }
 

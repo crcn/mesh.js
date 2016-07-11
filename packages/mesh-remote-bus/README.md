@@ -7,16 +7,16 @@ Example:
 ```javascript
 import RemoteBus from 'mesh-remote-bus';
 import { WrapBus } from 'mesh';
-import { EventEmitter } from 'events';
+import createSocketIoClient from 'socket.io-client';
 
-var remote = new EventEmitter();
+var client = createSocketIo('http://12.0.0.1:8080');
 
 var adapter = {
-  addMessageListener: function(listener) {
-    remote.on('message', listener);
+  addListener(listener) {
+    client.on('message', listener);
   },
-  sendMessage: function(message) {
-    remote.emit('message', message);
+  send(message) {
+    client.send('message', message);
   }
 };
 

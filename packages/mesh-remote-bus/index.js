@@ -14,7 +14,7 @@ function RemoteBus(adapter, localBus) {
   this._openOperations = {};
   this._adapter        = adapter;
 
-  adapter.addMessageListener(this._handleMessage.bind(this));
+  adapter.addListener(this._handleMessage.bind(this));
 }
 
 Bus.extend(RemoteBus, {
@@ -42,13 +42,13 @@ Bus.extend(RemoteBus, {
     if (operation.resp == void 0) {
       stream.pipeTo({
         write: (data) => {
-          this._adapter.sendMessage({ type: 'data', resp: operation.req, data: data });
+          this._adapter.send({ type: 'data', resp: operation.req, data: data });
         },
         close: () => {
-          this._adapter.sendMessage({ type: 'close', resp: operation.req });
+          this._adapter.send({ type: 'close', resp: operation.req });
         },
         abort: (err) => {
-          this._adapter.sendMessage({ type: 'error', resp: operation.req, data: { message: err.message } });
+          this._adapter.send({ type: 'error', resp: operation.req, data: { message: err.message } });
         }
       });
     }
@@ -91,7 +91,7 @@ Bus.extend(RemoteBus, {
         writable.close();
       }
 
-      this._adapter.sendMessage(operation);
+      this._adapter.send(operation);
     });
   }
 });
