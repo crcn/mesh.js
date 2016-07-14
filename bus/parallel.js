@@ -25,9 +25,12 @@ Bus.extend(ParallelBus, {
 
       busses.forEach((bus) => {
         var resp = bus.execute(operation) || EmptyResponse.create();
-        resp.pipeTo(writable, { preventClose: true });
-        resp.then(() => {
-          if (!(--numLeft)) writable.close();
+        resp.pipeTo({
+          write: writable.write.bind(writable),
+          close: function() {
+            if (!(--numLeft)) writable.close();
+          },
+          abort: writable.abort.bind(writable)
         });
       });
     });

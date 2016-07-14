@@ -73,6 +73,7 @@ describe(__filename + "#", function() {
     expect(doneCalled).to.be(false);
   }));
 
+
   xit('aborts the stream if piping and an error occurs');
   xit('waits for piped wait() to resolve if there\'s a promise');
   xit('automatically closes if there\'s an error while writing to a piped stream');

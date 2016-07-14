@@ -89,4 +89,11 @@ describe(__filename + '#', function() {
 
     expect(err).to.be(void 0);
   }));
+
+  it('does not close the stream before a handler is finished', co.wrap(function*() {
+    var bus = ParallelBus.create([BufferedBus.create(void 0, [1, 2, 3, 4])]);
+
+    var results = yield bus.execute({}).readAll();
+    expect(results).to.eql([1, 2, 3, 4]);
+  }));
 });

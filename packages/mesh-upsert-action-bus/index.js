@@ -1,11 +1,12 @@
 import { AcceptBus, Response } from 'mesh';
-import sift from 'sift';
+var mesh = require('mesh');
+var sift = require('sift');
 
-export default {
+module.exports = {
   create: function(bus) {
-    return AcceptBus.create(sift({ type: 'upsert' }), {
+    return mesh.AcceptBus.create(sift({ type: 'upsert' }), {
       execute: function(action) {
-        return Response.create(async function(writable) {
+        return mesh.Response.create(async function(writable) {
 
           var chunk = await bus.execute({
             type           : 'load',
