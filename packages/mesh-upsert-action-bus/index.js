@@ -8,16 +8,16 @@ export default {
         return Response.create(async function(writable) {
 
           var chunk = await bus.execute({
-            action     : 'load',
-            query      : operation.query,
-            collection : operation.collection
+            type           : 'load',
+            query          : operation.query,
+            collectionName : operation.collectionName
           }).read();
 
           writable.write((await bus.execute({
-            action     : !chunk.done ? 'update' : 'insert',
-            data       : operation.data,
-            query      : operation.query,
-            collection : operation.collection
+            type           : !chunk.done ? 'update' : 'insert',
+            data           : operation.data,
+            query          : operation.query,
+            collectionName : operation.collectionName
           }).read()).value);
 
           writable.close();
