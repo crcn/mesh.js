@@ -33,7 +33,7 @@ function MemoryCollection(db) {
 Object.assign(MemoryCollection.prototype, {
 
   execute(operation) {
-    return this[operation.action](operation);
+    return this[operation.type](operation);
   },
 
   toJSON() {
@@ -116,8 +116,8 @@ Bus.extend(MemoryDsBus, {
     return this._db.toJSON();
   },
   execute(operation) {
-    return /insert|load|remove|update/.test(operation.action)    ?
-    this._db.collection(operation.collection).execute(operation) :
+    return /insert|load|remove|update/.test(operation.type)    ?
+    this._db.collection(operation.collectionName).execute(operation) :
     EmptyResponse.create();
   }
 });

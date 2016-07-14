@@ -19,31 +19,31 @@ exports.create = function(createBus, options) {
   });
 
   function *insert(collection, data) {
-    return yield bus.execute({ collection: collection, action: 'insert', data: data });
+    return yield bus.execute({ collectionName: collection, type: 'insert', data: data });
   }
 
   function *loadOne(collection, query) {
-    return yield bus.execute({ collection: collection, action: 'load', query: query }).read();
+    return yield bus.execute({ collectionName: collection, type: 'load', query: query }).read();
   }
 
   function *loadOne(collection, query) {
-    return yield bus.execute({ collection: collection, action: 'load', query: query }).read();
+    return yield bus.execute({ collectionName: collection, type: 'load', query: query }).read();
   }
 
   function *loadMulti(collection, query, options) {
-    return yield bus.execute(Object.assign({ collection: collection, action: 'load', query: query, multi: true }, options || {})).readAll();
+    return yield bus.execute(Object.assign({ collectionName: collection, type: 'load', query: query, multi: true }, options || {})).readAll();
   }
 
   function *removeOne(collection, query) {
-    return yield bus.execute({ collection: collection, action: 'remove', query: query }).read();
+    return yield bus.execute({ collectionName: collection, type: 'remove', query: query }).read();
   }
 
   function *updateOne(collection, query, data) {
-    return yield bus.execute({ collection: collection, action: 'update', query: query, data: data }).read();
+    return yield bus.execute({ collectionName: collection, type: 'update', query: query, data: data }).read();
   }
 
   function *updateMultiple(collection, query, data) {
-    return yield bus.execute({ collection: collection, action: 'update', multi: true, query: query, data: data }).readAll();
+    return yield bus.execute({ collectionName: collection, type: 'update', multi: true, query: query, data: data }).readAll();
   }
 
   it('can insert() data into a collection', function*() {

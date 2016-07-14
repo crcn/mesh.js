@@ -1,6 +1,6 @@
 {
   "name": "mesh-memory-ds-bus",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,6 @@
     "mesh": "^6.0.0"
   },
   "devDependencies": {
-    "mesh-ds-bus-test-cases": "^1.0.0"
+    "mesh-ds-bus-test-cases": "^2.0.0"
   }
 }
