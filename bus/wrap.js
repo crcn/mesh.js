@@ -46,6 +46,11 @@ extend(Bus, WrapBus, {
   }
 });
 
+WrapBus.create = function(callback) {
+  if (callback.execute) return callback;
+  return Bus.create.call(WrapBus, callback);
+};
+
 /**
 */
 

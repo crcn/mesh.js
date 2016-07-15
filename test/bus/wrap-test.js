@@ -92,4 +92,14 @@ describe(__filename + '#', function() {
 
     expect(err.message).to.be('an error');
   }));
+
+  it('can wrap around an existing bus', co.wrap(function*() {
+    var bus = WrapBus.create({
+      execute(operation) {
+        return BufferedResponse.create(void 0, 'hello');
+      }
+    });
+
+    expect((yield bus.execute().read()).value).to.be('hello');
+  }));
 });
