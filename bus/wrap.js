@@ -31,7 +31,7 @@ Bus.extend(WrapBus, {
   /**
    */
 
-  execute: function(action) {
+  execute(action) {
     return WrapResponse.create(this._execute(action));
   }
 });

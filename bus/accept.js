@@ -19,7 +19,7 @@ Bus.extend(AcceptBus, {
   /**
    */
 
-  execute: function(action) {
+  execute(action) {
     var accepted = this._filter(action);
 
     if (accepted && accepted.then) {
@@ -36,7 +36,7 @@ Bus.extend(AcceptBus, {
   /**
    */
 
-  _execute: function(yes, action) {
+  _execute(yes, action) {
     return yes ? this._acceptBus.execute(action) : this._rejectBus.execute(action);
   }
 });

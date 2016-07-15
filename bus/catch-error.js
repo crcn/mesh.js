@@ -17,7 +17,7 @@ function CatchErrorBus(bus, catchError) {
   /**
    */
 
-  execute: function(action) {
+  execute(action) {
     return Response.create((writable) => {
 
       this._bus.execute(action).pipeTo({

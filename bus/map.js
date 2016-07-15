@@ -17,7 +17,7 @@ function MapBus(bus, map) {
   /**
    */
 
-  execute: function(action) {
+  execute(action) {
     return Response.create((writable) => {
 
       this._bus.execute(action).pipeTo({

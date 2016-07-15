@@ -17,7 +17,7 @@ function FallbackBus(busses) {
   /**
    */
 
-  execute: function(action) {
+  execute(action) {
     return Response.create((writable) => {
       var busses = this._busses.concat();
       var next = (i) => {

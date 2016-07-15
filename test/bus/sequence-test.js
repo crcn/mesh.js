@@ -75,4 +75,13 @@ describe(__filename + '#', function() {
 
     expect(err).to.be(void 0);
   }));
+
+  it('can stream when a nested parallel bus is empty', co.wrap(function*() {
+    var bus = SequenceBus.create([
+      BufferedBus.create(void 0, [1, 2, 3]),
+      SequenceBus.create([])
+    ]);
+
+    expect(yield bus.execute({}).readAll()).to.eql([1, 2, 3]);
+  }));
 });

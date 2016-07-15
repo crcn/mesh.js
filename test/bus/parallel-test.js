@@ -93,7 +93,16 @@ describe(__filename + '#', function() {
   it('does not close the stream before a handler is finished', co.wrap(function*() {
     var bus = ParallelBus.create([BufferedBus.create(void 0, [1, 2, 3, 4])]);
 
-    var results = yield bus.execute({}).readAll();
-    expect(results).to.eql([1, 2, 3, 4]);
+    expect(yield bus.execute({}).readAll()).to.eql([1, 2, 3, 4]);
+  }));
+
+  it('can stream when a nested parallel bus is empty', co.wrap(function*() {
+    var bus = ParallelBus.create([
+      BufferedBus.create(void 0, [1, 2, 3]),
+      ParallelBus.create([
+      ])
+    ]);
+
+    expect(yield bus.execute({}).readAll()).to.eql([1, 2, 3]);
   }));
 });

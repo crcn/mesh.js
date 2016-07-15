@@ -26,7 +26,7 @@ Bus.extend(RetryBus, {
   /**
    */
 
-  execute: function(action) {
+  execute(action) {
     return Response.create((writable) => {
       var hasChunk  = false;
       var prevError;
@@ -35,14 +35,14 @@ Bus.extend(RetryBus, {
         if (!triesLeft) return writable.abort(prevError);
         var response = this._bus.execute(action);
         response.pipeTo({
-          write: function(value) {
+          write(value) {
             hasChunk = true;
             writable.write(value);
           },
-          close: function() {
+          close() {
             writable.close();
           },
-          abort: function(error) {
+          abort(error) {
             prevError = error;
             run(triesLeft - 1);
           }

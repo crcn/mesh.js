@@ -14,7 +14,7 @@ function DelayedBus(bus, ms) {
  */
 
 Bus.extend(DelayedBus, {
-  execute: function(action) {
+  execute(action) {
     return Response.create((writable) => {
       setTimeout(() => {
         (this._bus.execute(action) || EmptyResponse.create()).pipeTo(writable);

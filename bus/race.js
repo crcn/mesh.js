@@ -17,7 +17,7 @@ Bus.extend(RaceBus, {
   /**
    */
 
-  execute: function(action) {
+  execute(action) {
     return Response.create((writable) => {
       var busses  = this._busses.concat();
       var numLeft = busses.length;
@@ -26,12 +26,12 @@ Bus.extend(RaceBus, {
         var response = bus.execute(action) || EmptyResponse.create();
 
         response.pipeTo({
-          write: function(value) {
+          write(value) {
             if ((~found && found !== i)) return;
             found = i;
             writable.write(value);
           },
-          close: function() {
+          close() {
             if ((~found && found === i) || (--numLeft) === 0) {
               writable.close();
             }

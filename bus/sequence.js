@@ -26,8 +26,11 @@ Bus.extend(SequenceBus, {
       var next = (i) => {
         if (i === busses.length) return writable.close();
         var resp = busses[i].execute(action) || EmptyResponse.create();
-        resp.pipeTo(writable, { preventClose: true });
-        resp.then(() => next(i + 1));
+        resp.pipeTo({
+          write: writable.write.bind(writable),
+          close: next.bind(this, i + 1),
+          abort: writable.abort.bind(writable)
+        });
       };
 
       next(0);
