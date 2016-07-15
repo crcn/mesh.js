@@ -7,9 +7,20 @@ var sift = require('sift');
  * synchronizes actions against an array of items
  */
 
-function ArrayDsBus(target) {
+function ArrayDsBus(target, mutators) {
   Bus.call(this);
-  this.target = target || [];
+  this.target   = target || [];
+  this.mutators = mutators || {
+    update(oldValue, newValue) {
+      return newValue;
+    },
+    insert(newValue) {
+      return newValue;
+    },
+    remove(newValue) {
+
+    }
+  };
 }
 
 function _oneOrMany(action, items) {
@@ -21,7 +32,7 @@ Bus.extend(ArrayDsBus, {
   /**
    */
 
-  execute: function(action) {
+  execute(action) {
     return Response.create((writable) => {
       switch(action.type) {
         case "insert" : return this._insert(action, writable)
@@ -36,17 +47,18 @@ Bus.extend(ArrayDsBus, {
   /**
    */
 
-  _insert: function(action, writable) {
-    this.target.push(_cloneObject(action.data));
+  _insert(action, writable) {
+    this.target.push(this.mutators.insert(_cloneObject(action.data)));
     writable.close();
   },
 
   /**
    */
 
-  _remove: function(action, writable) {
+  _remove(action, writable) {
     this._find2(action).forEach((item) => {
       writable.write(_cloneObject(item));
+      this.mutators.remove(item);
       this.target.splice(this.target.indexOf(item), 1);
     });
     writable.close();
@@ -55,10 +67,13 @@ Bus.extend(ArrayDsBus, {
   /**
    */
 
-  _update: function(action, writable) {
+  _update(action, writable) {
     this._find2(action).forEach((item) => {
       writable.write(_cloneObject(action.data));
-      this.target.splice(this.target.indexOf(item), 1, action.data);
+      var newItem = this.mutators.update(item, action.data);
+      if (newItem !== item) {
+        this.target.splice(this.target.indexOf(item), 1, action.data);
+      }
     });
     writable.close();
   },
