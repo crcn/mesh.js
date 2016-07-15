@@ -7,7 +7,7 @@ var sift = require('sift');
  * synchronizes actions against an array of items
  */
 
-function CollectionBus(target) {
+function ArrayDsBus(target) {
   Bus.call(this);
   this.target = target || [];
 }
@@ -16,7 +16,7 @@ function _oneOrMany(action, items) {
   return action.multi ? items : items.length ? [items[0]] : [];
 }
 
-Bus.extend(CollectionBus, {
+Bus.extend(ArrayDsBus, {
 
   /**
    */
@@ -91,4 +91,4 @@ function _cloneObject(object) {
 /**
  */
 
-module.exports = CollectionBus;
+module.exports = ArrayDsBus;
