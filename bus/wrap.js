@@ -10,9 +10,9 @@ function WrapBus(execute) {
 
   // node style? (next(err, result))
   if (execute.length >= 2) {
-    this._execute = function(operation) {
+    this._execute = function(action) {
       return new Promise((resolve, reject) => {
-        execute(operation, function(err, result) {
+        execute(action, function(err, result) {
           if (err) return reject(err);
           resolve.apply(this, Array.prototype.slice.call(arguments, 1));
         });
@@ -31,8 +31,8 @@ Bus.extend(WrapBus, {
   /**
    */
 
-  execute: function(operation) {
-    return WrapResponse.create(this._execute(operation));
+  execute: function(action) {
+    return WrapResponse.create(this._execute(action));
   }
 });
 

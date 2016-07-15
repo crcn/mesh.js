@@ -23,10 +23,10 @@ function MeshLocalStorageDsBus(options) {
 */
 
 Bus.extend(MeshLocalStorageDsBus, {
-  execute(operation) {
-    var ret = this._bus.execute(operation);
+  execute(action) {
+    var ret = this._bus.execute(action);
 
-    if (/remove|update|insert/.test(operation.action)) {
+    if (/remove|update|insert/.test(action.type)) {
       ret.then(() => {
         this.store.set(this.key, this._bus.toJSON());
       });

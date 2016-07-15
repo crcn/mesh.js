@@ -15,8 +15,8 @@ function _response(results) {
   return BufferedResponse.create(void 0, results);
 }
 
-function _oneOrMany(operation, items) {
-  return !operation.multi && !!items.length ? [items[0]] : items;
+function _oneOrMany(action, items) {
+  return !action.multi && !!items.length ? [items[0]] : items;
 }
 
 function _recordData(records) {
@@ -32,29 +32,29 @@ function MemoryCollection(db) {
 
 Object.assign(MemoryCollection.prototype, {
 
-  execute(operation) {
-    return this[operation.type](operation);
+  execute(action) {
+    return this[action.type](action);
   },
 
   toJSON() {
     return this._items;
   },
 
-  insert(operation) {
-    if (!operation.data) throw new Error('data must exist for insert operations');
-    var item = _clone(operation.data);
-    this._items.push({ data: operation.data });
+  insert(action) {
+    if (!action.data) throw new Error('data must exist for insert actions');
+    var item = _clone(action.data);
+    this._items.push({ data: action.data });
     return _response(_clone([item]));
   },
 
-  load(operation) {
-    return _response(_oneOrMany(operation, this._find(operation).map(function(record) {
+  find(action) {
+    return _response(_oneOrMany(action, this._find(action).map(function(record) {
       return _clone(record.data);
     })));
   },
 
-  remove(operation) {
-    var records = _oneOrMany(operation, this._find(operation));
+  remove(action) {
+    var records = _oneOrMany(action, this._find(action));
     records.forEach((item) => {
       var i = this._items.indexOf(item);
       if (~i) this._items.splice(i, 1);
@@ -62,19 +62,19 @@ Object.assign(MemoryCollection.prototype, {
     return _response(_recordData(records));
   },
 
-  update(operation) {
+  update(action) {
 
-    var records = _oneOrMany(operation, this._find(operation));
+    var records = _oneOrMany(action, this._find(action));
 
     records.forEach(function(record) {
-      Object.assign(record.data, operation.data);
+      Object.assign(record.data, action.data);
     });
 
     return _response(_recordData(records));
   },
 
-  _find(operation) {
-    return this._items.filter(sift({ data: operation.query || function() {
+  _find(action) {
+    return this._items.filter(sift({ data: action.query || function() {
       return true;
     }}));
   }
@@ -115,9 +115,9 @@ Bus.extend(MemoryDsBus, {
   toJSON() {
     return this._db.toJSON();
   },
-  execute(operation) {
-    return /insert|load|remove|update/.test(operation.type)    ?
-    this._db.collection(operation.collectionName).execute(operation) :
+  execute(action) {
+    return /insert|find|remove|update/.test(action.type)    ?
+    this._db.collection(action.collectionName).execute(action) :
     EmptyResponse.create();
   }
 });

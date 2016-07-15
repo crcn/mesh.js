@@ -17,10 +17,10 @@ function CatchErrorBus(bus, catchError) {
   /**
    */
 
-  execute: function(operation) {
+  execute: function(action) {
     return Response.create((writable) => {
 
-      this._bus.execute(operation).pipeTo({
+      this._bus.execute(action).pipeTo({
         write: (value) => {
           writable.write(value);
         },
@@ -29,7 +29,7 @@ function CatchErrorBus(bus, catchError) {
         },
         abort: (error) => {
           try {
-            var p = this._catchError(error, operation);
+            var p = this._catchError(error, action);
             writable.close();
           } catch(e) {
             writable.abort(e);

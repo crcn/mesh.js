@@ -26,8 +26,8 @@ function AttachDefaultsBus(properties, bus) {
  */
 
  Bus.extend(AttachDefaultsBus, {
-  execute: function(operation) {
-    return this._bus.execute(_defaults(operation, this._properties));
+  execute: function(action) {
+    return this._bus.execute(_defaults(action, this._properties));
   }
 });
 

@@ -17,12 +17,12 @@ function FallbackBus(busses) {
   /**
    */
 
-  execute: function(operation) {
+  execute: function(action) {
     return Response.create((writable) => {
       var busses = this._busses.concat();
       var next = (i) => {
         if (i === busses.length) return writable.close();
-        var response = busses[i].execute(operation) || EmptyResponse.create();
+        var response = busses[i].execute(action) || EmptyResponse.create();
         var hasChunk = false;
         response.pipeTo({
           write: function(value) {

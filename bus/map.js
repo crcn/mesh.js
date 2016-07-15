@@ -17,13 +17,13 @@ function MapBus(bus, map) {
   /**
    */
 
-  execute: function(operation) {
+  execute: function(action) {
     return Response.create((writable) => {
 
-      this._bus.execute(operation).pipeTo({
+      this._bus.execute(action).pipeTo({
         write: (value) => {
           try {
-            this._map(value, writable, operation);
+            this._map(value, writable, action);
           } catch(e) {
             writable.abort(e);
             return Promise.reject(e);

@@ -14,10 +14,10 @@ function DelayedBus(bus, ms) {
  */
 
 Bus.extend(DelayedBus, {
-  execute: function(operation) {
+  execute: function(action) {
     return Response.create((writable) => {
       setTimeout(() => {
-        (this._bus.execute(operation) || EmptyResponse.create()).pipeTo(writable);
+        (this._bus.execute(action) || EmptyResponse.create()).pipeTo(writable);
       }, this._ms);
     });
   }

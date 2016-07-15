@@ -4,7 +4,7 @@ import ws from 'websocket';
 
 var WebSocket = ws.w3cwebsocket;
 
-// TODO - should use remove operation helper - see ros.js
+// TODO - should use remove action helper - see ros.js
 export default {
   create: function(host, bus) {
     if (!bus) bus = mesh.noop;
@@ -38,8 +38,8 @@ export default {
       }
     }
 
-    function send(operation) {
-      ws.send(JSON.stringify(operation));
+    function send(action) {
+      ws.send(JSON.stringify(action));
     }
 
     var _i = 0;
@@ -50,17 +50,17 @@ export default {
     }
 
     return {
-      execute: function(operation) {
+      execute: function(action) {
         return Response.create(function(writable) {
-          if (!operation.id) {
-            operation.id = createId();
+          if (!action.id) {
+            action.id = createId();
           }
-          _openResponses[operation.id] = writable;
+          _openResponses[action.id] = writable;
 
           if (_isOpen) {
-            send(operation);
+            send(action);
           } else {
-            _waitingOps.push(operation);
+            _waitingOps.push(action);
           }
         });
       }

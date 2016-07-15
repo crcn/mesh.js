@@ -12,7 +12,7 @@ function *timeout(ms) {
 }
 
 describe(__filename + '#', function() {
-  it('can tailable operations on a bus', co.wrap(function*() {
+  it('can tailable actions on a bus', co.wrap(function*() {
     var bus = TailableBus.create(BufferedBus.create(void 0, 'ab'));
     var i = 0;
     bus.createTail().read().then(function(chunk) {

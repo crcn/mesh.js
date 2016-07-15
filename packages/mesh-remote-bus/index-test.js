@@ -22,7 +22,7 @@ describe(__filename + '#', function() {
 
 
   it('can return data from a remote source', co.wrap(function*() {
-    var bus = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(operation) {
+    var bus = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(action) {
       return mesh.BufferedResponse.create(void 0, 'data');
     }));
 
@@ -31,7 +31,7 @@ describe(__filename + '#', function() {
   }));
 
   it('properly sends back an error', co.wrap(function*() {
-    var bus = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(operation) {
+    var bus = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(action) {
       return mesh.BufferedResponse.create(new Error('error!'));
     }));
 
@@ -45,10 +45,10 @@ describe(__filename + '#', function() {
     expect(err.message).to.be('error!');
   }));
 
-  it('ignores remote operations from being re-used', co.wrap(function*() {
-    var bus = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(operation) {
+  it('ignores remote actions from being re-used', co.wrap(function*() {
+    var bus = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(action) {
       return mesh.Response(function(writable) {
-        bus.execute(operation).pipeTo(writable);
+        bus.execute(action).pipeTo(writable);
       });
     }));
 
@@ -56,8 +56,8 @@ describe(__filename + '#', function() {
     expect(chunks.length).to.be(0);
   }));
 
-  it('can flag an operation to not look for a response', co.wrap(function*() {
-    var bus = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(operation) {
+  it('can flag an action to not look for a response', co.wrap(function*() {
+    var bus = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(action) {
       return mesh.BufferedResponse.create(void 0, 'abba');
     }));
 
@@ -65,9 +65,9 @@ describe(__filename + '#', function() {
     expect(chunks.length).to.be(0);
   }));
 
-  it('can run a tail on a remote operation stream', co.wrap(function*() {
-    var bus = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(operation) {
-      return mesh.BufferedResponse.create(void 0, operation);
+  it('can run a tail on a remote action stream', co.wrap(function*() {
+    var bus = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(action) {
+      return mesh.BufferedResponse.create(void 0, action);
     }));
 
     bus = TailableBus.create(bus);
@@ -96,15 +96,15 @@ describe(__filename + '#', function() {
     expect(tailed.length).to.be(4);
   }));
 
-  it('can emit the same operation to multiple clients', co.wrap(function*() {
+  it('can emit the same action to multiple clients', co.wrap(function*() {
     var i = 0;
 
-    var bus = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(operation) {
-      return mesh.BufferedResponse.create(void 0, operation);
+    var bus = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(action) {
+      return mesh.BufferedResponse.create(void 0, action);
     }));
 
-    var bus2 = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(operation) {
-      return mesh.BufferedResponse.create(void 0, operation);
+    var bus2 = RemoteBus.create(createAdapter(), mesh.WrapBus.create(function(action) {
+      return mesh.BufferedResponse.create(void 0, action);
     }));
 
     var bus3 = ParallelBus.create([bus, bus2]);
@@ -113,9 +113,9 @@ describe(__filename + '#', function() {
     expect(chunks.length).to.be(2);
   }));
 
-  it('removes an operation that has ended', co.wrap(function*() {
+  it('removes an action that has ended', co.wrap(function*() {
     var bus = RemoteBus.create(createAdapter(), {
-      execute: function(operation) {
+      execute: function(action) {
         return {
           pipeTo: function(writable) {
             writable.write('data');

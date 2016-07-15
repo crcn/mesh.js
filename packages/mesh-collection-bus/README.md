@@ -1,4 +1,4 @@
-This bus example enables you to execute `CRUD` operations against an array of items. Here's an example:
+This bus example enables you to execute `CRUD` actions against an array of items. Here's an example:
 
 ```javascript
 var target = [];

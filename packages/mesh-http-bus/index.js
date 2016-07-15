@@ -13,28 +13,28 @@ var HTTPDatabase = function(options) {
   this.idProperty = options.idProperty = options.idProperty || "uid";
   this.prefix     = options.prefix     || "";
 
-  this.method = options.method || function(operation) {
+  this.method = options.method || function(action) {
     return {
       "insert" : "post",
       "update" : "put",
-      "upsert" : operation.data && operation.data[operation.idProperty] ? "put" : "post",
+      "upsert" : action.data && action.data[action.idProperty] ? "put" : "post",
       "load"   : "get",
       "remove" : "del"
-    }[operation.name];
+    }[action.name];
   };
 
-  this.url    = function(operation) {
+  this.url    = function(action) {
 
-    var cpath = "/" + operation.collection;
-    var mpath = operation.data ? cpath + "/" + operation.data[operation.idProperty] : "";
+    var cpath = "/" + action.collection;
+    var mpath = action.data ? cpath + "/" + action.data[action.idProperty] : "";
 
     return {
       "insert" : cpath,
       "update" : mpath,
-      "upsert" : operation.data && operation.data[operation.idProperty] ? mpath : cpath,
-      "load"   : operation.multi ? cpath : mpath,
+      "upsert" : action.data && action.data[action.idProperty] ? mpath : cpath,
+      "load"   : action.multi ? cpath : mpath,
       "remove" : mpath
-    }[operation.name];
+    }[action.name];
   };
 };
 
@@ -60,11 +60,11 @@ function _get(target, keypath) {
  */
 
 extend(HTTPDatabase.prototype, {
-  run: function(operation, next) {
+  run: function(action, next) {
 
-    var options = operation = extend({}, this.options, operation.http, operation);
+    var options = action = extend({}, this.options, action.http, action);
 
-    var method = options.method || this.method(operation) || "GET";
+    var method = options.method || this.method(action) || "GET";
 
     if (typeof method === "function") {
       method = method(options);
@@ -86,12 +86,12 @@ extend(HTTPDatabase.prototype, {
 
     var headers = options.headers;
     if (typeof headers === "function") {
-      headers = headers.call(this, operation);
+      headers = headers.call(this, action);
     }
 
     var query = options.query;
     if (typeof query === "function") {
-      query = query(operation);
+      query = query(action);
     }
 
     url = (options.prefix || this.prefix) + url;
@@ -131,9 +131,9 @@ module.exports = function(options) {
 
   var db = new HTTPDatabase(options);
 
-  return mesh.stream(function(operation, stream) {
+  return mesh.stream(function(action, stream) {
     var self = this;
-    db.run(operation, function(err, data) {
+    db.run(action, function(err, data) {
       if (err) {
         return stream.emit("error", err);
       }

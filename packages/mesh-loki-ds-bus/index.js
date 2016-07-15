@@ -27,11 +27,11 @@ Object.assign(Adapter.prototype, {
   /**
    */
 
-  run: function(operation, onRun) {
-    var method = this[operation.action];
+  run: function(action, onRun) {
+    var method = this[action.type];
     if (!method) return onRun();
-    if (!operation.collection) return onRun(new Error("collection must exist"));
-    method.call(this, this._collection(operation.collection), operation, onRun);
+    if (!action.collectionName) return onRun(new Error("collection must exist"));
+    method.call(this, this._collection(action.collectionName), action, onRun);
   },
 
   /**
@@ -50,7 +50,7 @@ Object.assign(Adapter.prototype, {
    */
 
   update: function(collection, options, onRun) {
-    this.load(collection, options, function(err, items) {
+    this.find(collection, options, function(err, items) {
       if (err) return onRun(err);
       onRun(void 0, _toArray(items).map(function(item) {
         item = Object.assign(item, options.data);
@@ -65,7 +65,7 @@ Object.assign(Adapter.prototype, {
 
   upsert: function(collection, options, onRun) {
     options.multi = false;
-    this.load(collection, options, function(err, item) {
+    this.find(collection, options, function(err, item) {
       if (err) return onRun(err);
 
       if (item) {
@@ -87,7 +87,7 @@ Object.assign(Adapter.prototype, {
       onRun();
     } else {
       var self = this;
-      this.load(collection, options, function(err, item) {
+      this.find(collection, options, function(err, item) {
         if (err) return onRun(err);
         if (item) collection.remove(item);
         return onRun();
@@ -98,7 +98,7 @@ Object.assign(Adapter.prototype, {
   /**
    */
 
-  load: function(collection, options, onRun) {
+  find: function(collection, options, onRun) {
     onRun(void 0, options.multi ? collection.find(options.query) : collection.findOne(options.query));
   },
 
@@ -119,11 +119,11 @@ Object.assign(Adapter.prototype, {
 //   var target = options.collections ? options : new loki(options);
 //   var db     = new Adapter(target);
 //
-//   var ret = function(operation) {
+//   var ret = function(action) {
 //     var writable = new stream.Writable();
 //
 //     process.nextTick(function() {
-//       db.run(operation, function(err, data) {
+//       db.run(action, function(err, data) {
 //         if (err) return writable.reader.emit("error");
 //
 //         _toArray(data).forEach(function(data) {
@@ -148,9 +148,9 @@ function LokiDsBus(options) {
 }
 
 Bus.extend(LokiDsBus, {
-  execute: function(operation) {
+  execute: function(action) {
     return Response.create((writable) => {
-      this._db.run(operation, function(err, data) {
+      this._db.run(action, function(err, data) {
         if (err) return writable.abort(err);
         _toArray(data).forEach(function(data) {
           writable.write(data);

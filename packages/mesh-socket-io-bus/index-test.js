@@ -10,8 +10,8 @@ var sift        = require('sift');
 describe(__filename + '#', function() {
 
   var port = 8899;
-  var operations = [];
-  var operation = {};
+  var actions = [];
+  var action = {};
   var em = new EventEmitter();
 
   beforeEach(function() {
@@ -21,7 +21,7 @@ describe(__filename + '#', function() {
     server.on('connection', function(connection) {
 
       var cbus = TailableBus.create(mesh.WrapBus.create(function(op, next) {
-        operation = op;
+        action = op;
 
         next(void 0, op);
       }));
@@ -46,10 +46,10 @@ describe(__filename + '#', function() {
       host: 'http://127.0.0.1:' + port
     });
 
-    iodb.execute({ action : 'something', data: { name: 'abba' }}).read().then(function(chunk) {
-      var operation = chunk.value;
-      expect(operation.action).to.be('something');
-      expect(operation.data.name).to.be('abba');
+    iodb.execute({ type: 'something', data: { name: 'abba' }}).read().then(function(chunk) {
+      var action = chunk.value;
+      expect(action.type).to.be('something');
+      expect(action.data.name).to.be('abba');
       next();
     });
 
@@ -63,12 +63,12 @@ describe(__filename + '#', function() {
 
     var iodb = SocketIoBus.create({
       host: 'http://127.0.0.1:' + port
-    }, mesh.AcceptBus.create(sift({ action: 'insert' }), mesh.WrapBus.create(function(operation) {
-      expect(operation.action).to.be('insert');
-      expect(operation.data.name).to.be('abba');
+    }, mesh.AcceptBus.create(sift({ type: 'insert' }), mesh.WrapBus.create(function(action) {
+      expect(action.type).to.be('insert');
+      expect(action.data.name).to.be('abba');
       next();
     })));
 
-    iodb2.execute({ action: 'insert', data: { name: 'abba' }});
+    iodb2.execute({ type: 'insert', data: { name: 'abba' }});
   });
 });

@@ -19,25 +19,25 @@ Bus.extend(AcceptBus, {
   /**
    */
 
-  execute: function(operation) {
-    var accepted = this._filter(operation);
+  execute: function(action) {
+    var accepted = this._filter(action);
 
     if (accepted && accepted.then) {
       return Response.create((writable) => {
         accepted.then((yes) => {
-          this._execute(yes, operation).pipeTo(writable);
+          this._execute(yes, action).pipeTo(writable);
         }, writable.abort.bind(writable));
       });
     }
 
-    return this._execute(accepted, operation);
+    return this._execute(accepted, action);
   },
 
   /**
    */
 
-  _execute: function(yes, operation) {
-    return yes ? this._acceptBus.execute(operation) : this._rejectBus.execute(operation);
+  _execute: function(yes, action) {
+    return yes ? this._acceptBus.execute(action) : this._rejectBus.execute(action);
   }
 });
 

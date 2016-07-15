@@ -17,7 +17,7 @@ function BufferedBus(error, chunkValues) {
   /**
    */
 
-  execute: function(operation) {
+  execute: function(action) {
     return BufferedResponse.create(this._error, this._chunkValues);
   }
 });

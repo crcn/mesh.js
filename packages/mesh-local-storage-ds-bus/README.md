@@ -7,7 +7,7 @@ This module is a local storage database adapter for [mesh](https://github.com/mo
 - offline-mode - enable users to browse your application without an API (assuming there's local data)
 - faster initial load times - great for mobile devices
 - can be used with other database transports such as [mesh-http](https://github.com/mojo-js/mesh-http)
-- cascades operations to other transports
+- cascades actions to other transports
 
 
 #### installation
@@ -45,12 +45,12 @@ var db = localdb({
 });
 ```
 
-#### db.run(operation, options, onComplete)
+#### db.run(action, options, onComplete)
 
-runs an operation
+runs an action
 
-- `operation` - operation to run can be: `insert`, `remove`, `update`, or `load`
-- `options` - operation specific options
+- `action` - action to run can be: `insert`, `remove`, `update`, or `find`
+- `options` - action specific options
 
 insert options:
 
@@ -72,7 +72,7 @@ update options:
 - `multi` - TRUE if you want to update multiple items (false by default)
 - `data` - data to set - this is merged with existing data
 
-load options:
+find options:
 
 - `query` - mongodb search query
-- `multi` - TRUE if you want to load multiple items (one by default)
+- `multi` - TRUE if you want to find multiple items (one by default)

@@ -17,8 +17,8 @@ Bus.extend(RoundRobinBus, {
   /**
    */
 
-  execute: function(operation) {
-    var ret = this._busses[this._i].execute(operation);
+  execute: function(action) {
+    var ret = this._busses[this._i].execute(action);
     this._i = (this._i + 1) % this._busses.length;
     return ret;
   }

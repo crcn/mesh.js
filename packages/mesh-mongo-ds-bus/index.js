@@ -21,20 +21,20 @@ Object.assign(Adapter.prototype, EventEmitter.prototype, {
   /**
    */
 
-  run: function(operation, onRun) {
-    if (!this.target) return this.once("connect", this.run.bind(this, operation, onRun));
-    if (!operation.collection) return onRun(new Error("a collection must exist"));
-    var method = this[operation.action];
+  run: function(action, onRun) {
+    if (!this.target) return this.once("connect", this.run.bind(this, action, onRun));
+    if (!action.collectionName) return onRun(new Error("a collection must exist"));
+    var method = this[action.type];
     if (!method) return onRun();
-    var collection = this._collection(operation);
-    method.call(this, collection, operation, onRun);
+    var collection = this._collection(action);
+    method.call(this, collection, action, onRun);
   },
 
   /**
    */
 
-  insert: function(collection, operation, onRun) {
-    collection.insert(operation.data, function(err, result) {
+  insert: function(collection, action, onRun) {
+    collection.insert(action.data, function(err, result) {
       if (err) return onRun(err);
       return onRun(void 0, result.ops);
     });
@@ -43,9 +43,9 @@ Object.assign(Adapter.prototype, EventEmitter.prototype, {
   /**
    */
 
-  load: function(collection, operation, onRun) {
-    var query = operation.query || {};
-    if (operation.multi) {
+  find: function(collection, action, onRun) {
+    var query = action.query || {};
+    if (action.multi) {
       onRun(void 0, collection.find(query));
     } else {
       collection.findOne(query, onRun);
@@ -55,9 +55,9 @@ Object.assign(Adapter.prototype, EventEmitter.prototype, {
   /**
    */
 
-  remove: function(collection, operation, onRun) {
-    var query = operation.query || {};
-    if (operation.multi) {
+  remove: function(collection, action, onRun) {
+    var query = action.query || {};
+    if (action.multi) {
       collection.remove(query, onRun);
     } else {
       collection.removeOne(query, onRun);
@@ -67,22 +67,22 @@ Object.assign(Adapter.prototype, EventEmitter.prototype, {
   /**
    */
 
-  update: function(collection, operation, onRun) {
-    var query = operation.query || {};
-    if (operation.multi) {
-      collection.update(query, { $set: operation.data }, { multi: true }, onRun);
+  update: function(collection, action, onRun) {
+    var query = action.query || {};
+    if (action.multi) {
+      collection.update(query, { $set: action.data }, { multi: true }, onRun);
     } else {
-      collection.updateOne(query, { $set: operation.data }, onRun);
+      collection.updateOne(query, { $set: action.data }, onRun);
     }
   },
 
   /**
    */
 
-  _collection: function(operation) {
-    var collection = this._collections[operation.collection];
+  _collection: function(action) {
+    var collection = this._collections[action.collectionName];
     if (collection) return collection;
-    collection = this._collections[operation.collection] = this.target.collection(operation.collection);
+    collection = this._collections[action.collectionName] = this.target.collection(action.collectionName);
     return collection;
   },
 
@@ -109,9 +109,9 @@ function MongoDsBus(options) {
 }
 
 Bus.extend(MongoDsBus, {
-  execute: function(operation) {
+  execute: function(action) {
     return Response.create((writable) => {
-      this.adapter.run(operation, (err, result) => {
+      this.adapter.run(action, (err, result) => {
         if (err) return writable.abort(err);
         if (result && result.each) {
           var next = function() {

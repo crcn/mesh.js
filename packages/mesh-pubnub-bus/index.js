@@ -18,19 +18,19 @@ module.exports = function(options, bus) {
     addChannel(options.channel);
   }
 
-  function createStream(operation) {
+  function createStream(action) {
     var stream = new Writable();
 
     process.nextTick(function() {
 
-      if (operation.name === "tail") {
-        return tail(stream, operation);
+      if (action.name === "tail") {
+        return tail(stream, action);
       }
 
-      if (!operation.remoteClientId) {
-        operation.remoteClientId = clientId;
+      if (!action.remoteClientId) {
+        action.remoteClientId = clientId;
         for (var i = clients.length; i--;) {
-          clients[i].send(operation);
+          clients[i].send(action);
         }
       }
 
@@ -44,9 +44,9 @@ module.exports = function(options, bus) {
 
     c.subscribe({
       channel: channel,
-      callback: function(operation) {
-        if (operation.remoteClientId === clientId) return;
-        bus(operation);
+      callback: function(action) {
+        if (action.remoteClientId === clientId) return;
+        bus(action);
       }
     });
 
@@ -64,10 +64,10 @@ module.exports = function(options, bus) {
 
   return createStream;
 
-  function tail (stream, operation) {
-    if (operation) {
-      operation = JSON.parse(JSON.stringify(operation));
-      delete operation.name;
+  function tail (stream, action) {
+    if (action) {
+      action = JSON.parse(JSON.stringify(action));
+      delete action.name;
     }
     tails.push({
       test: sift(properties ? properties : function() { return true; }),

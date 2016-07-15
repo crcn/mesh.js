@@ -8,7 +8,7 @@ function RetryBus(maxRetries, errorFilter, bus) {
 
   if (arguments.length === 2) {
     bus         = errorFilter;
-    errorFilter = function(error, operation) {
+    errorFilter = function(error, action) {
       return true;
     };
   }
@@ -26,14 +26,14 @@ Bus.extend(RetryBus, {
   /**
    */
 
-  execute: function(operation) {
+  execute: function(action) {
     return Response.create((writable) => {
       var hasChunk  = false;
       var prevError;
 
       var run = (triesLeft) => {
         if (!triesLeft) return writable.abort(prevError);
-        var response = this._bus.execute(operation);
+        var response = this._bus.execute(action);
         response.pipeTo({
           write: function(value) {
             hasChunk = true;

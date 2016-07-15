@@ -8,9 +8,9 @@ HTTP (api) adapter for [mesh](http://github.com/mojo-js/mesh.js).
 npm install mesh-http
 ```
 
-#### http(operationName, options)
+#### http(actionName, options)
 
-Performs a new operation on the API
+Performs a new action on the API
 
 - `options`
   - `url` - (optional) path to the route - automatically resolved by collection if this is omitted

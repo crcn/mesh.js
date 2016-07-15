@@ -1,5 +1,5 @@
 
-mesh-mongodb is a streamable interface for the [Mongodb](https://www.mongodb.org/) library. See additional operation documentation here: http://meshjs.herokuapp.com/docs/database-adapters.
+mesh-mongodb is a streamable interface for the [Mongodb](https://www.mongodb.org/) library. See additional action documentation here: http://meshjs.herokuapp.com/docs/database-adapters.
 
 #### installation
 

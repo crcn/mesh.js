@@ -10,15 +10,15 @@ module.exports = {
 
           var chunk = await bus.execute({
             type           : 'load',
-            query          : operation.query,
-            collectionName : operation.collectionName
+            query          : action.query,
+            collectionName : action.collectionName
           }).read();
 
           writable.write((await bus.execute({
             type           : !chunk.done ? 'update' : 'insert',
-            data           : operation.data,
-            query          : operation.query,
-            collectionName : operation.collectionName
+            data           : action.data,
+            query          : action.query,
+            collectionName : action.collectionName
           }).read()).value);
 
           writable.close();

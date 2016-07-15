@@ -41,7 +41,7 @@ var pubStream = pubnub({
 }, memoryBus);
 
 // does not get broadcasted
-pubStream(mesh.operation("anotherCommandToIgnore"));
+pubStream(mesh.action("anotherCommandToIgnore"));
 ```
 
 #### db.addChannel(channel)
@@ -49,13 +49,13 @@ pubStream(mesh.operation("anotherCommandToIgnore"));
 adds a new channel to subscribe to.
 
 ```javascript
-pubStream.addChannel(mesh.operation("someChannel"));
-pubStream.addChannel(mesh.operation("anotherChannel")_;
+pubStream.addChannel(mesh.action("someChannel"));
+pubStream.addChannel(mesh.action("anotherChannel")_;
 ```
 
-#### [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable) db(operationName, options)
+#### [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable) db(actionName, options)
 
-Publishes a new operation to pubnub.
+Publishes a new action to pubnub.
 
 ```javascript
 pubStream({ name: "hello", data: { name: "world" }});
@@ -64,10 +64,10 @@ pubStream({ name "doSomething", data: { name: "world" }});
 
 #### [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable) db(tail, filter)
 
-Tails a remote operation. This is your subscription function.
+Tails a remote action. This is your subscription function.
 
 ```
-db({ name: "tail" }).on("data", function(operation) {
+db({ name: "tail" }).on("data", function(action) {
 
 });
 
@@ -88,12 +88,12 @@ var pubdb = pubnub({
 
 var db = mesh.tailable(loki());
 
-// listen for local operations on lokidb - pass to pubnub
-db(mesh.operation("tail")).pipe(mesh.open(pubdb));
+// listen for local actions on lokidb - pass to pubnub
+db(mesh.action("tail")).pipe(mesh.open(pubdb));
 
-// listen for remote operations on pubnub - pass to lokidb
-pubdb(mesh.operation("tail")).pipe(mesh.open(db));
+// listen for remote actions on pubnub - pass to lokidb
+pubdb(mesh.action("tail")).pipe(mesh.open(db));
 
 // stored in loki & synchronized across clients
-db(mesh.operation("insert", { data: { name: "Juice" }}));
+db(mesh.action("insert", { data: { name: "Juice" }}));
 ```

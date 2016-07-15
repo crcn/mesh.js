@@ -4,7 +4,7 @@ var Response = mesh.Response;
 var sift = require('sift');
 
 /**
- * synchronizes operations against an array of items
+ * synchronizes actions against an array of items
  */
 
 function CollectionBus(target) {
@@ -12,8 +12,8 @@ function CollectionBus(target) {
   this.target = target || [];
 }
 
-function _oneOrMany(operation, items) {
-  return operation.multi ? items : items.length ? [items[0]] : [];
+function _oneOrMany(action, items) {
+  return action.multi ? items : items.length ? [items[0]] : [];
 }
 
 Bus.extend(CollectionBus, {
@@ -21,13 +21,13 @@ Bus.extend(CollectionBus, {
   /**
    */
 
-  execute: function(operation) {
+  execute: function(action) {
     return Response.create((writable) => {
-      switch(operation.action) {
-        case "insert" : return this._insert(operation, writable)
-        case "remove" : return this._remove(operation, writable)
-        case "update" : return this._update(operation, writable)
-        case "load"   : return this._load(operation, writable)
+      switch(action.type) {
+        case "insert" : return this._insert(action, writable)
+        case "remove" : return this._remove(action, writable)
+        case "update" : return this._update(action, writable)
+        case "find"   : return this._find(action, writable)
         default       : return writable.close();
       }
     });
@@ -36,16 +36,16 @@ Bus.extend(CollectionBus, {
   /**
    */
 
-  _insert: function(operation, writable) {
-    this.target.push(_cloneObject(operation.data));
+  _insert: function(action, writable) {
+    this.target.push(_cloneObject(action.data));
     writable.close();
   },
 
   /**
    */
 
-  _remove: function(operation, writable) {
-    this._find(operation).forEach((item) => {
+  _remove: function(action, writable) {
+    this._find2(action).forEach((item) => {
       writable.write(_cloneObject(item));
       this.target.splice(this.target.indexOf(item), 1);
     });
@@ -55,10 +55,10 @@ Bus.extend(CollectionBus, {
   /**
    */
 
-  _update: function(operation, writable) {
-    this._find(operation).forEach((item) => {
-      writable.write(_cloneObject(operation.data));
-      this.target.splice(this.target.indexOf(item), 1, operation.data);
+  _update: function(action, writable) {
+    this._find2(action).forEach((item) => {
+      writable.write(_cloneObject(action.data));
+      this.target.splice(this.target.indexOf(item), 1, action.data);
     });
     writable.close();
   },
@@ -66,8 +66,8 @@ Bus.extend(CollectionBus, {
   /**
    */
 
-  _load(operation, writable) {
-    this._find(operation).forEach((item) => {
+  _find(action, writable) {
+    this._find2(action).forEach((item) => {
       writable.write(_cloneObject(item));
     });
     writable.close();
@@ -76,8 +76,8 @@ Bus.extend(CollectionBus, {
   /**
    */
 
-  _find(operation) {
-    return _oneOrMany(operation, this.target.filter(sift(operation.query)));
+  _find2(action) {
+    return _oneOrMany(action, this.target.filter(sift(action.query)));
   }
 });
 

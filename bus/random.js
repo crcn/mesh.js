@@ -15,8 +15,8 @@ Bus.extend(RandomBus, {
   /**
    */
 
-  execute: function(operation) {
-    return this._busses[Math.floor(Math.random() * this._busses.length)].execute(operation);
+  execute: function(action) {
+    return this._busses[Math.floor(Math.random() * this._busses.length)].execute(action);
   }
 });
 

@@ -14,7 +14,7 @@ describe(__filename + "#", function() {
 
   it('can load data from local storage', co.wrap(function*() {
     var memBus = MemoryDsBus.create();
-    yield memBus.execute({ action: 'insert', data: { name: 'a' }, collection: 'as' });
+    yield memBus.execute({ type: 'insert', data: { name: 'a' }, collectionName: 'as' });
 
     var store = {
       get() {
@@ -26,7 +26,7 @@ describe(__filename + "#", function() {
       store: store
     });
 
-    var chunk = yield localStorageBus.execute({ action: 'load', collection: 'as', query: { name: 'a' }}).read();
+    var chunk = yield localStorageBus.execute({ type: 'find', collectionName: 'as', query: { name: 'a' }}).read();
     expect(chunk.value.name).to.be('a');
   }));
 
@@ -43,9 +43,9 @@ describe(__filename + "#", function() {
       store: store
     });
 
-    yield localStorageBus.execute({ action: 'insert', collection: 'as', data:  { name: 'a' }});
-    yield localStorageBus.execute({ action: 'remove', collection: 'as', query: { name: 'a' }});
-    yield localStorageBus.execute({ action: 'remove', collection: 'as', query: { name: 'a' }});
+    yield localStorageBus.execute({ type: 'insert', collectionName: 'as', data:  { name: 'a' }});
+    yield localStorageBus.execute({ type: 'remove', collectionName: 'as', query: { name: 'a' }});
+    yield localStorageBus.execute({ type: 'remove', collectionName: 'as', query: { name: 'a' }});
 
     expect(setCount).to.be(3);
   }));

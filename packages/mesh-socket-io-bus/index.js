@@ -18,7 +18,7 @@ function SocketIoBus(options, bus) {
   var pack    = options.pack    || function(msg) { return msg; };
   var unpack  = options.unpack  || function(msg) { return msg; };
 
-  if (!options.host && process.browser) {
+  if (!options.host && typeof window !== 'undefined') {
     options.host = location.protocol + '//' + location.host;
   }
 
@@ -41,8 +41,8 @@ function SocketIoBus(options, bus) {
 }
 
 Bus.extend(SocketIoBus, {
-  execute(operation) {
-    return this.bus.execute(operation);
+  execute(action) {
+    return this.bus.execute(action);
   }
 });
 

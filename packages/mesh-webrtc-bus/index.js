@@ -11,13 +11,13 @@ module.exports = function(options) {
 
   peer.on("connection", function (c) {
     connections.push(c);
-    c.on("data", function(remoteOperationStr) {
-      var remoteOperation = JSON.parse(remoteOperationStr);
-      remoteOperation.remote = true;
+    c.on("data", function(remoteactionStr) {
+      var remoteaction = JSON.parse(remoteactionStr);
+      remoteaction.remote = true;
       for (var i = listeners.length; i--;) {
         var listener = listeners[i];
-        if (listener.test(remoteOperation)) {
-          listener.stream.push(remoteOperation);
+        if (listener.test(remoteaction)) {
+          listener.stream.push(remoteaction);
         }
       }
     });
@@ -32,15 +32,15 @@ module.exports = function(options) {
   });
 
   function createStream() {
-    return through.obj(function(operation, enc, next) {
+    return through.obj(function(action, enc, next) {
 
-      if (operation.name === "tail") {
-        return tail(this, operation);
+      if (action.name === "tail") {
+        return tail(this, action);
       }
 
-      if (!operation.remote && /insert|update|remove/.test(operation.name)) {
+      if (!action.remote && /insert|update|remove/.test(action.name)) {
         for (var i = connections.length; i--;) {
-          connections[i].send(JSON.stringify(operation));
+          connections[i].send(JSON.stringify(action));
         }
       }
 
@@ -52,8 +52,8 @@ module.exports = function(options) {
 
   return createStream;
 
-  function tail (stream, operation) {
-    var op = JSON.parse(JSON.stringify(operation));
+  function tail (stream, action) {
+    var op = JSON.parse(JSON.stringify(action));
     delete op.name;
 
     listeners.push({

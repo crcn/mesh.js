@@ -9,9 +9,9 @@ var db = mesh.parallel(localStore(), webRtcDb);
 
 webRtcDb.peer.connect("peerId");
 
-mesh.run(db, "tail").on("data", function(operation) {
+mesh.run(db, "tail").on("data", function(action) {
 
 });
 
-mesh.stream(db).write(mesh.operation("insert", {data: "blarg" }));
+mesh.stream(db).write(mesh.action("insert", {data: "blarg" }));
 ```

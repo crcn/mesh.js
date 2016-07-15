@@ -1,5 +1,5 @@
 
-Creates a bus that can be tailed for all operations executed against it.
+Creates a bus that can be tailed for all actions executed against it.
 
 **Installation**: `npm install mesh-tailable-bus`
 
@@ -9,8 +9,8 @@ var bus = TailableBus.create(NoopBus.create());
 var tail = bus.createTail();
 
 tail.pipeTo({
-  write: function(operation) {
-    // handle tailed operation - { action: "doSomething" }
+  write: function(action) {
+    // handle tailed action - { action: "doSomething" }
   },
   close: function() { },
   abort: function() { }

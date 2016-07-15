@@ -2,7 +2,7 @@ This example takes responses from a remote data store & caches them in a local s
 
 ```javascript
 
-// map DS operations to the API
+// map DS actions to the API
 var commands = [
 
     sift({ name: 'load', collection: 'todos' }), WrapBus.create(async function() {
@@ -22,13 +22,13 @@ var commands = [
 
 var noop = NoopBus.create();
 
-var apiBus = WrapBus.create(function(operation) {
+var apiBus = WrapBus.create(function(action) {
 
     for (var i = 0, n = commands.length; i += 2) {
-        if (commands[i](operation)) return commands[i + 1].execute(operation);
+        if (commands[i](action)) return commands[i + 1].execute(action);
     }
 
-    return noop.execute(operation);
+    return noop.execute(action);
 });
 
 var memBus = MemoryDsBus.create();

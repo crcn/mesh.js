@@ -17,7 +17,7 @@ Bus.extend(SequenceBus, {
   /**
    */
 
-  execute: function(operation) {
+  execute: function(action) {
     return Response.create((writable) => {
 
       // copy incase the collection mutates (unlikely but possible)
@@ -25,7 +25,7 @@ Bus.extend(SequenceBus, {
 
       var next = (i) => {
         if (i === busses.length) return writable.close();
-        var resp = busses[i].execute(operation) || EmptyResponse.create();
+        var resp = busses[i].execute(action) || EmptyResponse.create();
         resp.pipeTo(writable, { preventClose: true });
         resp.then(() => next(i + 1));
       };
