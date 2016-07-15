@@ -31,6 +31,7 @@ module.exports = {
    */
 
   Response           : require('./response'),
+  WrapResponse       : require('./response/wrap'),
   EmptyResponse      : require('./response/empty'),
   ErrorResponse      : require('./response/error'),
   BufferedResponse   : require('./response/buffered'),

@@ -55,7 +55,7 @@ bus.execute().then(function() {
 ```
 
 
-#### WrapBus(executeFunction)
+#### WrapBus.create(executeFunction)
 
 Wraps `executeFunction` as a bus. This class is useful if you're looking to incorporate other libraries into Mesh. Here are a few examples of how you can use this class:
 
@@ -112,7 +112,7 @@ response.read().then(function(chunk) {
 });
 ```
 
-#### ParallelBus([busses])
+#### ParallelBus.create([busses])
 
 Executes an operation against multiple busses at the same time. Chunk data emitted by each bus is then merged into a single response in an un-ordered fashion.
 
@@ -134,7 +134,7 @@ pingResponse.readAll().then(function(pongs) {
 });
 ```
 
-#### SequenceBus([busses])
+#### SequenceBus.create([busses])
 
 Executes operations against a each bus one at a time. Data is merged into one stream according to the order of each bus.
 
@@ -151,7 +151,7 @@ bus.execute().read(function(chunks) {
 ```
 
 
-#### FallbackBus([busses])
+#### FallbackBus.create([busses])
 
 Executes one operation against all busses sequentially until one bus emits data.
 
@@ -167,11 +167,11 @@ response.readAll().then(function(response) {
 });
 ```
 
-#### RaceBus([busses])
+#### RaceBus.create([busses])
 
 Executes one operation against all busses in parallel until one bus emits data. The response data from the fastest bus is returned.
 
-#### CatchBus(bus, catchErrorFunction)
+#### CatchBus.create(bus, catchErrorFunction)
 
 Catches an error if one is emitted by the provided bus.
 
@@ -194,7 +194,7 @@ bus.execute({ }).catch(function(error) {
 });
 ```
 
-#### RandomBus([busses])
+#### RandomBus.create([busses])
 
 Picks one bus at random and executes an operation against it.
 
@@ -210,7 +210,7 @@ await bus.execute().read(); // b
 await bus.execute().read(); // b
 ```
 
-#### RoundRobinBus([busses])
+#### RoundRobinBus.create([busses])
 
 Picks one bus in rotation and executes an operation against it.
 
@@ -226,7 +226,7 @@ await bus.execute().read(); // c
 await bus.execute().read(); // a
 ```
 
-#### RetryBus(count, bus)
+#### RetryBus.create(count, bus)
 
 Re-executes operations against `bus` `count` times if an error occurs.
 
@@ -244,7 +244,7 @@ var apiBus = WrapBus.create(function(operation) {
   });
 });
 
-var bus = RetryBus(5, apiBus);
+var bus = RetryBus.create(5, apiBus);
 
 bus.execute({
   path: "/api/users",
@@ -254,9 +254,9 @@ bus.execute({
 });
 ```
 
-#### DelayedBus(ms, bus)
+#### DelayedBus.create(ms, bus)
 
-Delays execution on the target bus for `ms` milliseconds. 
+Delays execution on the target bus for `ms` milliseconds.
 
 ```javascript
 var bus = DelayedBus.create(500, {
@@ -268,7 +268,7 @@ var bus = DelayedBus.create(500, {
 console.log(await bus.execute().read()); // Hello World!
 ```
 
-#### NoopBus()
+#### NoopBus.create()
 
 No-operation bus.
 
@@ -281,7 +281,7 @@ bus.execute().then(function() {
 });
 ```
 
-#### AcceptBus(filter, resolveBus[, rejectBus])
+#### AcceptBus.create(filter, resolveBus[, rejectBus])
 
 passes operations to `resolveBus` if `filter` returns `TRUE` against the executed operation. Otherwise the operation gets sent to `rejectBus`.
 
@@ -296,11 +296,11 @@ bus.execute({ name: 'ping' }) // pong!
 bus.execute({ name: 'pong' }) // nothing happens. This is a no-op.
 ```
 
-#### RejectBus(filter, resolveBus[, rejectBus])
+#### RejectBus.create(filter, resolveBus[, rejectBus])
 
 Similar to `AcceptBus`, but passes operations to `resolveBus` if `filter` returns `FALSE`.
 
-#### MapBus(bus, mapFunction)
+#### MapBus.create(bus, mapFunction)
 
 Maps the response chunks from `bus`.
 
@@ -315,7 +315,7 @@ bus = MapBus.create(bus, function(chunkValue, writable, operation) {
 bus.execute({ echo: 'hello' }); // ['h', 'e', 'l', 'l', 'o']
 ```
 
-#### BufferedBus(error, [chunkValues])
+#### BufferedBus.create(error, [chunkValues])
 
 Returns data specified in the constructor. Useful for testing.
 
@@ -372,9 +372,9 @@ class PersonModel {
 
 /*
 import MongoDbBus from 'mesh-mongo-db-bus';
-var bus = new MongoDbBus();
+var bus = new MongoDbBus.create();
 var person = new PersonModel({
-  bus: new AttachDefaultsBus({ collection: 'people' }, bus),
+  bus: new AttachDefaultsBus.create({ collection: 'people' }, bus),
   name: 'jeff'
 });
 
@@ -392,7 +392,7 @@ it('can load data into the model', async function() {
 });
 ```
 
-#### AttachDefaultsBus(operationDefaults, bus)
+#### AttachDefaultsBus.create(operationDefaults, bus)
 
 Attaches default properties to executed operations.
 
@@ -518,7 +518,7 @@ response.catch(function(error) {
 });
 ```
 
-#### BufferedResponse(error, [chunkValues])
+#### BufferedResponse.create(error, [chunkValues])
 
 Returns a response with pre-defined data
 
@@ -535,11 +535,28 @@ response.read().catch(function(error) {
 });
 ```
 
-#### EmptyResponse()
+#### WrapResponse.create(value)
+
+Wraps a value around a streamable response. 
+
+```javascript
+var resp1 = WrapResponse.create('hello');
+await resp1.read(); // { value: 'hello', done: false }
+
+var resp2 = WrapResponse.create(BufferedResponse.create(void 0, [1, 2, 3]));
+await resp2.read(); // { value: 1, done: false }
+await resp2.read(); // { value: 2, done: false }
+
+var resp3 = WrapResponse.create(Promise.resolve('blarg'));
+await resp3.read(); // { value: 'blarg', done: false }
+
+```
+
+#### EmptyResponse.create()
 
 Returns an empty response
 
-#### NodeStreamResponse(stream)
+#### NodeStreamResponse.create(stream)
 
 Wraps a node stream in a `Response` object.
 

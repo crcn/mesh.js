@@ -1,7 +1,7 @@
 var Bus              = require('./base');
-var extend           = require('../internal/extend');
 var Response         = require('../response');
 var BufferedResponse = require('../response/buffered');
+var WrapResponse     = require('../response/wrap');
 
 /**
 */
@@ -26,23 +26,13 @@ function WrapBus(execute) {
 /**
 */
 
-extend(Bus, WrapBus, {
+Bus.extend(WrapBus, {
 
   /**
    */
 
   execute: function(operation) {
-    var ret = this._execute(operation);
-
-    // is a readable stream
-    if (ret && ret.read)  return ret;
-    if (!ret || !ret.then) return BufferedResponse.create(void 0, ret);
-    if (ret.then) return Response.create(function(writable) {
-      ret.then((value) => {
-        if (value != void 0) writable.write(value);
-        writable.close();
-      }, writable.abort.bind(writable));
-    });
+    return WrapResponse.create(this._execute(operation));
   }
 });
 
