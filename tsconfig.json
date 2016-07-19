@@ -1,0 +1,15 @@
+
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs"
+  },
+  "filesGlob": [
+    "typings/index.d.ts"
+  ],
+  "files": [
+  ],
+  "atom": {
+    "rewriteTsconfig": true
+  }
+}
