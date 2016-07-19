@@ -4,8 +4,8 @@
     "target": "es5",
     "module": "commonjs"
   },
-  "files": [
-   "typings/index.d.ts"
+  "filesGlob": [
+   "typings/*.d.ts"
   ],
   "atom": {
     "rewriteTsconfig": true
