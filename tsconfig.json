@@ -5,7 +5,8 @@
     "module": "commonjs"
   },
   "filesGlob": [
-   "typings/*.d.ts"
+   "typings/*.d.ts",
+   "packages/**/*.d.ts
   ],
   "atom": {
     "rewriteTsconfig": true
