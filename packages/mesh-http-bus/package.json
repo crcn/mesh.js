@@ -1,6 +1,6 @@
 {
   "name": "mesh-http-bus",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "[![Build Status](https://travis-ci.org/mojo-js/mesh-http.svg)](https://travis-ci.org/mojo-js/mesh-http) [![Coverage Status](https://coveralls.io/repos/mojo-js/mesh-http/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/mesh-http?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/mesh-http.svg)](https://david-dm.org/mojo-js/mesh-http)",
   "main": "index.js",
   "scripts": {

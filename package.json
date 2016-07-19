@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "6.0.20",
+  "version": "6.0.21",
   "tag": "latest",
   "description": "data synchronization library",
   "main": "./lib/index.js",
@@ -42,5 +42,6 @@
     "sift": "^2.0.9",
     "uglify-js": "^2.7.0"
   },
+  "typings": "./typings/index.d.ts",
   "dependencies": {}
 }
