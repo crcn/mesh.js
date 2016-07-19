@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "6.0.18",
+  "version": "6.0.19",
   "tag": "latest",
   "description": "data synchronization library",
   "main": "./lib/index.js",
