@@ -1,10 +1,10 @@
 {
   "name": "mesh-socket-io-bus",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "[![Build Status](https://travis-ci.org/mojo-js/mesh-socket.io.svg)](https://travis-ci.org/mojo-js/mesh-socket.io) [![Coverage Status](https://coveralls.io/repos/mojo-js/mesh-socket.io/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/mesh-socket.io?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/mesh-socket.io.svg)](https://david-dm.org/mojo-js/mesh-socket.io)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha index-test.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +16,7 @@
   "devDependencies": {
     "expect.js": "^0.3.1",
     "mesh-tailable-bus": "^1.0.5",
+    "mocha": "^2.5.3",
     "sift": "^3.0.0",
     "socket.io": "^1.3.7"
   }

@@ -19,13 +19,14 @@ Bus.extend(AcceptBus, {
   /**
    */
 
-  execute(action) {
+  execute: function (action) {
+    var self = this;
     var accepted = this._filter(action);
 
     if (accepted && accepted.then) {
-      return Response.create((writable) => {
-        accepted.then((yes) => {
-          this._execute(yes, action).pipeTo(writable);
+      return Response.create(function (writable) {
+        accepted.then(function (yes) {
+          self._execute(yes, action).pipeTo(writable);
         }, writable.abort.bind(writable));
       });
     }
@@ -36,7 +37,7 @@ Bus.extend(AcceptBus, {
   /**
    */
 
-  _execute(yes, action) {
+  _execute: function (yes, action) {
     return yes ? this._acceptBus.execute(action) : this._rejectBus.execute(action);
   }
 });

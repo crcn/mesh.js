@@ -1,10 +1,10 @@
 {
   "name": "mesh-ds-bus-test-cases",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": ""
   },
   "author": "",
   "license": "ISC",
@@ -12,5 +12,8 @@
     "co": "^4.6.0",
     "expect.js": "^0.3.1",
     "mesh": "^6.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3"
   }
 }

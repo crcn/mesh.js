@@ -17,21 +17,17 @@ function CatchErrorBus(bus, catchError) {
   /**
    */
 
-  execute(action) {
-    return Response.create((writable) => {
-
-      this._bus.execute(action).pipeTo({
-        write: (value) => {
-          writable.write(value);
-        },
-        close: () => {
-          writable.close();
-        },
-        abort: (error) => {
+  execute: function (action) {
+    var self = this;
+    return Response.create(function createWritable(writable) {
+      self._bus.execute(action).pipeTo({
+        write: writable.write.bind(writable),
+        close: writable.close.bind(writable),
+        abort: function abort(error) {
           try {
-            var p = this._catchError(error, action);
+            var p = self._catchError(error, action);
             writable.close();
-          } catch(e) {
+          } catch (e) {
             writable.abort(e);
           }
         }

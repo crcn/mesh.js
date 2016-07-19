@@ -17,7 +17,7 @@ function Response(run) {
 
     // thenable? Automatically end
     if (ret && ret.then) {
-      ret.then(() => {
+      ret.then(function () {
         writer.close();
       }, writer.abort.bind(writer));
     }
@@ -32,34 +32,35 @@ extend(Response, {
   /**
    */
 
-  then: function(resolve, reject) {
+  then: function (resolve, reject) {
     return this._writer.then(resolve, reject);
   },
 
   /**
    */
 
-  catch: function(reject) {
+  catch: function (reject) {
     return this._writer.catch(reject);
   },
 
   /**
    */
 
-  read: function() {
+  read: function () {
     return this._reader.read();
   },
 
   /**
    */
 
-  readAll: function() {
+  readAll: function () {
+    var self = this;
     var buffer = [];
     // return new
-    return new Promise((resolve, reject) => {
-      this.pipeTo({
+    return new Promise(function run(resolve, reject) {
+      self.pipeTo({
         write: buffer.push.bind(buffer),
-        close: resolve.bind(this, buffer),
+        close: resolve.bind(self, buffer),
         abort: reject
       });
     });
@@ -68,14 +69,14 @@ extend(Response, {
   /**
    */
 
-  pipeTo: function(writable, options) {
+  pipeTo: function (writable, options) {
     return this._reader.pipeTo(writable, options);
   },
 
   /**
    */
 
-  cancel: function() {
+  cancel: function () {
     return this._reader.cancel();
   }
 });

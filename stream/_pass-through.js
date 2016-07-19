@@ -4,10 +4,11 @@ var extend = require('../internal/extend');
  */
 
 function PassThrough() {
+  var self = this;
   this._values = [];
-  this._promise = new Promise((resolve, reject) => {
-    this._resolve = resolve;
-    this._reject  = reject;
+  this._promise = new Promise(function run(resolve, reject) {
+    self._resolve = resolve;
+    self._reject  = reject;
   });
 }
 
@@ -19,26 +20,27 @@ extend(PassThrough, {
   /**
    */
 
-  then: function(resolve, reject) {
+  then: function (resolve, reject) {
     return this._promise.then(resolve, reject);
   },
 
   /**
    */
 
-  __signalWrite: function() {
+  __signalWrite: function () {
   },
 
   /**
    */
 
-  __signalRead: function() {
+  __signalRead: function () {
   },
 
   /**
    */
 
-  write: function(value) {
+  write: function (value) {
+    var self = this;
 
     if (this._closed) {
       return Promise.reject(new Error('cannot write to a closed stream'));
@@ -46,18 +48,19 @@ extend(PassThrough, {
 
     this._values.push(value);
     this.__signalWrite();
-    return new Promise((resolve, reject) => {
-      this.__signalRead = () => {
-        this.__signalRead = () => { };
+    return new Promise(function run(resolve, reject) {
+      self.__signalRead = function () {
+        self.__signalRead = function () { };
         resolve();
-      }
+      };
     });
   },
 
   /**
    */
 
-  read: function() {
+  read: function () {
+    var self = this;
     this.__signalRead();
 
     if (this._error) {
@@ -72,10 +75,10 @@ extend(PassThrough, {
       return Promise.resolve({ value: void 0, done: true });
     }
 
-    return new Promise((resolve, reject) => {
-      this.__signalWrite = () => {
-        this.__signalWrite = () => { };
-        this.read().then(resolve, reject);
+    return new Promise(function run(resolve, reject) {
+      self.__signalWrite = function () {
+        self.__signalWrite = function () { };
+        self.read().then(resolve, reject);
       };
     });
   },
@@ -83,7 +86,7 @@ extend(PassThrough, {
   /**
    */
 
-  abort: function(error) {
+  abort: function (error) {
     this._error = error;
     this._reject(error);
     this.__signalWrite();
@@ -92,7 +95,7 @@ extend(PassThrough, {
   /**
    */
 
-  close: function() {
+  close: function () {
     this._closed = true;
     this._resolve();
     this.__signalWrite();

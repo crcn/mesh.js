@@ -1,14 +1,17 @@
 {
   "name": "mesh-tailable-bus",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha index-test.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "mesh": "^6.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3"
   }
 }

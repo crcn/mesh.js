@@ -15,7 +15,7 @@ extend(Bus, {
   /**
    */
 
-  execute(action) {
+  execute: function (action) {
     // OVERRIDE ME
   }
 });

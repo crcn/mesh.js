@@ -14,7 +14,7 @@ function NoopBus() { }
   /**
    */
 
-  execute(action) {
+  execute: function (action) {
     return EmptyResponse.create();
   }
 });

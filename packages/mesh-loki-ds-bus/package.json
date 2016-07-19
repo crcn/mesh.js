@@ -1,15 +1,16 @@
 {
   "name": "mesh-loki-ds-bus",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha index-test.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "mesh-ds-bus-test-cases": "^3.0.0"
+    "mesh-ds-bus-test-cases": "^3.0.0",
+    "mocha": "^2.5.3"
   },
   "dependencies": {
     "lokijs": "^1.3.10",

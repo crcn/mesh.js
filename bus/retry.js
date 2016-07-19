@@ -26,30 +26,29 @@ Bus.extend(RetryBus, {
   /**
    */
 
-  execute(action) {
-    return Response.create((writable) => {
+  execute: function (action) {
+    var self = this;
+    return Response.create(function createWritable(writable) {
       var hasChunk  = false;
       var prevError;
 
-      var run = (triesLeft) => {
+      function run(triesLeft) {
         if (!triesLeft) return writable.abort(prevError);
-        var response = this._bus.execute(action);
+        var response = self._bus.execute(action);
         response.pipeTo({
-          write(value) {
+          write: function write(value) {
             hasChunk = true;
             writable.write(value);
           },
-          close() {
-            writable.close();
-          },
-          abort(error) {
+          close: writable.close.bind(writable),
+          abort: function abort(error) {
             prevError = error;
             run(triesLeft - 1);
           }
         });
       }
 
-      run(this._maxRetries);
+      run(self._maxRetries);
     });
   }
 });

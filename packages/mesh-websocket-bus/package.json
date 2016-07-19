@@ -1,11 +1,14 @@
 {
   "name": "mesh-websocket-bus",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": ""
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^2.5.3"
+  }
 }

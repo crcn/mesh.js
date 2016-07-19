@@ -17,19 +17,20 @@ Bus.extend(ParallelBus, {
   /**
    */
 
-  execute(action) {
-    return Response.create((writable) => {
+  execute: function (action) {
+    var self = this;
+    return Response.create(function createWritable(writable) {
 
-      var busses  = this._busses.concat();
+      var busses  = self._busses.concat();
       var numLeft = busses.length;
 
       if (!numLeft) return EmptyResponse.create();
 
-      busses.forEach((bus) => {
+      busses.forEach(function forEach(bus) {
         var resp = bus.execute(action) || EmptyResponse.create();
         resp.pipeTo({
           write: writable.write.bind(writable),
-          close: function() {
+          close: function close() {
             if (!(--numLeft)) writable.close();
           },
           abort: writable.abort.bind(writable)

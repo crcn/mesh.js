@@ -9,7 +9,7 @@ var sift        = require('sift');
 
 describe(__filename + '#', function() {
 
-  var port = 8899;
+  var port = 9100;
   var actions = [];
   var action = {};
   var em = new EventEmitter();

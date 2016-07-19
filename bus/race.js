@@ -17,21 +17,22 @@ Bus.extend(RaceBus, {
   /**
    */
 
-  execute(action) {
-    return Response.create((writable) => {
-      var busses  = this._busses.concat();
+  execute: function (action) {
+    var self = this;
+    return Response.create(function createWritable(writable) {
+      var busses  = self._busses.concat();
       var numLeft = busses.length;
       var found   = -1;
-      busses.forEach((bus, i) => {
+      busses.forEach(function forEach(bus, i) {
         var response = bus.execute(action) || EmptyResponse.create();
 
         response.pipeTo({
-          write(value) {
+          write: function write(value) {
             if ((~found && found !== i)) return;
             found = i;
             writable.write(value);
           },
-          close() {
+          close: function close() {
             if ((~found && found === i) || (--numLeft) === 0) {
               writable.close();
             }

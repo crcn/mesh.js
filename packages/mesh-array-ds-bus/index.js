@@ -11,13 +11,13 @@ function ArrayDsBus(target, mutators) {
   Bus.call(this);
   this.target   = target || [];
   this.mutators = mutators || {
-    update(oldValue, newValue) {
+    update: function(oldValue, newValue) {
       return newValue;
     },
-    insert(newValue) {
+    insert: function(newValue) {
       return newValue;
     },
-    remove(newValue) {
+    remove: function(newValue) {
 
     }
   };
@@ -32,8 +32,8 @@ Bus.extend(ArrayDsBus, {
   /**
    */
 
-  execute(action) {
-    return Response.create((writable) => {
+  execute: function(action) {
+    return Response.create(function (writable) {
       switch(action.type) {
         case "insert" : return this._insert(action, writable)
         case "remove" : return this._remove(action, writable)
@@ -47,7 +47,7 @@ Bus.extend(ArrayDsBus, {
   /**
    */
 
-  _insert(action, writable) {
+  _insert: function(action, writable) {
     this.target.push(this.mutators.insert(_cloneObject(action.data)));
     writable.close();
   },
@@ -55,8 +55,8 @@ Bus.extend(ArrayDsBus, {
   /**
    */
 
-  _remove(action, writable) {
-    this._find2(action).forEach((item) => {
+  _remove: function(action, writable) {
+    this._find2(action).forEach(function (item) {
       writable.write(_cloneObject(item));
       this.mutators.remove(item);
       this.target.splice(this.target.indexOf(item), 1);

@@ -17,19 +17,19 @@ function MapBus(bus, map) {
   /**
    */
 
-  execute(action) {
-    return Response.create((writable) => {
-
-      this._bus.execute(action).pipeTo({
-        write: (value) => {
+  execute: function (action) {
+    var self = this;
+    return Response.create(function createWritable(writable) {
+      self._bus.execute(action).pipeTo({
+        write: function write(value) {
           try {
-            this._map(value, writable, action);
+            self._map(value, writable, action);
           } catch(e) {
             writable.abort(e);
             return Promise.reject(e);
           }
         },
-        close: () => {
+        close: function close() {
           writable.close();
         },
         abort: writable.abort.bind(writable)

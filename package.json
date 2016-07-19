@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "6.0.17",
+  "version": "6.0.18",
   "tag": "latest",
   "description": "data synchronization library",
   "main": "./lib/index.js",
@@ -11,9 +11,13 @@
     "flow"
   ],
   "scripts": {
-    "test": "gulp test",
-    "clean": "find ./ -name node_modules -exec rm -rf {} \\;",
-    "prepublish": "DIRNAME=`pwd`; for FILE in `find packages -name mesh-*`; do cd $DIRNAME/$FILE; npm install; done;"
+    "test": "npm run lint; mocha test/**/*-test.js; ./scripts/exec-packages.sh npm test",
+    "bundle": "browserify node_modules/bundle-collapser/plugin -e index.js -o dist/mesh.js",
+    "lint": "jshint {bus,response,stream}",
+    "minify": "uglifyjs dist/mesh.js",
+    "patch-packages": "./scripts/exec-packages.sh npm version patch",
+    "publish-packages": "./scripts/exec-packages.sh npm publish",
+    "clean": "find ./ -name node_modules -exec rm -rf {} \\;"
   },
   "repository": {
     "type": "git",
@@ -27,8 +31,8 @@
   "homepage": "https://github.com/crcn/mesh.js",
   "devDependencies": {
     "babelify": "^6.4.0",
-    "browserify": "^9.0.4",
-    "bundle-collapser": "^1.2.0",
+    "browserify": "^13.0.1",
+    "bundle-collapser": "^1.2.1",
     "co": "^4.6.0",
     "expect.js": "^0.3.1",
     "gulp": "^3.9.0",
@@ -36,8 +40,14 @@
     "gulp-plumber": "^1.0.0",
     "gulp-rename": "^1.2.0",
     "gulp-uglify": "^1.1.0",
+    "install": "^0.8.1",
+    "jshint": "^2.9.2",
+    "jslint": "^0.10.1",
     "lodash": "^3.10.1",
+    "mocha": "^2.5.3",
+    "npm": "^3.10.5",
     "sift": "^2.0.9",
+    "uglify-js": "^2.7.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "yargs": "^3.6.0"

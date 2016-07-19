@@ -5,11 +5,11 @@ var Response = require('./index');
 
 function NodeStreamResponse(stream) {
 
-  Response.call(this, (writable) => {
+  Response.call(this, function createWritable(writable) {
 
     if (!stream) return writable.close();
 
-    var pump = () => {
+    function pump() {
       stream.resume();
       stream.once('data', function(data) {
         stream.pause();
@@ -17,7 +17,7 @@ function NodeStreamResponse(stream) {
       });
     }
 
-    var end = () => {
+    function end() {
       writable.close();
     }
 
