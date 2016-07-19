@@ -6,7 +6,7 @@
   },
   "filesGlob": [
    "typings/*.d.ts",
-   "packages/**/*.d.ts
+   "packages/**/*.d.ts"
   ],
   "atom": {
     "rewriteTsconfig": true
