@@ -1,6 +1,6 @@
 {
   "name": "mesh-mongo-ds-bus",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "mesh-mongodb is a streamable interface for the [Mongodb](https://www.mongodb.org/) library. See additional action documentation here: http://meshjs.herokuapp.com/docs/database-adapters.",
   "main": "index.js",
   "scripts": {

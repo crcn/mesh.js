@@ -1,6 +1,6 @@
 {
   "name": "mesh-array-ds-bus",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "",
   "main": "index.js",
   "scripts": {

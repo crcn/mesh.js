@@ -1,6 +1,6 @@
 {
   "name": "mesh-webrtc-bus",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "```javascript var mesh     = require(\"mesh\"); var localStore  = require(\"mesh-local-storage\"); var webrtc      = require(\"mesh-webrtc\");",
   "main": "index.js",
   "scripts": {

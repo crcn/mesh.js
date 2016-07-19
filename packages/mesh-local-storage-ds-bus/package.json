@@ -1,6 +1,6 @@
 {
   "name": "mesh-local-storage-ds-bus",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "[![Build Status](https://travis-ci.org/mojo-js/mesh-local-storage.svg)](https://travis-ci.org/mojo-js/mesh-local-storage) [![Coverage Status](https://coveralls.io/repos/mojo-js/mesh-local-storage/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/mesh-local-storage?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/mesh-local-storage.svg)](https://david-dm.org/mojo-js/mesh-local-storage)",
   "main": "index.js",
   "scripts": {

@@ -1,5 +1,5 @@
 var io     = require('socket.io-client');
-var RemoteBus    = require('mesh-remote-bus');
+
 var mesh   = require('mesh');
 var Bus    = mesh.Bus;
 var NoopBus = mesh.NoopBus;

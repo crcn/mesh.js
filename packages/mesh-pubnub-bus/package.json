@@ -1,6 +1,6 @@
 {
   "name": "mesh-pubnub-bus",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "[![Build Status](https://travis-ci.org/mojo-js/mesh-pubnub.svg)](https://travis-ci.org/mojo-js/mesh-pubnub) [![Coverage Status](https://coveralls.io/repos/mojo-js/mesh-pubnub/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/mesh-pubnub?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/mesh-pubnub.svg)](https://david-dm.org/mojo-js/mesh-pubnub)",
   "main": "index.js",
   "scripts": {

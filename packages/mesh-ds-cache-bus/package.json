@@ -1,6 +1,6 @@
 {
   "name": "mesh-ds-cache-bus",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "This example takes responses from a remote data store & caches them in a local store. For example:",
   "main": "index.js",
   "scripts": {

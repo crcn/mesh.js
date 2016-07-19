@@ -1,5 +1,4 @@
 
-
 declare module "mesh" {
 
   class Chunk {
