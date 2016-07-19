@@ -5,7 +5,7 @@
     "module": "commonjs"
   },
   "filesGlob": [
-    "typings/index.d.ts"
+    "**/*.d.ts"
   ],
   "files": [
   ],
