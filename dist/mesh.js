@@ -20,13 +20,14 @@ Bus.extend(AcceptBus, {
   /**
    */
 
-  execute: function(action) {
+  execute: function (action) {
+    var self = this;
     var accepted = this._filter(action);
 
     if (accepted && accepted.then) {
-      return Response.create((writable) => {
-        accepted.then((yes) => {
-          this._execute(yes, action).pipeTo(writable);
+      return Response.create(function (writable) {
+        accepted.then(function (yes) {
+          self._execute(yes, action).pipeTo(writable);
         }, writable.abort.bind(writable));
       });
     }
@@ -37,7 +38,7 @@ Bus.extend(AcceptBus, {
   /**
    */
 
-  _execute: function(yes, action) {
+  _execute: function (yes, action) {
     return yes ? this._acceptBus.execute(action) : this._rejectBus.execute(action);
   }
 });
@@ -76,7 +77,7 @@ function AttachDefaultsBus(properties, bus) {
  */
 
  Bus.extend(AttachDefaultsBus, {
-  execute: function(action) {
+  execute: function (action) {
     return this._bus.execute(_defaults(action, this._properties));
   }
 });
@@ -104,7 +105,7 @@ extend(Bus, {
   /**
    */
 
-  execute: function(action) {
+  execute: function (action) {
     // OVERRIDE ME
   }
 });
@@ -140,7 +141,7 @@ function BufferedBus(error, chunkValues) {
   /**
    */
 
-  execute: function(action) {
+  execute: function (action) {
     return BufferedResponse.create(this._error, this._chunkValues);
   }
 });
@@ -170,21 +171,17 @@ function CatchErrorBus(bus, catchError) {
   /**
    */
 
-  execute(action) {
-    return Response.create((writable) => {
-
-      this._bus.execute(action).pipeTo({
-        write: (value) => {
-          writable.write(value);
-        },
-        close: () => {
-          writable.close();
-        },
-        abort: (error) => {
+  execute: function (action) {
+    var self = this;
+    return Response.create(function createWritable(writable) {
+      self._bus.execute(action).pipeTo({
+        write: writable.write.bind(writable),
+        close: writable.close.bind(writable),
+        abort: function abort(error) {
           try {
-            var p = this._catchError(error, action);
+            var p = self._catchError(error, action);
             writable.close();
-          } catch(e) {
+          } catch (e) {
             writable.abort(e);
           }
         }
@@ -215,11 +212,12 @@ function DelayedBus(bus, ms) {
  */
 
 Bus.extend(DelayedBus, {
-  execute(action) {
-    return Response.create((writable) => {
-      setTimeout(() => {
-        (this._bus.execute(action) || EmptyResponse.create()).pipeTo(writable);
-      }, this._ms);
+  execute: function (action) {
+    var self = this;
+    return Response.create(function createWritable(writable) {
+      setTimeout(function onTimeout() {
+        (self._bus.execute(action) || EmptyResponse.create()).pipeTo(writable);
+      }, self._ms);
     });
   }
 });
@@ -249,19 +247,20 @@ function FallbackBus(busses) {
   /**
    */
 
-  execute(action) {
-    return Response.create((writable) => {
-      var busses = this._busses.concat();
-      var next = (i) => {
+  execute: function (action) {
+    var self = this;
+    return Response.create(function createWritable(writable) {
+      var busses = self._busses.concat();
+      function next(i) {
         if (i === busses.length) return writable.close();
         var response = busses[i].execute(action) || EmptyResponse.create();
         var hasChunk = false;
         response.pipeTo({
-          write: function(value) {
+          write: function write(value) {
             hasChunk = true;
             writable.write(value);
           },
-          close: function() {
+          close: function close() {
             if (hasChunk) {
               writable.close();
             } else {
@@ -270,7 +269,7 @@ function FallbackBus(busses) {
           },
           abort: writable.abort.bind(writable)
         });
-      };
+      }
       next(0);
     });
   }
@@ -301,19 +300,19 @@ function MapBus(bus, map) {
   /**
    */
 
-  execute(action) {
-    return Response.create((writable) => {
-
-      this._bus.execute(action).pipeTo({
-        write: (value) => {
+  execute: function (action) {
+    var self = this;
+    return Response.create(function createWritable(writable) {
+      self._bus.execute(action).pipeTo({
+        write: function write(value) {
           try {
-            this._map(value, writable, action);
+            self._map(value, writable, action);
           } catch(e) {
             writable.abort(e);
             return Promise.reject(e);
           }
         },
-        close: () => {
+        close: function close() {
           writable.close();
         },
         abort: writable.abort.bind(writable)
@@ -344,7 +343,7 @@ function NoopBus() { }
   /**
    */
 
-  execute(action) {
+  execute: function (action) {
     return EmptyResponse.create();
   }
 });
@@ -374,19 +373,20 @@ Bus.extend(ParallelBus, {
   /**
    */
 
-  execute(action) {
-    return Response.create((writable) => {
+  execute: function (action) {
+    var self = this;
+    return Response.create(function createWritable(writable) {
 
-      var busses  = this._busses.concat();
+      var busses  = self._busses.concat();
       var numLeft = busses.length;
 
       if (!numLeft) return EmptyResponse.create();
 
-      busses.forEach((bus) => {
+      busses.forEach(function forEach(bus) {
         var resp = bus.execute(action) || EmptyResponse.create();
         resp.pipeTo({
           write: writable.write.bind(writable),
-          close: function() {
+          close: function close() {
             if (!(--numLeft)) writable.close();
           },
           abort: writable.abort.bind(writable)
@@ -421,21 +421,22 @@ Bus.extend(RaceBus, {
   /**
    */
 
-  execute(action) {
-    return Response.create((writable) => {
-      var busses  = this._busses.concat();
+  execute: function (action) {
+    var self = this;
+    return Response.create(function createWritable(writable) {
+      var busses  = self._busses.concat();
       var numLeft = busses.length;
       var found   = -1;
-      busses.forEach((bus, i) => {
+      busses.forEach(function forEach(bus, i) {
         var response = bus.execute(action) || EmptyResponse.create();
 
         response.pipeTo({
-          write(value) {
+          write: function write(value) {
             if ((~found && found !== i)) return;
             found = i;
             writable.write(value);
           },
-          close() {
+          close: function close() {
             if ((~found && found === i) || (--numLeft) === 0) {
               writable.close();
             }
@@ -470,7 +471,7 @@ Bus.extend(RandomBus, {
   /**
    */
 
-  execute(action) {
+  execute: function (action) {
     return this._busses[Math.floor(Math.random() * this._busses.length)].execute(action);
   }
 });
@@ -529,30 +530,29 @@ Bus.extend(RetryBus, {
   /**
    */
 
-  execute(action) {
-    return Response.create((writable) => {
+  execute: function (action) {
+    var self = this;
+    return Response.create(function createWritable(writable) {
       var hasChunk  = false;
       var prevError;
 
-      var run = (triesLeft) => {
+      function run(triesLeft) {
         if (!triesLeft) return writable.abort(prevError);
-        var response = this._bus.execute(action);
+        var response = self._bus.execute(action);
         response.pipeTo({
-          write(value) {
+          write: function write(value) {
             hasChunk = true;
             writable.write(value);
           },
-          close() {
-            writable.close();
-          },
-          abort(error) {
+          close: writable.close.bind(writable),
+          abort: function abort(error) {
             prevError = error;
             run(triesLeft - 1);
           }
         });
       }
 
-      run(this._maxRetries);
+      run(self._maxRetries);
     });
   }
 });
@@ -582,7 +582,7 @@ Bus.extend(RoundRobinBus, {
   /**
    */
 
-  execute(action) {
+  execute: function (action) {
     var ret = this._busses[this._i].execute(action);
     this._i = (this._i + 1) % this._busses.length;
     return ret;
@@ -614,21 +614,22 @@ Bus.extend(SequenceBus, {
   /**
    */
 
-  execute: function(action) {
-    return Response.create((writable) => {
+  execute: function (action) {
+    var self = this;
+    return Response.create(function createWritable(writable) {
 
       // copy incase the collection mutates (unlikely but possible)
-      var busses = this._busses.concat();
+      var busses = self._busses.concat();
 
-      var next = (i) => {
+      function next(i) {
         if (i === busses.length) return writable.close();
         var resp = busses[i].execute(action) || EmptyResponse.create();
         resp.pipeTo({
           write: writable.write.bind(writable),
-          close: next.bind(this, i + 1),
+          close: next.bind(self, i + 1),
           abort: writable.abort.bind(writable)
         });
-      };
+      }
 
       next(0);
     });
@@ -650,17 +651,18 @@ var WrapResponse     = require('../response/wrap');
 */
 
 function WrapBus(execute) {
+  var self = this;
 
   // node style? (next(err, result))
   if (execute.length >= 2) {
     this._execute = function(action) {
-      return new Promise((resolve, reject) => {
-        execute(action, function(err, result) {
+      return new Promise(function run(resolve, reject) {
+        execute(action, function (err, result) {
           if (err) return reject(err);
-          resolve.apply(this, Array.prototype.slice.call(arguments, 1));
+          resolve.apply(self, Array.prototype.slice.call(arguments, 1));
         });
-      })
-    }
+      });
+    };
   } else {
     this._execute = execute;
   }
@@ -674,12 +676,12 @@ Bus.extend(WrapBus, {
   /**
    */
 
-  execute(action) {
+  execute: function (action) {
     return WrapResponse.create(this._execute(action));
   }
 });
 
-WrapBus.create = function(callback) {
+WrapBus.create = function (callback) {
   if (callback.execute) return callback;
   return Bus.create.call(WrapBus, callback);
 };
@@ -10388,7 +10390,7 @@ var isArray  = require('../internal/is-array');
  */
 
 function BufferedResponse(error, chunkValues) {
-  Response.call(this, function(writable) {
+  Response.call(this, function createWritable(writable) {
     if (error) writable.abort(error);
     chunkValues = isArray(chunkValues) ? chunkValues : chunkValues != void 0 ? [chunkValues] : [];
     chunkValues.forEach(writable.write.bind(writable));
@@ -10468,7 +10470,7 @@ function Response(run) {
 
     // thenable? Automatically end
     if (ret && ret.then) {
-      ret.then(() => {
+      ret.then(function () {
         writer.close();
       }, writer.abort.bind(writer));
     }
@@ -10483,34 +10485,35 @@ extend(Response, {
   /**
    */
 
-  then: function(resolve, reject) {
+  then: function (resolve, reject) {
     return this._writer.then(resolve, reject);
   },
 
   /**
    */
 
-  catch: function(reject) {
+  catch: function (reject) {
     return this._writer.catch(reject);
   },
 
   /**
    */
 
-  read: function() {
+  read: function () {
     return this._reader.read();
   },
 
   /**
    */
 
-  readAll: function() {
+  readAll: function () {
+    var self = this;
     var buffer = [];
     // return new
-    return new Promise((resolve, reject) => {
-      this.pipeTo({
+    return new Promise(function run(resolve, reject) {
+      self.pipeTo({
         write: buffer.push.bind(buffer),
-        close: resolve.bind(this, buffer),
+        close: resolve.bind(self, buffer),
         abort: reject
       });
     });
@@ -10519,14 +10522,14 @@ extend(Response, {
   /**
    */
 
-  pipeTo: function(writable, options) {
+  pipeTo: function (writable, options) {
     return this._reader.pipeTo(writable, options);
   },
 
   /**
    */
 
-  cancel: function() {
+  cancel: function () {
     return this._reader.cancel();
   }
 });
@@ -10550,11 +10553,11 @@ var Response = require('./index');
 
 function NodeStreamResponse(stream) {
 
-  Response.call(this, (writable) => {
+  Response.call(this, function createWritable(writable) {
 
     if (!stream) return writable.close();
 
-    var pump = () => {
+    function pump() {
       stream.resume();
       stream.once('data', function(data) {
         stream.pause();
@@ -10562,7 +10565,7 @@ function NodeStreamResponse(stream) {
       });
     }
 
-    var end = () => {
+    function end() {
       writable.close();
     }
 
@@ -10605,7 +10608,7 @@ module.exports =  {
       // is it a promise?
       if (arg1.then) {
         return Response.create(function(writable) {
-          arg1.then((value) => {
+          arg1.then(function resolve(value) {
             if (value != void 0) writable.write(value);
             writable.close();
           }, writable.abort.bind(writable));
@@ -10629,10 +10632,11 @@ var extend = require('../internal/extend');
  */
 
 function PassThrough() {
+  var self = this;
   this._values = [];
-  this._promise = new Promise((resolve, reject) => {
-    this._resolve = resolve;
-    this._reject  = reject;
+  this._promise = new Promise(function run(resolve, reject) {
+    self._resolve = resolve;
+    self._reject  = reject;
   });
 }
 
@@ -10644,26 +10648,27 @@ extend(PassThrough, {
   /**
    */
 
-  then: function(resolve, reject) {
+  then: function (resolve, reject) {
     return this._promise.then(resolve, reject);
   },
 
   /**
    */
 
-  __signalWrite: function() {
+  __signalWrite: function () {
   },
 
   /**
    */
 
-  __signalRead: function() {
+  __signalRead: function () {
   },
 
   /**
    */
 
-  write: function(value) {
+  write: function (value) {
+    var self = this;
 
     if (this._closed) {
       return Promise.reject(new Error('cannot write to a closed stream'));
@@ -10671,18 +10676,19 @@ extend(PassThrough, {
 
     this._values.push(value);
     this.__signalWrite();
-    return new Promise((resolve, reject) => {
-      this.__signalRead = () => {
-        this.__signalRead = () => { };
+    return new Promise(function run(resolve, reject) {
+      self.__signalRead = function () {
+        self.__signalRead = function () { };
         resolve();
-      }
+      };
     });
   },
 
   /**
    */
 
-  read: function() {
+  read: function () {
+    var self = this;
     this.__signalRead();
 
     if (this._error) {
@@ -10697,10 +10703,10 @@ extend(PassThrough, {
       return Promise.resolve({ value: void 0, done: true });
     }
 
-    return new Promise((resolve, reject) => {
-      this.__signalWrite = () => {
-        this.__signalWrite = () => { };
-        this.read().then(resolve, reject);
+    return new Promise(function run(resolve, reject) {
+      self.__signalWrite = function () {
+        self.__signalWrite = function () { };
+        self.read().then(resolve, reject);
       };
     });
   },
@@ -10708,7 +10714,7 @@ extend(PassThrough, {
   /**
    */
 
-  abort: function(error) {
+  abort: function (error) {
     this._error = error;
     this._reject(error);
     this.__signalWrite();
@@ -10717,7 +10723,7 @@ extend(PassThrough, {
   /**
    */
 
-  close: function() {
+  close: function () {
     this._closed = true;
     this._resolve();
     this.__signalWrite();
@@ -10752,17 +10758,18 @@ extend(ReadableStream, {
   /**
    */
 
-  read: function() {
+  read: function () {
     return this._passThrough.read();
   },
 
   /**
    */
 
-  pipeTo: function(writable, options) {
+  pipeTo: function (writable, options) {
     if (!options) options = {};
-    var pump = () => {
-      this.read().then((item) => {
+    var self = this;
+    function pump() {
+      self.read().then(function resolve(item) {
         if (item.done) {
           if (!options.preventClose) writable.close();
         } else {
@@ -10770,7 +10777,7 @@ extend(ReadableStream, {
           pump();
         }
       }, options.preventAbort ? void 0 : writable.abort.bind(writable));
-    };
+    }
     pump();
     return writable;
   },

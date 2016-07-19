@@ -13,8 +13,9 @@
   "scripts": {
     "test": "npm run lint; mocha test/**/*-test.js; ./scripts/exec-packages.sh npm test",
     "bundle": "browserify node_modules/bundle-collapser/plugin -e index.js -o dist/mesh.js",
+    "bundle-minify": "npm run bundle && npm run minify",
     "lint": "jshint {bus,response,stream}",
-    "minify": "uglifyjs dist/mesh.js",
+    "minify": "uglifyjs dist/mesh.js > dist/mesh.min.js",
     "patch-packages": "./scripts/exec-packages.sh npm version patch",
     "publish-packages": "./scripts/exec-packages.sh npm publish",
     "clean": "find ./ -name node_modules -exec rm -rf {} \\;"
@@ -30,27 +31,16 @@
   },
   "homepage": "https://github.com/crcn/mesh.js",
   "devDependencies": {
-    "babelify": "^6.4.0",
     "browserify": "^13.0.1",
     "bundle-collapser": "^1.2.1",
     "co": "^4.6.0",
     "expect.js": "^0.3.1",
-    "gulp": "^3.9.0",
-    "gulp-mocha": "^2.0.0",
-    "gulp-plumber": "^1.0.0",
-    "gulp-rename": "^1.2.0",
-    "gulp-uglify": "^1.1.0",
     "install": "^0.8.1",
     "jshint": "^2.9.2",
-    "jslint": "^0.10.1",
     "lodash": "^3.10.1",
     "mocha": "^2.5.3",
-    "npm": "^3.10.5",
     "sift": "^2.0.9",
-    "uglify-js": "^2.7.0",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "yargs": "^3.6.0"
+    "uglify-js": "^2.7.0"
   },
   "dependencies": {}
 }
