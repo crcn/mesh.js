@@ -1,3 +1,5 @@
+
+
 declare module "mesh" {
 
   class Chunk {
@@ -14,29 +16,33 @@ declare module "mesh" {
   class Readable {
     read():Promise<Chunk>;
     close():void;
-    then(callback):Promise<any>;
+    then(resolve:Function, reject:Function):Promise<any>;
     readAll():Promise<Array<any>>;
     pipeTo(writable:Writable);
   }
 
   export class Response extends Readable {
     constructor(writer:(Writable) => void);
+    static create(writer:(Writable) => void);
   }
 
-  export class BufferedResponse extends Response {
+  export class BufferedResponse extends Readable {
     constructor(error:any, values:any);
+    static create(error:any, values:any);
   }
 
-  export class EmptyResponse extends Response {
+  export class EmptyResponse extends Readable {
     constructor();
+    static create():EmptyResponse;
   }
 
   export class WrapResponse extends Response {
     constructor(value:any);
+    static create(value:any):WrapResponse;
   }
   
   export abstract class Bus {
-    execute(action):Readable;
+    execute(action);
   }
 
   export class ParallelBus extends Bus {
@@ -48,7 +54,7 @@ declare module "mesh" {
   }
 
   export class AcceptBus extends Bus {
-    static create(filter:(any) => boolean, resolveBus:Bus, rejectBus:Bus):AcceptBus;
+    static create(filter:Function, resolveBus:Bus, rejectBus:Bus):AcceptBus;
   }
 
   export class NoopBus extends Bus {

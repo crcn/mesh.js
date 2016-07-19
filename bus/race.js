@@ -25,7 +25,6 @@ Bus.extend(RaceBus, {
       var found   = -1;
       busses.forEach(function forEach(bus, i) {
         var response = bus.execute(action) || EmptyResponse.create();
-
         response.pipeTo({
           write: function write(value) {
             if ((~found && found !== i)) return;
