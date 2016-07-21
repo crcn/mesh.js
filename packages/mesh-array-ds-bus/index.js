@@ -33,12 +33,13 @@ Bus.extend(ArrayDsBus, {
    */
 
   execute: function(action) {
+    var self = this;
     return Response.create(function (writable) {
       switch(action.type) {
-        case "insert" : return this._insert(action, writable)
-        case "remove" : return this._remove(action, writable)
-        case "update" : return this._update(action, writable)
-        case "find"   : return this._find(action, writable)
+        case "insert" : return self._insert(action, writable)
+        case "remove" : return self._remove(action, writable)
+        case "update" : return self._update(action, writable)
+        case "find"   : return self._find(action, writable)
         default       : return writable.close();
       }
     });
