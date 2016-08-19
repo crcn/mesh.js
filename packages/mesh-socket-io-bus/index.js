@@ -29,12 +29,12 @@ function SocketIoBus(options, bus) {
   });
 
   this.bus = RemoteBus.create({
-    addMessageListener: function(listener) {
+    addListener: function(listener) {
       client.on(channel, function(msg) {
         listener(unpack(msg));
       });
     },
-    sendMessage: function(msg) {
+    send: function(msg) {
       client.emit(channel, pack(msg));
     }
   }, bus);

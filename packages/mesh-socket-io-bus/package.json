@@ -1,6 +1,6 @@
 {
   "name": "mesh-socket-io-bus",
-  "version": "1.0.18",
+  "version": "1.1.0",
   "description": "[![Build Status](https://travis-ci.org/mojo-js/mesh-socket.io.svg)](https://travis-ci.org/mojo-js/mesh-socket.io) [![Coverage Status](https://coveralls.io/repos/mojo-js/mesh-socket.io/badge.svg?branch=master)](https://coveralls.io/r/mojo-js/mesh-socket.io?branch=master) [![Dependency Status](https://david-dm.org/mojo-js/mesh-socket.io.svg)](https://david-dm.org/mojo-js/mesh-socket.io)",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "mesh": "6.0.x",
-    "mesh-remote-bus": "^1.0.1",
+    "mesh-remote-bus": "2.0.x",
     "socket.io-client": "^1.3.7"
   },
   "devDependencies": {
