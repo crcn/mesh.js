@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "6.0.28",
+  "version": "6.0.29",
   "tag": "latest",
   "description": "data synchronization library",
   "main": "./lib/index.js",
@@ -13,7 +13,7 @@
   "scripts": {
     "test": "npm run lint; mocha test/**/*-test.js; ./scripts/exec-packages.sh npm test",
     "postinstall": "./scripts/exec-packages.sh npm install",
-    "bundle": "browserify node_modules/bundle-collapser/plugin -e index.js -o dist/mesh.js",
+    "bundle": "browserify -p bundle-collapser/plugin -e index.js -o dist/mesh.js",
     "bundle-minify": "npm run bundle && npm run minify",
     "lint": "jshint {bus,response,stream}",
     "minify": "uglifyjs dist/mesh.js > dist/mesh.min.js",
