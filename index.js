@@ -11,6 +11,7 @@ module.exports = {
   WrapBus           : require('./bus/wrap'),
   RaceBus           : require('./bus/race'),
   RetryBus          : require('./bus/retry'),
+  LimitBus          : require('./bus/limit'),
   RandomBus         : require('./bus/random'),
   AcceptBus         : require('./bus/accept'),
   RejectBus         : require('./bus/reject'),

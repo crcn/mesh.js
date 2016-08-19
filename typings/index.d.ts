@@ -6,7 +6,7 @@ declare module "mesh" {
     public done:boolean;
     public value:any;
   }
-  
+
   class Writable {
     write(value:any);
     abort(reason:any);
@@ -40,9 +40,14 @@ declare module "mesh" {
     constructor(value:any);
     static create(value:any):WrapResponse;
   }
-  
+
   export abstract class Bus {
     execute(action);
+  }
+
+  export class LimitBus extends Bus {
+    constructor(max: number, bus: Bus);
+    static create(max: number, bus: Bus): LimitBus;
   }
 
   export class ParallelBus extends Bus {
@@ -72,7 +77,7 @@ declare module "mesh" {
 
   export class WrapBus extends Bus {
     static create(
-      value: ((action, next) => void) | ((action) => Promise<any>|Response|any) | Bus  
+      value: ((action, next) => void) | ((action) => Promise<any>|Response|any) | Bus
     ):WrapBus;
   }
 }
