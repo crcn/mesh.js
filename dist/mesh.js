@@ -697,21 +697,23 @@ var WrapResponse     = require(29);
 /**
 */
 
-function WrapBus(execute) {
+function WrapBus(handler) {
   var self = this;
 
+  if (handler.execute) {
+    this._execute = handler.execute.bind(handler);
   // node style? (next(err, result))
-  if (execute.length >= 2) {
+  } else if (handler.length >= 2) {
     this._execute = function(action) {
       return new Promise(function run(resolve, reject) {
-        execute(action, function (err, result) {
+        handler(action, function (err, result) {
           if (err) return reject(err);
           resolve.apply(self, Array.prototype.slice.call(arguments, 1));
         });
       });
     };
   } else {
-    this._execute = execute;
+    this._execute = handler;
   }
 }
 
@@ -729,7 +731,6 @@ Bus.extend(WrapBus, {
 });
 
 WrapBus.create = function (callback) {
-  if (callback.execute) return callback;
   return Bus.create.call(WrapBus, callback);
 };
 
