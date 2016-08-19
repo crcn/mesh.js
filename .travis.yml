@@ -6,6 +6,9 @@ notifications:
   email:
     - craig.j.condon@gmail.com
 
+before_install:
+   - 'npm run install-packages'
+
 branches:
   only:
     - master
