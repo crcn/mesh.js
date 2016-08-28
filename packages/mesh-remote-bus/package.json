@@ -1,6 +1,6 @@
 {
   "name": "mesh-remote-bus",
-  "version": "2.0.5",
+  "version": "2.0.7",
   "description": "basic RPC system for mesh. Allows you to execute remote actions, and receive responses.",
   "main": "index.js",
   "scripts": {
