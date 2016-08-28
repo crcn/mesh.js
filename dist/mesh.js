@@ -251,9 +251,10 @@ function FallbackBus(busses) {
     var self = this;
     return Response.create(function createWritable(writable) {
       var busses = self._busses.concat();
+      var currentResponse;
       function next(i) {
         if (i === busses.length) return writable.close();
-        var response = busses[i].execute(action) || EmptyResponse.create();
+        var response = currentResponse = busses[i].execute(action) || EmptyResponse.create();
         var hasChunk = false;
         response.pipeTo({
           write: function write(value) {
@@ -271,6 +272,10 @@ function FallbackBus(busses) {
         });
       }
       next(0);
+      function cancel() {
+        if (currentResponse) currentResponse.cancel();
+      }
+      writable.then(cancel, cancel);
     });
   }
 });
@@ -312,7 +317,9 @@ Bus.extend(LimitBus, {
         }
       }
 
-      self.bus.execute(action).pipeTo({
+      var resp = self.bus.execute(action);
+
+      resp.pipeTo({
         write: writable.write.bind(writable),
         close: function() {
           writable.close();
@@ -323,6 +330,8 @@ Bus.extend(LimitBus, {
           complete();
         }
       });
+
+      writable.then(resp.cancel.bind(resp), resp.cancel.bind(resp));
     });
   }
 });
@@ -439,6 +448,8 @@ Bus.extend(ParallelBus, {
           },
           abort: writable.abort.bind(writable)
         });
+
+        writable.then(resp.cancel.bind(resp), resp.cancel.bind(resp));
       });
     });
   }
@@ -490,6 +501,7 @@ Bus.extend(RaceBus, {
           },
           abort: writable.abort.bind(writable)
         });
+        writable.then(response.cancel.bind(response), response.cancel.bind(response));
       });
     });
   }
@@ -667,10 +679,11 @@ Bus.extend(SequenceBus, {
 
       // copy incase the collection mutates (unlikely but possible)
       var busses = self._busses.concat();
+      var currentResponse;
 
       function next(i) {
         if (i === busses.length) return writable.close();
-        var resp = busses[i].execute(action) || EmptyResponse.create();
+        var resp = currentResponse = busses[i].execute(action) || EmptyResponse.create();
         resp.pipeTo({
           write: writable.write.bind(writable),
           close: next.bind(self, i + 1),
@@ -678,6 +691,11 @@ Bus.extend(SequenceBus, {
         });
       }
 
+      function cancel() {
+        if (currentResponse) currentResponse.cancel();
+      }
+
+      writable.then(cancel, cancel);
       next(0);
     });
   }
