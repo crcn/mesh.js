@@ -19,31 +19,31 @@ exports.create = function(createBus, options) {
   });
 
   function *insert(collection, data) {
-    return yield bus.execute({ collectionName: collection, type: 'insert', data: data });
+    return yield bus.execute({ collectionName: collection, type: 'dsInsert', data: data });
   }
 
   function *findOne(collection, query) {
-    return yield bus.execute({ collectionName: collection, type: 'find', query: query }).read();
+    return yield bus.execute({ collectionName: collection, type: 'dsFind', query: query }).read();
   }
 
   function *findOne(collection, query) {
-    return yield bus.execute({ collectionName: collection, type: 'find', query: query }).read();
+    return yield bus.execute({ collectionName: collection, type: 'dsFind', query: query }).read();
   }
 
   function *findMulti(collection, query, options) {
-    return yield bus.execute(Object.assign({ collectionName: collection, type: 'find', query: query, multi: true }, options || {})).readAll();
+    return yield bus.execute(Object.assign({ collectionName: collection, type: 'dsFind', query: query, multi: true }, options || {})).readAll();
   }
 
   function *removeOne(collection, query) {
-    return yield bus.execute({ collectionName: collection, type: 'remove', query: query }).read();
+    return yield bus.execute({ collectionName: collection, type: 'dsRemove', query: query }).read();
   }
 
   function *updateOne(collection, query, data) {
-    return yield bus.execute({ collectionName: collection, type: 'update', query: query, data: data }).read();
+    return yield bus.execute({ collectionName: collection, type: 'dsUpdate', query: query, data: data }).read();
   }
 
   function *updateMultiple(collection, query, data) {
-    return yield bus.execute({ collectionName: collection, type: 'update', multi: true, query: query, data: data }).readAll();
+    return yield bus.execute({ collectionName: collection, type: 'dsUpdate', multi: true, query: query, data: data }).readAll();
   }
 
   it('can insert() data into a collection', function*() {

@@ -40,20 +40,20 @@ Object.assign(MemoryCollection.prototype, {
     return this._items;
   },
 
-  insert(action) {
+  dsInsert(action) {
     if (!action.data) throw new Error('data must exist for insert actions');
     var item = _clone(action.data);
     this._items.push({ data: action.data });
     return _response(_clone([item]));
   },
 
-  find(action) {
+  dsFind(action) {
     return _response(_oneOrMany(action, this._find(action).map(function(record) {
       return _clone(record.data);
     })));
   },
 
-  remove(action) {
+  dsRemove(action) {
     var records = _oneOrMany(action, this._find(action));
     records.forEach((item) => {
       var i = this._items.indexOf(item);
@@ -62,7 +62,7 @@ Object.assign(MemoryCollection.prototype, {
     return _response(_recordData(records));
   },
 
-  update(action) {
+  dsUpdate(action) {
 
     var records = _oneOrMany(action, this._find(action));
 
@@ -116,7 +116,7 @@ Bus.extend(MemoryDsBus, {
     return this._db.toJSON();
   },
   execute(action) {
-    return /insert|find|remove|update/.test(action.type)    ?
+    return /dsInsert|dsFind|dsRemove|dsUpdate/.test(action.type)    ?
     this._db.collection(action.collectionName).execute(action) :
     EmptyResponse.create();
   }

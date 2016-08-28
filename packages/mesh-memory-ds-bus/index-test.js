@@ -15,7 +15,7 @@ describe(__filename + "#", function() {
     var err;
 
     try {
-      yield MemoryDsBus.create().execute({ type: 'insert', collectionName: 'abba' });
+      yield MemoryDsBus.create().execute({ type: 'dsInsert', collectionName: 'abba' });
     } catch(e) {
       err = e;
     }
@@ -25,8 +25,8 @@ describe(__filename + "#", function() {
 
   it('can serialize the in-memory database', co.wrap(function*() {
     var bus = MemoryDsBus.create();
-    yield bus.execute({ type: 'insert', data: 'a', collectionName: 'as' });
-    yield bus.execute({ type: 'insert', data: 'b', collectionName: 'bs' });
+    yield bus.execute({ type: 'dsInsert', data: 'a', collectionName: 'as' });
+    yield bus.execute({ type: 'dsInsert', data: 'b', collectionName: 'bs' });
     var json = bus.toJSON();
     expect(json.bs.length).to.be(1);
     expect(json.as.length).to.be(1);
@@ -37,8 +37,8 @@ describe(__filename + "#", function() {
   it('can deserialize from a source', co.wrap(function*() {
 
     var bus = MemoryDsBus.create();
-    yield bus.execute({ type: 'insert', data: 'a', collectionName: 'as' });
-    yield bus.execute({ type: 'insert', data: 'b', collectionName: 'bs' });
+    yield bus.execute({ type: 'dsInsert', data: 'a', collectionName: 'as' });
+    yield bus.execute({ type: 'dsInsert', data: 'b', collectionName: 'bs' });
 
     var bus2 = MemoryDsBus.create({
       source: bus.toJSON()
