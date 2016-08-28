@@ -20,7 +20,7 @@ function RemoteBus(adapter, localBus) {
 
 Bus.extend(RemoteBus, {
   _cleanup(actionId) {
-    this._adapter.send({ type: 'close', req: actionId });
+    this._adapter.send({ type: 'cancel', req: actionId });
     delete this._openActions[actionId];
   },
   _handleMessage(message) {
@@ -34,7 +34,7 @@ Bus.extend(RemoteBus, {
 
     // if (!action.req) return;
 
-    if (message.type === 'action') {
+    if (message.type === 'execute') {
 
       var stream = this._resp[message.req] = this._localBus.execute(Object.assign({}, message.data, { req: message.req }));
 
@@ -53,7 +53,7 @@ Bus.extend(RemoteBus, {
           }
         });
       }
-    } else if (action.type === 'close') {
+    } else if (action.type === 'cancel') {
       this._resp[message.req].cancel();
       this._resp[message.req] = undefined;
     }
@@ -92,7 +92,7 @@ Bus.extend(RemoteBus, {
         writable.close();
       }
 
-      this._adapter.send({ type: 'action', data: action, req: req });
+      this._adapter.send({ type: 'execute', data: action, req: req });
     });
   }
 });
