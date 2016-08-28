@@ -36,11 +36,11 @@ Bus.extend(ArrayDsBus, {
     var self = this;
     return Response.create(function (writable) {
       switch(action.type) {
-        case "insert" : return self._insert(action, writable)
-        case "remove" : return self._remove(action, writable)
-        case "update" : return self._update(action, writable)
-        case "find"   : return self._find(action, writable)
-        default       : return writable.close();
+        case "dsInsert" : return self._insert(action, writable)
+        case "dsRemove" : return self._remove(action, writable)
+        case "dsUpdate" : return self._update(action, writable)
+        case "dsFind"   : return self._find(action, writable)
+        default         : return writable.close();
       }
     });
   },
@@ -57,10 +57,11 @@ Bus.extend(ArrayDsBus, {
    */
 
   _remove: function(action, writable) {
+    var self = this;
     this._find2(action).forEach(function (item) {
       writable.write(_cloneObject(item));
-      this.mutators.remove(item);
-      this.target.splice(this.target.indexOf(item), 1);
+      self.mutators.remove(item);
+      self.target.splice(self.target.indexOf(item), 1);
     });
     writable.close();
   },
@@ -69,11 +70,12 @@ Bus.extend(ArrayDsBus, {
    */
 
   _update(action, writable) {
-    this._find2(action).forEach((item) => {
+    var self = this;
+    this._find2(action).forEach(function (item) {
       writable.write(_cloneObject(action.data));
-      var newItem = this.mutators.update(item, action.data);
+      var newItem = self.mutators.update(item, action.data);
       if (newItem !== item) {
-        this.target.splice(this.target.indexOf(item), 1, action.data);
+        self.target.splice(self.target.indexOf(item), 1, action.data);
       }
     });
     writable.close();
@@ -83,7 +85,7 @@ Bus.extend(ArrayDsBus, {
    */
 
   _find(action, writable) {
-    this._find2(action).forEach((item) => {
+    this._find2(action).forEach(function (item) {
       writable.write(_cloneObject(item));
     });
     writable.close();

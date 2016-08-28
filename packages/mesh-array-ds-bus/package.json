@@ -1,10 +1,10 @@
 {
   "name": "mesh-array-ds-bus",
-  "version": "1.0.13",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": ""
+    "test": "mocha index-test.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,7 +12,7 @@
     "mesh": "^6.0.0"
   },
   "devDependencies": {
-    "mesh-ds-bus-test-cases": "^3.0.0",
+    "mesh-ds-bus-test-cases": "^4.0.0",
     "mocha": "^2.5.3"
   }
 }
