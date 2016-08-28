@@ -21,9 +21,14 @@ declare module "mesh" {
     pipeTo(writable:Writable);
   }
 
-  export class Response extends Readable {
+  export class Response {
     constructor(writer:(Writable) => void);
     static create(writer:(Writable) => void);
+    cancel(): void;
+    read(): Promise<Chunk>;
+    readAll(): Promise<Chunk>;
+    then(resolve:Function, reject:Function):Promise<any>;
+    pipeTo(writable:Writable);
   }
 
   export class BufferedResponse extends Readable {
@@ -76,6 +81,9 @@ declare module "mesh" {
   }
 
   export class WrapBus extends Bus {
+    constructor(
+      value: ((action, next) => void) | ((action) => Promise<any>|Response|any) | Bus
+    );
     static create(
       value: ((action, next) => void) | ((action) => Promise<any>|Response|any) | Bus
     ):WrapBus;
