@@ -20,7 +20,7 @@ function RemoteBus(adapter, localBus) {
 
 Bus.extend(RemoteBus, {
   _cleanup(actionId) {
-    this._adapter.send({ type: 'cancel', req: actionId });
+    this._adapter.send({ type: 'cancel', resp: actionId });
     delete this._req[actionId];
   },
   _handleMessage(message) {
@@ -60,6 +60,7 @@ Bus.extend(RemoteBus, {
   },
   _response(message) {
     var open = this._req[message.resp];
+    if (open)
     if (message.type === 'data') {
       open.write(message.data);
     } else if (message.type === 'close') {
