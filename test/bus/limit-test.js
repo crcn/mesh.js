@@ -2,10 +2,11 @@ var mesh = require('../..');
 var expect = require('expect.js');
 var sift = require('sift');
 var co = require('co');
-var expect = require('expect.js');
+var timeout = require('../utils/timeout');
 
 var LimitBus = mesh.LimitBus;
 var WrapBus  = mesh.WrapBus;
+var Response  = mesh.Response;
 
 describe(__filename + '#', function() {
 
@@ -58,5 +59,23 @@ describe(__filename + '#', function() {
     expect(actions.length).to.be(3);
     yield bus.execute({ type: 'a' });
     expect(actions.length).to.be(4);
+  }));
+
+  it("can cancel a response", co.wrap(function*() {
+    var canceled = 0;
+    var a = { execute: function(writable) {
+      return Response.create(function(writable) {
+        writable.then(function() {
+          canceled++;
+        });
+      });
+    }};
+
+    var bus = LimitBus.create(1, a);
+
+    var resp = bus.execute({});
+    resp.cancel();
+    yield timeout(10);
+    expect(canceled).to.be(1);
   }));
 });

@@ -9,59 +9,63 @@ function _createRemoteId() {
 }
 
 function RemoteBus(adapter, localBus) {
-  this._origin         = Math.round(Math.random() * 9999);
-  this._localBus       = localBus;
-  this._openactions = {};
-  this._adapter        = adapter;
+  this._origin    = Math.round(Math.random() * 9999);
+  this._localBus  = localBus;
+  this._req       = {};
+  this._resp      = {};
+  this._adapter   = adapter;
 
   adapter.addListener(this._handleMessage.bind(this));
 }
 
 Bus.extend(RemoteBus, {
   _cleanup(actionId) {
-      delete this._openactions[actionId];
+    this._adapter.send({ type: 'close', req: actionId });
+    delete this._openActions[actionId];
   },
   _handleMessage(message) {
-    // message.remote = true;
-    var open = this._openactions[message.resp];
-
-    if (!open) {
-      return this._request(message);
+    if (message.resp != null) {
+      this._response(message);
+    } else {
+      this._request(message);
     }
-
-    this._response(open, message);
   },
-  _request(action) {
+  _request(message) {
 
     // if (!action.req) return;
 
-    var stream = this._localBus.execute(action);
+    if (message.type === 'action') {
 
-    // don't wait for a response from the stream if response is
-    // already defined.
-    if (action.resp == void 0) {
-      stream.pipeTo({
-        write: (data) => {
-          this._adapter.send({ type: 'data', resp: action.req, data: data });
-        },
-        close: () => {
-          this._adapter.send({ type: 'close', resp: action.req });
-        },
-        abort: (err) => {
-          this._adapter.send({ type: 'error', resp: action.req, data: { message: err.message } });
-        }
-      });
-    }
+      var stream = this._resp[message.req] = this._localBus.execute(Object.assign({}, message.data, { req: message.req }));
 
-    return stream;
-  },
-  _response(open, action) {
-    if (action.type === 'data') {
-      open.writable.write(action.data);
+      // don't wait for a response from the stream if response is
+      // already defined.
+      if (message.resp == void 0) {
+        stream.pipeTo({
+          write: (data) => {
+            this._adapter.send({ type: 'data', resp: message.req, data: data });
+          },
+          close: () => {
+            this._adapter.send({ type: 'close', resp: message.req });
+          },
+          abort: (err) => {
+            this._adapter.send({ type: 'error', resp: message.req, data: { message: err.message } });
+          }
+        });
+      }
     } else if (action.type === 'close') {
-      open.writable.close();
-    } else if (action.type === 'error') {
-      open.writable.abort(new Error(action.data.message));
+      this._resp[message.req].cancel();
+      this._resp[message.req] = undefined;
+    }
+  },
+  _response(message) {
+    var open = this._req[message.resp];
+    if (message.type === 'data') {
+      open.write(message.data);
+    } else if (message.type === 'close') {
+      open.close();
+    } else if (message.type === 'error') {
+      open.abort(new Error(message.data.message));
     }
   },
   execute(action) {
@@ -76,22 +80,19 @@ Bus.extend(RemoteBus, {
         action.origin = this._origin;
       }
 
+      var req = _createRemoteId();
+
       // user-defined. If response has something, then don't
       // keep it open
       if (action.resp == void 0) {
-
-        this._openactions[action.req = _createRemoteId()] = {
-          action: action,
-          writable: writable
-        };
-
-        writable.then(this._cleanup.bind(this, action.req), this._cleanup.bind(this, action.req));
+        this._req[req] = writable;
+        writable.then(this._cleanup.bind(this, req), this._cleanup.bind(this, req));
 
       } else {
         writable.close();
       }
 
-      this._adapter.send(action);
+      this._adapter.send({ type: 'action', data: action, req: req });
     });
   }
 });

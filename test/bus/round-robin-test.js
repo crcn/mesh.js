@@ -1,6 +1,7 @@
 var mesh = require('../..');
 var RoundRobinBus = mesh.RoundRobinBus;
 var BufferedBus = mesh.BufferedBus;
+var Response = mesh.Response;
 var Bus = mesh.Bus;
 var expect = require('expect.js');
 var co = require('co');
@@ -30,4 +31,5 @@ describe(__filename + '#', function() {
 
     expect(buffer.join('')).to.be('abcabcabca');
   }));
+
 });

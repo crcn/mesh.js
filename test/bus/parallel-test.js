@@ -4,11 +4,13 @@ var ParallelBus = mesh.ParallelBus;
 var Bus = mesh.Bus;
 var BufferedBus = mesh.BufferedBus;
 var AsyncResponse = mesh.AsyncResponse;
+var Response      = mesh.Response;
 var EmptyResponse = mesh.EmptyResponse;
 var DelayedBus    = mesh.DelayedBus;
 
 var co = require('co');
 var expect = require('expect.js');
+var timeout = require('../utils/timeout');
 
 describe(__filename + '#', function() {
 
@@ -104,5 +106,33 @@ describe(__filename + '#', function() {
     ]);
 
     expect(yield bus.execute({}).readAll()).to.eql([1, 2, 3]);
+  }));
+
+  it("can cancel a response", co.wrap(function*() {
+    var canceled = 0;
+    var a = { execute: function(writable) {
+      return Response.create(function(writable) {
+        writable.then(function() {
+          canceled++;
+        });
+      });
+    }};
+
+    var bus = ParallelBus.create([a, a]);
+
+    var resp = bus.execute({});
+    resp.cancel();
+    yield timeout(10);
+    expect(canceled).to.be(2);
+  }));
+
+  it("can cancel a response with no busses", co.wrap(function*() {
+    var canceled = false;
+    var bus = ParallelBus.create([]);
+
+    var resp = bus.execute({});
+    resp.cancel();
+    yield timeout(5);
+    expect(canceled).to.be(false);
   }));
 });

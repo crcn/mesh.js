@@ -29,7 +29,9 @@ Bus.extend(LimitBus, {
         }
       }
 
-      self.bus.execute(action).pipeTo({
+      var resp = self.bus.execute(action);
+
+      resp.pipeTo({
         write: writable.write.bind(writable),
         close: function() {
           writable.close();
@@ -40,6 +42,8 @@ Bus.extend(LimitBus, {
           complete();
         }
       });
+
+      writable.then(resp.cancel.bind(resp), resp.cancel.bind(resp));
     });
   }
 });

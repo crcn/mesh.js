@@ -21,9 +21,10 @@ function FallbackBus(busses) {
     var self = this;
     return Response.create(function createWritable(writable) {
       var busses = self._busses.concat();
+      var currentResponse;
       function next(i) {
         if (i === busses.length) return writable.close();
-        var response = busses[i].execute(action) || EmptyResponse.create();
+        var response = currentResponse = busses[i].execute(action) || EmptyResponse.create();
         var hasChunk = false;
         response.pipeTo({
           write: function write(value) {
@@ -41,6 +42,10 @@ function FallbackBus(busses) {
         });
       }
       next(0);
+      function cancel() {
+        if (currentResponse) currentResponse.cancel();
+      }
+      writable.then(cancel, cancel);
     });
   }
 });

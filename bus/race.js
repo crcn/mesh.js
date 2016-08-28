@@ -38,6 +38,7 @@ Bus.extend(RaceBus, {
           },
           abort: writable.abort.bind(writable)
         });
+        writable.then(response.cancel.bind(response), response.cancel.bind(response));
       });
     });
   }

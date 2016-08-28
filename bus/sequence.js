@@ -23,10 +23,11 @@ Bus.extend(SequenceBus, {
 
       // copy incase the collection mutates (unlikely but possible)
       var busses = self._busses.concat();
+      var currentResponse;
 
       function next(i) {
         if (i === busses.length) return writable.close();
-        var resp = busses[i].execute(action) || EmptyResponse.create();
+        var resp = currentResponse = busses[i].execute(action) || EmptyResponse.create();
         resp.pipeTo({
           write: writable.write.bind(writable),
           close: next.bind(self, i + 1),
@@ -34,6 +35,11 @@ Bus.extend(SequenceBus, {
         });
       }
 
+      function cancel() {
+        if (currentResponse) currentResponse.cancel();
+      }
+
+      writable.then(cancel, cancel);
       next(0);
     });
   }

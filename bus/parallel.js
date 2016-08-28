@@ -35,6 +35,8 @@ Bus.extend(ParallelBus, {
           },
           abort: writable.abort.bind(writable)
         });
+
+        writable.then(resp.cancel.bind(resp), resp.cancel.bind(resp));
       });
     });
   }

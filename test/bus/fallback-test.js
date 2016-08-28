@@ -4,9 +4,11 @@ var FallbackBus = mesh.FallbackBus;
 var Bus = mesh.Bus;
 var BufferedBus = mesh.BufferedBus;
 var AsyncResponse = mesh.AsyncResponse;
+var Response = mesh.Response;
 var EmptyResponse = mesh.EmptyResponse;
 var expect = require('expect.js');
 var co = require('co');
+var timeout = require('../utils/timeout');
 
 describe(__filename + '#', function() {
 
@@ -77,5 +79,23 @@ describe(__filename + '#', function() {
     } catch(e) { err = e; }
 
     expect(err).to.be(void 0);
+  }));
+
+   it("can cancel a response", co.wrap(function*() {
+    var canceled = 0;
+    var a = { execute: function(writable) {
+      return Response.create(function(writable) {
+        writable.then(function() {
+          canceled++;
+        });
+      });
+    }};
+
+    var bus = FallbackBus.create([a, a]);
+
+    var resp = bus.execute({});
+    resp.cancel();
+    yield timeout(10);
+    expect(canceled).to.be(1);
   }));
 });
