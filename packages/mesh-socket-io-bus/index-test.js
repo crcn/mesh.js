@@ -9,7 +9,7 @@ var sift        = require('sift');
 
 describe(__filename + '#', function() {
 
-  var port = 9100;
+  var port = 9300;
   var actions = [];
   var action = {};
   var em = new EventEmitter();
@@ -26,13 +26,13 @@ describe(__filename + '#', function() {
         next(void 0, op);
       }));
 
-      SocketIoBus.create({
+      var rbus = SocketIoBus.create({
         client: connection
       }, cbus);
 
       cbus.createTail().pipeTo({
         write: function(op) {
-          connection.broadcast.emit('o', op);
+          connection.broadcast.emit('o', { type: 'execute', data: op });
         },
         close: function() { },
         abort: function() { }
