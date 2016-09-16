@@ -35,7 +35,11 @@ Bus.extend(WrapBus, {
    */
 
   execute: function (action) {
-    return WrapResponse.create(this._execute(action));
+    try {
+      return WrapResponse.create(this._execute(action));
+    } catch(e) {
+      return BufferedResponse.create(e);
+    }
   }
 });
 
