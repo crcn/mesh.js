@@ -4,7 +4,7 @@ declare module "mesh-socket-io-bus" {
 
   interface SocketIOOptions {
     channel?: string;
-    client?: any;
+    connection?: SocketIOConnection;
   }
 
   interface SocketIOConnection {
@@ -13,7 +13,7 @@ declare module "mesh-socket-io-bus" {
   }
 
   class SocketIOBus extends Bus {
-    constructor(options?: SocketIOOptions);
+    constructor(options: SocketIOOptions, publicBus: Bus);
     static create({ connection:SocketIOConnection }, publicBus:Bus):SocketIOBus;
   }
 
