@@ -1,19 +1,22 @@
 
-declare module "mesh-socket-io-bus" {
+declare module "mesh-remote-bus" {
   import { Bus } from 'mesh';
 
-  interface RemoteBusAdapter {
-    addListener(eventType:string, listener:Function);
-    send(eventType:string, ...args:Array<any>);
+  import { IActor, Action } from "@tandem/common";
+
+  interface IRemoteBusAdapter {
+    send(data: any);
+    addListener(listener: (data: any) => any);
   }
 
-  class RemoteBus extends Bus {
-    static create(adapter:RemoteBusAdapter, publicBus:Bus):RemoteBus;
+  class RemoteBus implements IActor {
+    constructor(adapter: IRemoteBusAdapter, localBus: Bus);
+    execute(action: Action): any;
   }
 
-  namespace RemoteBusAdapter {
-  }
+  namespace RemoteBus { }
 
-  export = RemoteBusAdapter;
+  export = RemoteBus;
 }
+
 
