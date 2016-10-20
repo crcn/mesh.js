@@ -4,7 +4,7 @@ var mesh   = require('mesh');
 var Bus    = mesh.Bus;
 var NoopBus = mesh.NoopBus;
 
-function SocketIoBus(options, bus) {
+function SocketIoBus(options, bus, serializer) {
 
   if (!bus) bus = NoopBus.create();
 
@@ -37,7 +37,7 @@ function SocketIoBus(options, bus) {
     send: function(msg) {
       client.emit(channel, pack(msg));
     }
-  }, bus);
+  }, bus, serializer);
 }
 
 Bus.extend(SocketIoBus, {

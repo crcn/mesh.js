@@ -13,7 +13,7 @@ declare module "mesh-socket-io-bus" {
   }
 
   class SocketIOBus extends Bus {
-    constructor(options: SocketIOOptions, publicBus: Bus);
+    constructor(options: SocketIOOptions, publicBus: Bus, serializer?);
     static create({ connection:SocketIOConnection }, publicBus:Bus):SocketIOBus;
   }
 

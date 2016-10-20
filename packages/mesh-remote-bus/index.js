@@ -8,12 +8,20 @@ function _createRemoteId() {
   return ++_i;
 }
 
-function RemoteBus(adapter, localBus) {
+function RemoteBus(adapter, localBus, serializer) {
   this._origin    = Math.round(Math.random() * 9999);
   this._localBus  = localBus;
   this._req       = {};
   this._resp      = {};
   this._adapter   = adapter;
+  this._serializer = serializer || {
+    serialize: function(action) {
+      return Object.assign({}, action);
+    },
+    deserialize: function(action) {
+      return Object.assign({}, action);
+    }
+  }
 
   adapter.addListener(this._handleMessage.bind(this));
 }
@@ -32,11 +40,13 @@ Bus.extend(RemoteBus, {
   },
   _request(message) {
 
-    // if (!action.req) return;
-
     if (message.type === 'execute') {
 
-      var stream = this._resp[message.req] = this._localBus.execute(Object.assign({}, message.data, { req: message.req }));
+      var action     = this._serializer.deserialize(message.data);
+      action.$req    = message.req;
+      action.$origin = message.origin;
+
+      var stream = this._resp[message.req] = this._localBus.execute(action);
 
       // don't wait for a response from the stream if response is
       // already defined.
@@ -71,29 +81,22 @@ Bus.extend(RemoteBus, {
   },
   execute(action) {
     return Response.create((writable) => {
-      action = Object.assign({}, action);
       // if the action is remote, then ignore it
-      if (action.req && action.origin === this._origin) {
+      if (action.$req && action.$origin === this._origin) {
         return writable.close();
       }
 
-      if (!action.origin) {
-        action.origin = this._origin;
-      }
-
       var req = _createRemoteId();
+      this._req[req] = writable;
 
-      // user-defined. If response has something, then don't
-      // keep it open
-      if (action.resp == void 0) {
-        this._req[req] = writable;
-        writable.then(this._cleanup.bind(this, req), this._cleanup.bind(this, req));
+      const serializedAction = this._serializer.serialize(action);
 
-      } else {
-        writable.close();
-      }
-
-      this._adapter.send({ type: 'execute', data: action, req: req });
+      this._adapter.send({
+        type: 'execute',
+        data: this._serializer.serialize(action),
+        req: req,
+        origin: action.$origin || this._origin
+      });
     });
   }
 });
