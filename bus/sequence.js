@@ -1,6 +1,7 @@
 var Bus = require('./base');
 var Response = require('../response');
 var EmptyResponse = require('../response/empty');
+var WrapRepsonse  = require('../response/wrap');
 
 /**
  */
@@ -27,7 +28,7 @@ Bus.extend(SequenceBus, {
 
       function next(i) {
         if (i === busses.length) return writable.close();
-        var resp = currentResponse = busses[i].execute(action) || EmptyResponse.create();
+        var resp = currentResponse = WrapRepsonse.create(busses[i].execute(action) || EmptyResponse.create());
         resp.pipeTo({
           write: writable.write.bind(writable),
           close: next.bind(self, i + 1),
