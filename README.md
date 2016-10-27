@@ -5,7 +5,7 @@
 </p>
 
 
-Mesh is a utility library that makes it easy to rangle sophisticated data flows. Easily connect things together such as [mongodb](https://www.mongodb.org/), [pubnub](http://pubnub.com/), [socket.io](http://socket.io/) `webrtc` and more to build powerful features such as rollbacks, offline-mode, and realtime data.
+Mesh is a utility library that makes it easy to wrangle sophisticated data flows. Easily connect things together, such as [mongodb](https://www.mongodb.org/), [pubnub](http://pubnub.com/), [socket.io](http://socket.io/) `webrtc` and more to build powerful features such as rollbacks, offline-mode, and realtime data.
 
 Here's a basic example:
 
