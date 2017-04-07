@@ -6,23 +6,23 @@ import {
   wrapDuplexStream,
 } from "../streams";
 
-import { IBus, IDispatcher, IMessageTester, testDispatcherMessage } from "./base";
+import { IBus, IStreamableBus, IMessageTester, testBusMessage } from "./base";
 
 /**
  * proxies a target bus, and queues messages
  * if there is none until there is
  */
 
-export class ProxyBus implements IBus<any>, IMessageTester<any> {
+export class ProxyBus implements IStreamableBus<any>, IMessageTester<any> {
 
   private _queue: Array<{ input: ReadableStream<any>, output: WritableStream<any>, message: any }> = [];
   private _paused: boolean;
 
-  constructor(private _target?: IDispatcher<any, any>) {
+  constructor(private _target?: IBus<any, any>) {
   }
 
   testMessage(message: any) {
-    return testDispatcherMessage(this._target, message);
+    return testBusMessage(this._target, message);
   }
 
   dispatch(message) {

@@ -1,4 +1,5 @@
-import { IBus, IDispatcher } from "./base";
+import { IBus, IStreamableBus } from "./base";
+
 import { 
   pump,
   DuplexStream,
@@ -7,6 +8,7 @@ import { 
   wrapDuplexStream,
   ReadableStreamDefaultReader
 } from "../streams";
+
 import {
   IteratorType,
   sequenceIterator,
@@ -15,13 +17,15 @@ import {
   createRoundRobinIterator,
 } from "../utils";
 
-export type FanoutBusDispatchersParamType<T> = IDispatcher<T, any>[] | (<T>(message: T) => IDispatcher<T, any>[]);
+export type FanoutBusTargetsParamType<T> = IBus<T, any>[] | (<T>(message: T) => IBus<T, any>[]);
 
-export class FanoutBus<T> implements IBus<T> {
-  private getDispatchers: <T>(message: T) => IDispatcher<T, any>[];
+// TODO - weighted bus
 
-  constructor(private _dispatchers: FanoutBusDispatchersParamType<T>, private _iterator: IteratorType<IDispatcher<T, any>>) {
-    this.getDispatchers = typeof _dispatchers === "function" ? _dispatchers : () => _dispatchers;
+export class FanoutBus<T> implements IStreamableBus<T> {
+  private getTargets: <T>(message: T) => IBus<T, any>[];
+
+  constructor(private _targets: FanoutBusTargetsParamType<T>, private _iterator: IteratorType<IBus<T, any>>) {
+    this.getTargets = typeof _targets === "function" ? _targets : () => _targets;
   }
   dispatch(message: T) {
     return new DuplexStream((input, output) => {
@@ -31,7 +35,7 @@ export class FanoutBus<T> implements IBus<T> {
 
       let pending = 0;
 
-      this._iterator(this.getDispatchers(message), (dispatcher: IDispatcher<T, any>) => {
+      this._iterator(this.getTargets(message), (dispatcher: IBus<T, any>) => {
 
         let response = dispatcher.dispatch(message);
 
@@ -60,26 +64,42 @@ export class FanoutBus<T> implements IBus<T> {
   }
 }
 
+/**
+ * Executes a message against all target busses in one after the other.
+ */
+
 export class SequenceBus<T> extends FanoutBus<T> {
-  constructor(dispatchers: FanoutBusDispatchersParamType<T>) {
-    super(dispatchers, sequenceIterator);
+  constructor(targets: FanoutBusTargetsParamType<T>) {
+    super(targets, sequenceIterator);
   }
 }
+
+/**
+ * Executes a message against all target busses at the same time.
+ */
 
 export class ParallelBus<T> extends FanoutBus<T> {
-  constructor(dispatchers: FanoutBusDispatchersParamType<T>) {
-    super(dispatchers, parallelIterator);
+  constructor(targets: FanoutBusTargetsParamType<T>) {
+    super(targets, parallelIterator);
   }
 }
+
+/**
+ * Executes a message against one target bus that is rotated with each message.
+ */
 
 export class RoundRobinBus<T> extends FanoutBus<T> {
-  constructor(dispatchers: FanoutBusDispatchersParamType<T>) {
-    super(dispatchers, createRoundRobinIterator());
+  constructor(targets: FanoutBusTargetsParamType<T>) {
+    super(targets, createRoundRobinIterator());
   }
 }
 
+/**
+ * Executes a message against one target bus that is selected at random.
+ */
+
 export class RandomBus<T> extends FanoutBus<T> {
-  constructor(dispatchers: FanoutBusDispatchersParamType<T>, weights?: number[]) {
-    super(dispatchers, createRandomIterator(weights));
+  constructor(targets: FanoutBusTargetsParamType<T>, weights?: number[]) {
+    super(targets, createRandomIterator(weights));
   }
 }

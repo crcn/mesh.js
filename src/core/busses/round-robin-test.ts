@@ -7,7 +7,7 @@ describe(__filename + "#", () => {
     new RoundRobinBus([]);
   });
 
-  it("alternates dispatchers each each message, round robin style", async () => {
+  it("alternates busses each each message, round robin style", async () => {
     const bus = new RoundRobinBus([
       new CallbackDispatcher(m => "a"),
       new CallbackDispatcher(m => "b"),

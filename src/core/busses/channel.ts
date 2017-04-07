@@ -1,9 +1,9 @@
 import { IMessage } from "../messages";
 import { RemoteBus } from "./remote";
-import { IBus, IDispatcher } from "./base";
-import { noopDispatcherInstance } from "./noop";
-import { CallbackDispatcher } from "./callback";
+import { CallbackBus } from "./callback";
 import { filterFamilyMessage } from "../messages";
+import { IStreamableBus, IBus } from "./base";
+import { noopDispatcherInstance } from "./noop";
 import { 
   pump,
   DuplexStream,
@@ -30,10 +30,10 @@ const stream = channel.dispatch()
 // TODO - remove "family" parameter. Doesn't fit this class since
 // "family" implies that the we're communicating with another remote application. 
 
-export class ChannelBus implements IBus<any> {
+export class ChannelBus implements IStreamableBus<any> {
   private _remoteBus: RemoteBus<any>;
   private _writer: WritableStreamDefaultWriter<any>;
-  constructor(family: string, input: ReadableStream<IMessage>, output: WritableStream<IMessage>, localBus: IDispatcher<any, any> = noopDispatcherInstance, private _onClose?: () => any) {
+  constructor(family: string, input: ReadableStream<IMessage>, output: WritableStream<IMessage>, localBus: IBus<any, any> = noopDispatcherInstance, private _onClose?: () => any) {
     const writer = this._writer = output.getWriter();
     
     this._remoteBus = new RemoteBus({
@@ -64,7 +64,7 @@ export class ChannelBus implements IBus<any> {
     return this._remoteBus.dispatch(message);
   }
 
-  static createFromStream(family: string, stream: TransformStream<any, IMessage>, localBus?: IDispatcher<any, any>) {
+  static createFromStream(family: string, stream: TransformStream<any, IMessage>, localBus?: IBus<any, any>) {
     return new ChannelBus(family, stream.readable, stream.writable, localBus);
   }
 }

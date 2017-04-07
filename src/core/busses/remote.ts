@@ -1,7 +1,7 @@
 import { ProxyBus } from "./proxy";
-import { CallbackDispatcher } from "./callback";
+import { CallbackBus } from "./callback";
 import { noopDispatcherInstance } from "./noop";
-import { IBus, IDispatcher, IMessageTester } from "./base";
+import { IBus, IStreamableBus, IMessageTester } from "./base";
 import {
   Sink,
   ChunkQueue,
@@ -177,7 +177,7 @@ class RemoteConnection {
 }
 
 
-export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
+export class RemoteBus<T> implements IStreamableBus<T>, IMessageTester<T> {
 
   private _uid: string;
   private _proxy: ProxyBus;
@@ -187,7 +187,7 @@ export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
   private _testMessage: RemoteBusMessageTester<T>;
   private _pendingConnections: Map<string, RemoteConnection>;
 
-  constructor({ adapter, family, testMessage }: IRemoteBusOptions, private _localDispatcher: IDispatcher<T, any> = noopDispatcherInstance, private _serializer?: any) {
+  constructor({ adapter, family, testMessage }: IRemoteBusOptions, private _localDispatcher: IBus<T, any> = noopDispatcherInstance, private _serializer?: any) {
     this._pendingConnections  = new Map();
     this.adapter = adapter;
     this._family = family;
@@ -200,7 +200,7 @@ export class RemoteBus<T> implements IBus<T>, IMessageTester<T> {
       };
     }
 
-    this._proxy = new ProxyBus(new CallbackDispatcher(this._dispatchRemoteMessage.bind(this)));
+    this._proxy = new ProxyBus(new CallbackBus(this._dispatchRemoteMessage.bind(this)));
     this._proxy.pause();
 
     this._testMessage = testMessage || (message => true);

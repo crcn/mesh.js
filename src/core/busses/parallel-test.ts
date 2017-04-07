@@ -20,7 +20,7 @@ describe(__filename + "#", () => {
     expect(i).to.equal(3);
   });
 
-  it("dispatches a message against multiple dispatchers", async () => {
+  it("dispatches a message against multiple busses", async () => {
     let i = 0;
     const bus = new ParallelBus([
       new CallbackDispatcher(m => i++),
