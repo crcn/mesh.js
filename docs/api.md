@@ -1,3 +1,8 @@
+### Navigation
+
+- [Busses](#/Busses)
+  - [IBus](#/IBus)
+  - [CallbackBus(callback: Function)](#/callback)
 ### Busses
 
 Busses route your messages according to the rules that you give them. They are generally unopinonated, and composable. Basic example:
@@ -199,8 +204,47 @@ const httpBus = createHTTPBus('http://somapi.com');
 const batchedBus = createBatchBus()
 ```
 
-#### Utilities
+### Streams
 
-#### readOneChunk(readableStream: any): Promise<any>
+#### DuplexStream((input: ReadableStream, output: WritableStream) => void) 
+
+Creates a duplex stream which takes an input, and can produce an output
+
+```typescript
+import { createDuplexStream } from 'mesh';
+```
+
+### Utilities
+
+#### readOneChunk(stream: TransformStream): Promise<any>
+
+Reads one chunk from a duplex stream.
+
+```typescript
+import { readOneChunk, createDuplexStream, createCallbackBus } from 'mesh';
+
+const upperBus = createCallbackBus(({ text }) => createDuplexStream(async (input, output) => {
+  output.write(text.toUpperCase());
+}));
+
+readOneChunk(reverseBus.dispatch({ text: 'hello' })).then((result) => {
+  console.log(result); // HELLO
+});
+```
+
 #### readAllChunks(readableStream: any): Promise<any[]>
+
+```typescript
+import { readOneChunk, createDuplexStream, createCallbackBus } from 'mesh';
+
+const splitBus = createCallbackBus({ text, delimiter = '' } => createDuplexStream(async (input, output) => {
+  text.split(delimiter).forEach(part => output.write(part));
+  output.close();
+}));
+
+readAllChunks(splitBus.dispatch({ text: 'hello' })).then(chunks => {
+  console.log(chunks);
+});
+```
+
 #### noopBusInstance
