@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { DuplexStream, WritableStream, ParallelBus, readAllChunks } from "@tandem/mesh";
-import { CallbackDispatcher } from "./callback";
+import { CallbackBus } from "./callback";
 
 describe(__filename + "#", () => {
   it("can be created", () => {
@@ -10,7 +10,7 @@ describe(__filename + "#", () => {
   it("dispatch a message against one entry", async () => {
     let i = 0;
     const bus = new ParallelBus([
-      new CallbackDispatcher(m => i++)
+      new CallbackBus(m => i++)
     ]);
 
 
@@ -23,19 +23,19 @@ describe(__filename + "#", () => {
   it("dispatches a message against multiple busses", async () => {
     let i = 0;
     const bus = new ParallelBus([
-      new CallbackDispatcher(m => i++),
-      new CallbackDispatcher(m => i++),
-      new CallbackDispatcher(m => i++)
+      new CallbackBus(m => i++),
+      new CallbackBus(m => i++),
+      new CallbackBus(m => i++)
     ]);
 
     expect(await readAllChunks(bus.dispatch({}).readable)).to.eql([0, 1, 2]);
   });
 
-  it("Can handle a dispatcher that returns a rejection", async () => {
+  it("Can handle a bus that returns a rejection", async () => {
     let i = 0;
     const bus = new ParallelBus([
-      new CallbackDispatcher(m => i++),
-      new CallbackDispatcher(m => Promise.reject(new Error("some error")))
+      new CallbackBus(m => i++),
+      new CallbackBus(m => Promise.reject(new Error("some error")))
     ]);
 
     let error;
@@ -52,11 +52,11 @@ describe(__filename + "#", () => {
   it("Can cancel a request", async () => {
     let i = 0;
     const bus = new ParallelBus([
-      new CallbackDispatcher(m => i++),
-      new CallbackDispatcher(m => i++),
-      new CallbackDispatcher(m => i++),
-      new CallbackDispatcher(m => i++),
-      new CallbackDispatcher(m => i++)
+      new CallbackBus(m => i++),
+      new CallbackBus(m => i++),
+      new CallbackBus(m => i++),
+      new CallbackBus(m => i++),
+      new CallbackBus(m => i++)
     ]);
 
     const { readable } = bus.dispatch({});
@@ -71,11 +71,11 @@ describe(__filename + "#", () => {
     let i = 0;
     const bus = new ParallelBus([
       new ParallelBus([
-        new CallbackDispatcher(m => i++),
-        new CallbackDispatcher(m => i++),
-        new CallbackDispatcher(m => i++)
+        new CallbackBus(m => i++),
+        new CallbackBus(m => i++),
+        new CallbackBus(m => i++)
       ]),
-      new CallbackDispatcher(m => i++)
+      new CallbackBus(m => i++)
     ]);
 
     expect(await readAllChunks(bus.dispatch({}).readable)).to.eql([3, 0, 1, 2]);
@@ -83,7 +83,7 @@ describe(__filename + "#", () => {
 
   it("can write & read transformed data to a request", async () => {
     const bus = new ParallelBus([
-      new CallbackDispatcher(m => new DuplexStream((input, output) => {
+      new CallbackBus(m => new DuplexStream((input, output) => {
         const writer = output.getWriter();
         input.pipeTo(new WritableStream({
           write(chunk: number) {

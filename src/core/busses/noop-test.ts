@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { NoopDispatcher } from "./noop";
+import { NoopBus } from "./noop";
 describe(__filename + "#", () => {
   it("can be created", () => {
-    new NoopDispatcher();
+    new NoopBus();
   });
   it("doesn't do anything when dispatch is called", () => {
-    new NoopDispatcher().dispatch({});
+    new NoopBus().dispatch({});
   });
 });

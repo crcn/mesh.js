@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { EventEmitter } from "events";
-import { RemoteBus, NoopDispatcher, CallbackDispatcher, readAllChunks, DuplexStream, TransformStream } from "@tandem/mesh";
+import { RemoteBus, NoopBus, CallbackBus, readAllChunks, DuplexStream, TransformStream } from "../";
 
 describe(__filename + "#", () => {
 
@@ -20,7 +20,7 @@ describe(__filename + "#", () => {
 
   it("can send and receive a remote message", async () => {
 
-    const abus = new RemoteBus(createOptions(), new CallbackDispatcher(({ text }) => {
+    const abus = new RemoteBus(createOptions(), new CallbackBus(({ text }) => {
       return text.toUpperCase();
     }));
 
@@ -31,7 +31,7 @@ describe(__filename + "#", () => {
 
   it("can send and receive a remote stream", async () => {
 
-    const abus = new RemoteBus(createOptions(), new CallbackDispatcher(({ text }) => {
+    const abus = new RemoteBus(createOptions(), new CallbackBus(({ text }) => {
       return new TransformStream({
         start(controller) {
           text.split("").forEach(chunk => controller.enqueue(chunk));
@@ -47,7 +47,7 @@ describe(__filename + "#", () => {
   });
 
   it("can write chunks to a remote stream", async () => {
-    const abus = new RemoteBus(createOptions(), new CallbackDispatcher((message: any) => {
+    const abus = new RemoteBus(createOptions(), new CallbackBus((message: any) => {
       return new TransformStream({
         transform(chunk: string, controller) {
           controller.enqueue(chunk.toUpperCase());
@@ -69,7 +69,7 @@ describe(__filename + "#", () => {
   });
 
   it("can abort a remote stream", async () => {
-    const abus = new RemoteBus(createOptions(), new CallbackDispatcher((message: any) => {
+    const abus = new RemoteBus(createOptions(), new CallbackBus((message: any) => {
       return new TransformStream({
         transform(chunk: string, controller) {
           controller.enqueue(chunk.toUpperCase());
@@ -99,7 +99,7 @@ describe(__filename + "#", () => {
 
   it("can cancel a read stream", async () => {
 
-    const abus = new RemoteBus(createOptions(), new CallbackDispatcher(({ text }) => {
+    const abus = new RemoteBus(createOptions(), new CallbackBus(({ text }) => {
       return new TransformStream({
         start(controller) {
           text.split("").forEach(chunk => controller.enqueue(chunk.toUpperCase()));
@@ -120,7 +120,7 @@ describe(__filename + "#", () => {
 
   it("doesn\'t get re-dispatched against the same remote bus", async () => {
     let i = 0;
-    const abus = new RemoteBus(createOptions(), new CallbackDispatcher((message: string) => {
+    const abus = new RemoteBus(createOptions(), new CallbackBus((message: string) => {
       i++;
       return abus.dispatch(message);
     }));
@@ -132,14 +132,14 @@ describe(__filename + "#", () => {
 
   it("gets re-dispatched against other remote busses", async () => {
     let i = 0;
-    const abus = new RemoteBus(createOptions(), new CallbackDispatcher((message: string) => {
+    const abus = new RemoteBus(createOptions(), new CallbackBus((message: string) => {
       i++;
       return dbus.dispatch(message);
     }));
 
     const bbus = new RemoteBus(abus);
 
-    const cbus = new RemoteBus(createOptions(), new CallbackDispatcher((message: string) => {
+    const cbus = new RemoteBus(createOptions(), new CallbackBus((message: string) => {
       i++;
       return abus.dispatch(message);
     }));
@@ -157,13 +157,13 @@ describe(__filename + "#", () => {
 
     let i = 0;
 
-    const abus = new RemoteBus(createOptions("a", a, b), new CallbackDispatcher((message: string) => {
+    const abus = new RemoteBus(createOptions("a", a, b), new CallbackBus((message: string) => {
       i++;
       return bbus.dispatch(message);
     }));
 
 
-    const bbus = new RemoteBus(createOptions("b", b, a), new CallbackDispatcher((message: string) => {
+    const bbus = new RemoteBus(createOptions("b", b, a), new CallbackBus((message: string) => {
       i++;
       return bbus.dispatch(message);
     }));

@@ -1,6 +1,6 @@
 import { expect } from "chai";
+import { CallbackBus } from "./callback";
 import { DuplexStream, WritableStream, RoundRobinBus, readOneChunk } from "@tandem/mesh";
-import { CallbackDispatcher } from "./callback";
 
 describe(__filename + "#", () => {
   it("can be created", () => {
@@ -9,9 +9,9 @@ describe(__filename + "#", () => {
 
   it("alternates busses each each message, round robin style", async () => {
     const bus = new RoundRobinBus([
-      new CallbackDispatcher(m => "a"),
-      new CallbackDispatcher(m => "b"),
-      new CallbackDispatcher(m => "c")
+      new CallbackBus(m => "a"),
+      new CallbackBus(m => "b"),
+      new CallbackBus(m => "c")
     ]);
 
     expect((await readOneChunk(bus.dispatch({}))).value).to.equal("a");

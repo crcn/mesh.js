@@ -35,9 +35,9 @@ export class FanoutBus<T> implements IStreamableBus<T> {
 
       let pending = 0;
 
-      this._iterator(this.getTargets(message), (dispatcher: IBus<T, any>) => {
+      this._iterator(this.getTargets(message), (target: IBus<T, any>) => {
 
-        let response = dispatcher.dispatch(message);
+        let response = target.dispatch(message);
 
         if (response == null) {
           return Promise.resolve();
@@ -84,6 +84,8 @@ export class ParallelBus<T> extends FanoutBus<T> {
   }
 }
 
+export const createParallelBus = <T>(targets: FanoutBusTargetsParamType<T>) => new ParallelBus(targets);
+
 /**
  * Executes a message against one target bus that is rotated with each message.
  */
@@ -94,6 +96,8 @@ export class RoundRobinBus<T> extends FanoutBus<T> {
   }
 }
 
+export const createRoundRobinBus = <T>(targets: FanoutBusTargetsParamType<T>) => new RoundRobinBus(targets);
+
 /**
  * Executes a message against one target bus that is selected at random.
  */
@@ -103,3 +107,5 @@ export class RandomBus<T> extends FanoutBus<T> {
     super(targets, createRandomIterator(weights));
   }
 }
+
+export const createRandomBus = <T>(targets: FanoutBusTargetsParamType<T>, weights?: number[]) => new RandomBus(targets, weights);

@@ -1,6 +1,6 @@
 import { ProxyBus } from "./proxy";
 import { CallbackBus } from "./callback";
-import { noopDispatcherInstance } from "./noop";
+import { noopBusInstance } from "./noop";
 import { IBus, IStreamableBus, IMessageTester } from "./base";
 import {
   Sink,
@@ -77,7 +77,6 @@ const createUID = () => {
   const now = new Date();
   return `${seed}${fill0(now.getSeconds())}${_i++}`;
 }
-
 
 function fill0(num, min = 2) {
   let buffer = "" + num;
@@ -176,6 +175,10 @@ class RemoteConnection {
   }
 }
 
+/**
+ * Transmits messages by serializing & deserializing from and to a remote location over HTTP, 
+ * websockets, and other protocols. 
+ */
 
 export class RemoteBus<T> implements IStreamableBus<T>, IMessageTester<T> {
 
@@ -187,7 +190,7 @@ export class RemoteBus<T> implements IStreamableBus<T>, IMessageTester<T> {
   private _testMessage: RemoteBusMessageTester<T>;
   private _pendingConnections: Map<string, RemoteConnection>;
 
-  constructor({ adapter, family, testMessage }: IRemoteBusOptions, private _localDispatcher: IBus<T, any> = noopDispatcherInstance, private _serializer?: any) {
+  constructor({ adapter, family, testMessage }: IRemoteBusOptions, private _localBus: IBus<T, any> = noopBusInstance, private _serializer?: any) {
     this._pendingConnections  = new Map();
     this.adapter = adapter;
     this._family = family;
@@ -299,13 +302,13 @@ export class RemoteBus<T> implements IStreamableBus<T>, IMessageTester<T> {
   }
 
   private onDispatch({ payload, source, dest }: RemoteBusMessage) {
-    const targetDispatcher = this._shouldHandleMessage(payload) ? this._localDispatcher : noopDispatcherInstance;
+    const targetBus = this._shouldHandleMessage(payload) ? this._localBus : noopBusInstance;
     const con = new RemoteConnection(createUID(), this.adapter, this._serializer, () => {
       this._pendingConnections.delete(con.uid);
     });
     this._pendingConnections.set(con.uid, con);
 
-    const { readable, writable } = wrapDuplexStream(targetDispatcher.dispatch(payload));
+    const { readable, writable } = wrapDuplexStream(targetBus.dispatch(payload));
     con.start(readable, writable);
     this.adapter.send(new RemoteBusMessage(RemoteBusMessage.RESPONSE, con.uid, source).serialize(this._serializer));
     con.addDest(source);
@@ -349,5 +352,4 @@ export class RemoteBus<T> implements IStreamableBus<T>, IMessageTester<T> {
       this.adapter.send(new RemoteBusMessage(RemoteBusMessage.DISPATCH, con.uid, null, message).serialize(this._serializer));
     });
   }
-
 }

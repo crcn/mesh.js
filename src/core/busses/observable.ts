@@ -1,8 +1,8 @@
 import { IBus } from "./base";
 
 export interface IObservableBus<T> extends IBus<T, any> {
-  observe(dispatcher: IBus<T, any>);
-  unobserve(dispatcher: IBus<T, any>);
+  observe(listener: IBus<T, any>);
+  unobserve(listener: IBus<T, any>);
 }
 
 export class ObservableBus<T> implements IObservableBus<T> {
@@ -24,12 +24,12 @@ export class ObservableBus<T> implements IObservableBus<T> {
     }
   }
 
-  observe(dispatcher: IBus<T, any>) {
-    this._observers.push(dispatcher);
+  observe(listener: IBus<T, any>) {
+    this._observers.push(listener);
   }
 
-  unobserve(dispatcher: IBus<T, any>) {
-    const index = this._observers.indexOf(dispatcher);
+  unobserve(listener: IBus<T, any>) {
+    const index = this._observers.indexOf(listener);
     if (index !== -1) this._observers.splice(index, 1);
   }
 

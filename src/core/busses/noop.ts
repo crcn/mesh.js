@@ -1,7 +1,11 @@
-import { IDispatcher } from "./base";
+import { IBus } from "./base";
 
-export class NoopDispatcher implements IDispatcher<any, any> {
+/**
+ * No-operation bus. 
+ */
+
+export class NoopBus implements IBus<any, any> {
   dispatch(message: any) { }
 }
 
-export const noopDispatcherInstance = new NoopDispatcher();
+export const noopBusInstance = new NoopBus();

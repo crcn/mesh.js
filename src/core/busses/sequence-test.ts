@@ -1,14 +1,14 @@
 import { expect } from "chai";
-import { SequenceBus, CallbackDispatcher, ReadableStreamDefaultReader } from "@tandem/mesh";
+import { SequenceBus, CallbackBus, ReadableStreamDefaultReader } from "../..";
 
 describe(__filename + "#", () => {
   it("can dispatch a message to multiple endpoints in sequence", async () => {
     let i = 0;
 
     const bus = new SequenceBus([
-      new CallbackDispatcher(m => i++),
-      new CallbackDispatcher(m => i++),
-      new CallbackDispatcher(m => i++)
+      new CallbackBus(m => i++),
+      new CallbackBus(m => i++),
+      new CallbackBus(m => i++)
     ]);
 
     const { readable } = bus.dispatch({});
