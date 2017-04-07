@@ -216,6 +216,8 @@ import { createDuplexStream } from 'mesh';
 
 ### Utilities
 
+Helpful utilities that you can use for busses & streams.
+
 #### readOneChunk(stream: TransformStream): Promise<any>
 
 Reads one chunk from a duplex stream.
@@ -248,3 +250,11 @@ readAllChunks(splitBus.dispatch({ text: 'hello' })).then(chunks => {
 ```
 
 #### noopBusInstance
+
+Returns a no-operation bus singleton instance.
+
+```typescript
+import { noopBusInstance } from 'mesh';
+
+noopBusInstance.dispatch({ text: 'hello' }); // does nothing
+```
