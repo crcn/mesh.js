@@ -41,6 +41,7 @@
     "lodash": "^3.10.1",
     "mocha": "^2.5.3",
     "sift": "^2.0.9",
+    "typescript": "^2.2.2",
     "uglify-js": "^2.7.0"
   },
   "dependencies": {}
