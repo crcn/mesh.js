@@ -1,6 +1,6 @@
 ### Busses
 
-Busses route your messages according to the rules that you give them. They are generally unopinonated, and composable.
+Busses route your messages according to the rules that you give them. They are generally unopinonated, and composable. Basic example:
 
 #### IBus<T, U>
 
@@ -162,9 +162,29 @@ TODO example
 
 Delays sending a message until the given timeout
 
-#### RetryBus(target: IBus, retryCount: number)
+#### PersistentBus(target: IBus, max: number, testError: (error) => boolean|number)
 
-Creates a bus that retries sending failed messages to a target bus.
+Creates a bus that dispatches messages against `target`. If a message failes, `PersistentBus` will try and re-dispatch messages until `max` is hit. 
+
+```typescript
+import { createPersistentBus } from 'mesh';
+import { createHttpBus, createHTTPPost } from 'mesh-http-bus';
+
+const MAX_API_RETRY_COUNT = 3;
+
+const apiBus = createPersistentBus(
+  createHTTPBus('http://api.mysite.com'),
+  MAX_API_RETRY_COUNT,
+  testError((e) => /^50/.test(String(e.statusCode)) ? 1000 : false)
+);
+
+apiBus.dispatch(createHTTPPost('/friends'));
+
+```
+
+#### MapBus()
+
+#### ReduceBus()
 
 #### BatchBus(target: IBus, delay: number, batch: (messages: any[]) => any, unbatch: (messages: any[], responses: any[]) => any[])
 
