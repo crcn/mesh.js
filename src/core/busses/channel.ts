@@ -56,3 +56,7 @@ export class ChannelBus implements IStreamableBus<any> {
     return new ChannelBus(family, stream.readable, stream.writable, localBus);
   }
 }
+
+// export const createChannelBus = (input: ReadableStream<IMessage>, output: WritableStream<IMessage>, localBus?: IBus<any, any>) => {
+//   return new ChannelBus
+// }

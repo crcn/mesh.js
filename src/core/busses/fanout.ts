@@ -64,6 +64,8 @@ export class FanoutBus<T> implements IStreamableBus<T> {
   }
 }
 
+export const createFanoutBus = <T>(targets: FanoutBusTargetsParamType<T>, iterator: IteratorType<IBus<T, any>>) => new FanoutBus(targets, iterator);
+
 /**
  * Executes a message against all target busses in one after the other.
  */
@@ -73,6 +75,8 @@ export class SequenceBus<T> extends FanoutBus<T> {
     super(targets, sequenceIterator);
   }
 }
+
+export const createSequenceBus = <T>(targets: FanoutBusTargetsParamType<T>) => new SequenceBus(targets);
 
 /**
  * Executes a message against all target busses at the same time.

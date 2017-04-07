@@ -198,3 +198,5 @@ export class DuplexStream<T, U> implements TransformStream<T, U> {
     return this._output.readable;
   }
 }
+
+export const createDuplexStream = <T, U>(handler: DuplexStreamHandler<T, U>) => new DuplexStream(handler);

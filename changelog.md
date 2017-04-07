@@ -1,7 +1,7 @@
 ### 7.0.0
 
 - Move library over to TypeScript.
-- Change terminology from `Bus` to `Dispatcher`.
+- change `execute` to `dispatch`
 - Use `whatwg` streams.
 - Add more i/o capabilities.
 
