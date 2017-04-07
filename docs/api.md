@@ -127,7 +127,6 @@ bus.dispatch(); // 2
 
 #### NoopBus()
 
-
 #### ObservableBus()
 
 #### ChannelBus()
@@ -158,6 +157,27 @@ uppercaseTransformBus.dispatch({ text: 'hola'  }); // HOLA
 Creates a bus that serializes & deserializes messages from and to a remote location via HTTP, websockets, and other protocols.
 
 TODO example
+
+#### DelayedBus(target: IBus, timeout: number, delayFirst = false)
+
+Delays sending a message until the given timeout
+
+#### RetryBus(target: IBus, retryCount: number)
+
+Creates a bus that retries sending failed messages to a target bus.
+
+#### BatchBus(target: IBus, delay: number, batch: (messages: any[]) => any, unbatch: (messages: any[], responses: any[]) => any[])
+
+IMPL TODO
+
+Creates a bus that batches messages into one message payload over a certain interval
+
+```typescript
+import { createBatchBus } from 'mesh';
+import { createHTTPBus } from 'mesh-http-bus';
+const httpBus = createHTTPBus('http://somapi.com');
+const batchedBus = createBatchBus()
+```
 
 #### Utilities
 
