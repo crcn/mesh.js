@@ -1,0 +1,38 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "es5",
+    "sourceMap": true,
+    "lib": [
+      "es2015.promise",
+      "dom",
+      "es6"
+    ],
+    "module": "commonjs",
+    "outDir": "lib",
+    "baseUrl": "src",
+    "experimentalDecorators": true,
+    "jsx": "react"
+  },
+  "types": [
+    "sift",
+    "get-port"
+  ],
+  "exclude": [
+    "node_modules",
+    "*-test",
+    "old",
+    "lib",
+    "dist",
+    "integrations",
+    "examples"
+  ],
+  "filesGlob": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx"
+  ],
+  "rootDirs": [
+    "src",
+    "node_modules"
+  ]
+}

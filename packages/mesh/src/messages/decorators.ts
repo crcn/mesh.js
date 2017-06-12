@@ -1,5 +1,3 @@
-import { serializable, getSerializeType } from "@tandem/common/serialize";
-
 const getMetadataKey = (name) => `message:${name}`;
 
 export const defineMessageMetadata = (name: string, value: any) => {

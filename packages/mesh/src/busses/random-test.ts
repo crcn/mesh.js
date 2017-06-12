@@ -1,4 +1,4 @@
-import { RandomBus } from "@tandem/mesh";
+import { RandomBus } from "..";
 
 describe(__filename + "#", () => {
   it("can be created", () => {

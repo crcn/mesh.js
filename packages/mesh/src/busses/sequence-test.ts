@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { SequenceBus, CallbackBus, ReadableStreamDefaultReader } from "../..";
+import { SequenceBus, CallbackBus, ReadableStreamDefaultReader } from "..";
 
 describe(__filename + "#", () => {
   it("can dispatch a message to multiple endpoints in sequence", async () => {

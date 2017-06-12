@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { DuplexStream, WritableStream } from "@tandem/mesh";
+import { DuplexStream, WritableStream } from "..";
 
 describe(__filename + "#", () => {
   it("waits for all chunks to be read before closing completely", async () => {

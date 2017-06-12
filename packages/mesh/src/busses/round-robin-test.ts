@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { CallbackBus } from "./callback";
-import { DuplexStream, WritableStream, RoundRobinBus, readOneChunk } from "@tandem/mesh";
+import { DuplexStream, WritableStream, RoundRobinBus, readOneChunk } from "..";
 
 describe(__filename + "#", () => {
   it("can be created", () => {

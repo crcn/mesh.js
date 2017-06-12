@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { DuplexStream, WritableStream, ParallelBus, readAllChunks } from "@tandem/mesh";
+import { DuplexStream, WritableStream, ParallelBus, readAllChunks } from "..";
 import { CallbackBus } from "./callback";
 
 describe(__filename + "#", () => {

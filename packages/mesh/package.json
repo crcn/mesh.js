@@ -1,0 +1,15 @@
+{
+  "name": "mesh",
+  "version": "7.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^7.0.29",
+    "@types/whatwg-streams": "0.0.3"
+  }
+}
