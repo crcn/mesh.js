@@ -56,7 +56,13 @@ const extraArgs = function() {
 
 gulp.task('build', () => {
   return merge(PACKAGE_DIRS.map((dir) => (
-    gulpSpawn(join(NODE_MODULES_BIN_DIR, 'tsc'), ['--declaration', '--pretty', ...(WATCH ? ['--watch'] : [])], { cwd: dir })
+    gulpSpawn('npm', ['run', 'build', ...(WATCH ? ['--', '--watch'] : [])], { cwd: dir })
+  )));
+});
+
+gulp.task('clean', () => {
+  return merge(PACKAGE_DIRS.map((dir) => (
+    gulpSpawn('npm', ['run', 'clean'], { cwd: dir })
   )));
 });
 
