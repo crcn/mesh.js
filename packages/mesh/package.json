@@ -1,10 +1,14 @@
 {
   "name": "mesh",
   "version": "7.0.0",
-  "description": "",
+  "description": "Data flow library for WHATWG streams",
   "main": "index.js",
   "scripts": {
     "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crcn/mesh.js.git"
   },
   "author": "",
   "license": "ISC",
