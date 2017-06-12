@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "6.0.35",
+  "version": "7.0.0",
   "tag": "latest",
   "description": "data synchronization library",
   "main": "./lib/index.js",
@@ -32,8 +32,12 @@
   },
   "homepage": "https://github.com/crcn/mesh.js",
   "devDependencies": {
+    "@types/chai": "^3.4.35",
+    "@types/mocha": "^2.2.40",
+    "@types/reflect-metadata": "0.0.5",
     "browserify": "^13.0.1",
     "bundle-collapser": "^1.2.1",
+    "chai": "^3.5.0",
     "co": "^4.6.0",
     "expect.js": "^0.3.1",
     "install": "^0.8.1",

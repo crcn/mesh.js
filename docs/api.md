@@ -13,7 +13,6 @@ Busses route your messages according to the rules that you give them. They are g
 `U` - the return type
 
 ```typescript
-
 interface IHelloMessage {
   text: string;
 }
@@ -187,7 +186,25 @@ apiBus.dispatch(createHTTPPost('/friends'));
 
 ```
 
-#### MapBus()
+#### MapBus(target: IBus, map: (duplex) => duplex)
+
+```typescript
+import { createMapBus, createCallbackBus } from 'mesh';
+const splitUpperBus = createMapBus(
+  createCallbackBus(m => m.text.toUpperCase()),
+  duplex => createDuplexStream((input, output) => {
+    for (const text of readAllChunks(input)) {
+      for (const char of text.split('')) {
+        output.write(char);
+      }
+    }
+
+    output.close();
+  })
+);
+
+splitUpperBus.dispatch({ text: 'hello' }); // [H, E, L, L, O]
+```
 
 #### ReduceBus()
 
