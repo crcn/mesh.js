@@ -1,0 +1,18 @@
+{
+  "name": "mesh-crud",
+  "version": "0.0.1",
+  "description": "CRUD messages & utilties for Mesh",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./lib/**/*-test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crcn/mesh.js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mesh": "7.0.x"
+  }
+}
