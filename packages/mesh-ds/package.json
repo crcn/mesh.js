@@ -1,6 +1,6 @@
 {
   "name": "mesh-ds",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "CRUD messages & utilties for Mesh",
   "main": "index.js",
   "scripts": {
