@@ -103,7 +103,9 @@ gulp.task('npm:link:cross', () => {
 });
 
 gulp.task('npm:patch', () => {
-  // TODO 
+  return merge(PACKAGE_DIRS.map((dir) => (
+    gulpSpawn('npm', ['version', 'patch'], { cwd: dir })
+  )));
 });
 
 gulp.task('npm:publish', () => {
