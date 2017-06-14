@@ -1,10 +1,11 @@
 {
-  "name": "mesh-crud",
-  "version": "0.0.1",
+  "name": "mesh-ds",
+  "version": "0.0.3",
   "description": "CRUD messages & utilties for Mesh",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./lib/**/*-test.js"
+    "test": "mocha ./lib/**/*-test.js",
+    "build": "tsc --declaration"
   },
   "repository": {
     "type": "git",

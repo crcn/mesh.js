@@ -16,7 +16,8 @@
   "exclude": [
     "node_modules",
     "*-test",
-    "lib"
+    "lib",
+    "index.d.ts"
   ],
   "filesGlob": [
     "./src/**/*.ts"

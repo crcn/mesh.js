@@ -1,0 +1,21 @@
+{
+  "name": "mesh-memory-ds",
+  "version": "0.0.1",
+  "description": "Memory Data Store",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crcn/mesh.js.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --declaration"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mesh": "7.0.x",
+    "mesh-ds": "^0.0.3",
+    "mongoid-js": "1.1.x"
+  }
+}
