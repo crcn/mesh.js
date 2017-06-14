@@ -72,15 +72,15 @@ gulp.task('test', () => {
   )));
 });
 
-gulp.task('npm:link', gsequence('npm:link:criss', 'npm:link:cross'));
+gulp.task('yarn:link', gsequence('yarn:link:criss', 'yarn:link:cross'));
 
 /**
  * Link packages globally
  */
 
-gulp.task('npm:link:criss', () => {
+gulp.task('yarn:link:criss', () => {
   return merge(PACKAGE_DIRS.map((dir) => (
-    gulpSpawn('npm', ['link'], { cwd: dir })
+    gulpSpawn('yarn', ['link'], { cwd: dir })
   )));
 });
 
@@ -88,17 +88,17 @@ gulp.task('npm:link:criss', () => {
  * Link package dependencies
  */
 
-gulp.task('npm:link:cross', () => {
+gulp.task('yarn:link:cross', () => {
   return merge(
     PACKAGE_DIRS.map(dir => {
       const pkg = require(join(__dirname, dir, 'package.json'));
       return merge(intersection(keys(Object.assign({}, pkg.dependencies || {}, pkg.devDependencies || {})), PACKAGE_NAMES).map((dep) => {
-        return gulpSpawn('npm', ['link', dep], { cwd: dir });
+        return gulpSpawn('yarn', ['link', dep], { cwd: dir });
       }));
     })
   );
   return merge(PACKAGE_DIRS.map((dir) => (
-    gulpSpawn('npm', ['link'], { cwd: dir })
+    gulpSpawn('yarn', ['link'], { cwd: dir })
   )));
 });
 
