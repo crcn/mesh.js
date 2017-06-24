@@ -4,14 +4,17 @@ import {
   WritableStream,
   TransformStream,
   wrapDuplexStream,
+  createDuplexStream,
 } from "../streams";
 
-import { IBus, IStreamableBus, IMessageTester, testBusMessage } from "./base";
+import { Dispatcher, StreamableDispatcher } from "./base";
 
 /**
  * proxies a target bus, and queues messages
  * if there is none until there is
  */
+
+export const createProxyDispatcher = (getTarget?: Dispatcher<any, any> | Promise<Dispatcher<any, any>>) => message => 
 
 export class ProxyBus implements IStreamableBus<any>, IMessageTester<any> {
 
