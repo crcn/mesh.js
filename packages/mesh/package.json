@@ -15,6 +15,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^7.0.29"
+    "@types/node": "^7.0.29",
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2",
+    "regenerator": "^0.9.7"
   }
 }

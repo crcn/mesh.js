@@ -6,8 +6,8 @@ export type WritableStream<T> = (value: T) => AsyncIterableIterator<any>;
 export type DuplexStream<T, U> = [ReadableStream<T>, WritableStream<U>];
 
 export function wrapDuplexStream<T, U>(value): DuplexStream<T, U> {
-  if (Array.isArray(value) && typeof value[0] === "function" && typeof value[1] === "function") {
-    return value as [ReadableStream<T>, WritableStream<U>];
+  if (isDuplexStream(value)) {
+    return value;
   }
 
   if (value && value.next) {
@@ -30,18 +30,20 @@ export function wrapDuplexStream<T, U>(value): DuplexStream<T, U> {
   ]
 }
 
-export const createDuplexStream = <T, U>(handler: (readChunk: () => any) => any) => {
+export const createDuplexStream = <T, U>(handler: (readChunk: () => any, writeWhunk: (value: any) => any) => any) => {
 
   async function* write() {
 
   }
 
-  // const output = handler()
-
   async function* read() {
     
   }
 
+  handler()
+
 
   return [read, write];
 }
+
+export const isDuplexStream = (value: any) => Array.isArray(value) && value.length === 2 && typeof value[0] === "function" && typeof value[1] === "function";

@@ -14,7 +14,9 @@ import { Dispatcher, StreamableDispatcher } from "./base";
  * if there is none until there is
  */
 
-export const createProxyDispatcher = (getTarget?: Dispatcher<any, any> | Promise<Dispatcher<any, any>>) => message => 
+export const createProxyDispatcher = (getTarget?: () => Dispatcher<any, any> | Promise<Dispatcher<any, any>>) => message => {
+    createDuplexStream()
+}
 
 export class ProxyBus implements IStreamableBus<any>, IMessageTester<any> {
 

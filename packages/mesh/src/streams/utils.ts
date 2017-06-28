@@ -1,53 +1,103 @@
-import { ReadableStream, ReadableStreamDefaultReader, WritableStream, TransformStream, IChunkReadResult } from "./std";
+import { 
+  DuplexStream, 
+  isDuplexStream,
+  ReadableStream, 
+  WritableStream 
+} from "./duplex";
 
-export function readAllChunks<T>({ readable, writable }: TransformStream<any, T>): Promise<T[]>;
-export function readAllChunks<T>(readable: ReadableStream<T>): Promise<T[]>;
-export function readAllChunks<T>(value: any): Promise<T[]> {
+/*
 
-  let readable: ReadableStream<T> = (<TransformStream<any, T>>value).readable || value as ReadableStream<T>;
+// infinite
+const [read, write] = createDuplexStream(async function*(read) {
+  for async (const value of read()) {
+    yield value.toUpperCase();
+  }
+}); 
+
+write('a', 'b', 'c');
+
+for (const )
+
+*/
+
+// pipe(async function*() => yield 1, duplex)
+
+export function readAll<T>([ reader, writer ]: DuplexStream<any, T>): Promise<T[]>;
+export function readAll<T>(reader: ReadableStream<T>): Promise<T[]>;
+export function readAll<T>(value: any): Promise<T[]> {
+
+  let read: ReadableStream<T> = isDuplexStream(value) ? value[0] : value;
 
   return new Promise((resolve, reject) => {
     const result = [];
-    readable.pipeTo(new WritableStream({
-      write(chunk) {
-        result.push(chunk);
-      }
-    })).then(resolve.bind(this, result)).catch(reject);
+    pump(read, (chunk) => {
+      result.push(chunk);
+    }).then(resolve.bind(this, result)).catch(reject);
   });
-}
-export function readOneChunk<T>({ readable, writable }: TransformStream<any, T>): Promise<IChunkReadResult<T>>;
-export function readOneChunk<T>(readable: ReadableStream<T>): Promise<IChunkReadResult<T>>;
-export async function readOneChunk<T>(value: any): Promise<IChunkReadResult<T>> {
-  let readable: ReadableStream<T> = (<TransformStream<any, T>>value).readable || value as ReadableStream<T>;
-  return await readable.getReader().read();
 }
 
 /**
  * await pump(stream, this.onChunk)
  */
 
-export const pump = async (reader: ReadableStreamDefaultReader<any>, each: (value: any) => any, eachError?: (error: any) => boolean|void) => {
+export const pump = async function(read: ReadableStream<any>, each: (value: any) => any) {
+  for await (const value of read()) {
+    await each(value);
+  }
+}
 
-  if (!eachError) {
-    eachError = () => false
+/**
+ * await pump(stream, this.onChunk)
+ */
+
+export const mutex = async function<T, U>(): DuplexStream<T, U> {
+  [
+    async function* read(): T {
+
+    },
+    async function* write(value?: U) {
+
+    }
+  ]
+}
+
+/**
+ */
+
+export const tee = <T>(read: ReadableStream<T>): ReadableStream<T> => {
+
+  let _current: Promise<any>;
+  let buffer: T[] = [];
+  let running: boolean;
+  let done: Promise<boolean>;
+
+  const start = function() {
+    if (running) return;
+    running = true;
+    const _run = read();
+    const pump = () => {
+      done = _run.next().then(chunk => {
+        if (chunk.done) return true;
+        buffer.push(chunk.value);
+        return false;
+      });
+
+      done.then((done) => !done && pump());
+    }
+
+    pump();
   }
 
-  let value, done;
-  return new Promise((resolve, reject) => {
-    const next = () => {
-      reader.read().then(({ value, done }) => {
-        if (done) {
-          resolve();
-        } else {          
-          each(value);
-          next();
-        }
-      }, (error) => {
-        if (eachError(error) === false) return reject(error);
-        next();
-      });
-    };
-
-    next();
-  })
+  return () => {
+    start();
+    return (async function*()  {
+      let i = buffer.length;
+      yield* buffer;
+      let curr: IteratorResult<T>;
+      while(!(await done)) {
+        yield* buffer.slice(i, buffer.length);
+        i = buffer.length;
+      }
+    })();
+  };
 }

@@ -1,55 +1,58 @@
-import { Bus, StreamableBus } from "./base";
+import { Dispatcher, StreamableDispatcher } from "./base";
 
-type IteratorType<T> = (items: T[], each: (value: T) => Promise<any>) => Promise<any>;
+type IteratorType<T> = (items: T[], each: (value: T) => Promise<any> | AsyncIterableIterator<any>) => Promise<any>;
 
 import { 
+  tee,
   pump,
   DuplexStream,
   ReadableStream,
+  isDuplexStream,
   WritableStream,
   wrapDuplexStream,
-  createDuplexStream,
-  ReadableStreamDefaultReader
+  createDuplexStream
 } from "../streams";
 
-
-export type FanoutDispatcherTargetsParamType<T> = Bus<T, any>[] | (<T>(message: T) => Bus<T, any>[]);
+export type FanoutDispatcherTargetsParamType<T> = Dispatcher<T, any>[] | (<T>(message: T) => Dispatcher<T, any>[]);
 
 // TODO - weighted bus
 
-export const createFanoutDispatcher = <T>(targets: FanoutDispatcherTargetsParamType<T>, iterator: IteratorType<Bus<T, any>>) => {
+export const createFanoutDispatcher = <T>(targets: FanoutDispatcherTargetsParamType<T>, iterator: IteratorType<Dispatcher<T, any>>) => {
   const getTagets = typeof targets === "function" ? targets : () => targets;
-  return (message: T) => createDuplexStream((input, output) => {
-    const writer = output.getWriter();
-
-    let spare: ReadableStream<any> = input, child: ReadableStream<any>;
+  return (message: T) => createDuplexStream(async function*(read, write) {
+    read = tee(read);
 
     let pending = 0;
-    iterator(this.getTargets(message), (dispatch: Bus<T, any>) => {
+    await iterator(this.getTargets(message), async function*(dispatch: Dispatcher<T, any>) {
+      const [readTarget, writeTarget] = wrapDuplexStream(dispatch(message) || []);
 
-      let response = dispatch(message);
-
-      if (response == null) {
-        return Promise.resolve();
+      for await (const value of readTarget()) {
+        await write(value);
       }
 
-      [spare, child] = spare.tee();
-      response = wrapDuplexStream(response);
-      pending++;
 
-      return child
-      .pipeThrough(response)
-      .pipeTo(new WritableStream({
-          write(chunk) {
-            return writer.write(chunk);
-          },
-          close: () => pending--,
-          abort: () => pending--
-        }))
-      })
-      .then(writer.close.bind(writer))
-      .catch(writer.abort.bind(writer))
-      .catch((e) => { });
+      // for await (const chunk of readTarget()) {
+
+      // }
+
+      // [spare, child] = spare.tee();
+      // response = wrapDuplexStream(response);
+      // pending++;
+
+      // return child
+      // .pipeThrough(response)
+      // .pipeTo(new WritableStream({
+      //     write(chunk) {
+      //       return writer.write(chunk);
+      //     },
+      //     close: () => pending--,
+      //     abort: () => pending--
+      //   }))
+      // })
+      // .then(writer.close.bind(writer))
+      // .catch(writer.abort.bind(writer))
+      // .catch((e) => { });
+    });
   });
 }
 
