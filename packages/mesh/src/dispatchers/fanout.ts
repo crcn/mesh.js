@@ -1,66 +1,60 @@
 import { Dispatcher, StreamableDispatcher } from "./base";
 
-type IteratorType<T> = (items: T[], each: (value: T) => Promise<any> | AsyncIterableIterator<any>) => Promise<any>;
+type IteratorType<T> = (items: T[], each: (value: T) => any) => any;
 
 import { 
   tee,
   pump,
+  createQueue,
   DuplexStream,
-  ReadableStream,
-  isDuplexStream,
-  WritableStream,
   wrapDuplexStream,
-  createDuplexStream
+  wrapAsyncIterableIterator
 } from "../streams";
 
 export type FanoutDispatcherTargetsParamType<T> = Dispatcher<T, any>[] | (<T>(message: T) => Dispatcher<T, any>[]);
 
 // TODO - weighted bus
 
-export const createFanoutDispatcher = <T>(targets: FanoutDispatcherTargetsParamType<T>, iterator: IteratorType<Dispatcher<T, any>>) => {
-  const getTagets = typeof targets === "function" ? targets : () => targets;
-  return (message: T) => createDuplexStream(async function*(read, write) {
-    read = tee(read);
+export const createFanoutDispatcher = <TMessage, TInput, TOutput>(
+  dispatchers: FanoutDispatcherTargetsParamType<TMessage>, 
+  iterator: IteratorType<Dispatcher<TMessage, TOutput | StreamableDispatcher<TMessage, TInput, TOutput> | void>>): StreamableDispatcher<TMessage, TInput, TOutput> => {
+  const getDispatchers = typeof dispatchers === "function" ? dispatchers : () => dispatchers;
+  return (message: TMessage) => {
+    const dispatchers = getDispatchers(message);
+    const q           = createQueue();
+    let running;
 
-    let pending = 0;
-    await iterator(this.getTargets(message), async function*(dispatch: Dispatcher<T, any>) {
-      const [readTarget, writeTarget] = wrapDuplexStream(dispatch(message) || []);
+    const start = () => {
+      iterator(dispatchers, async dispatch => {
+        const iter = wrapAsyncIterableIterator(dispatch(message));
+        while(true) {
+          const { value, done } = await iter.next();
+          if (done) break;
+          q.unshift(value);
+        }
+      }).then(() => q.done());
+    }
 
-      for await (const value of readTarget()) {
-        await write(value);
+    return {
+      [Symbol.asyncIterator]() {
+        return this;
+      },
+      next(value: TInput) {
+        if (!running) {
+          running = true;
+          start();
+        }
+        return q.next();
       }
-
-
-      // for await (const chunk of readTarget()) {
-
-      // }
-
-      // [spare, child] = spare.tee();
-      // response = wrapDuplexStream(response);
-      // pending++;
-
-      // return child
-      // .pipeThrough(response)
-      // .pipeTo(new WritableStream({
-      //     write(chunk) {
-      //       return writer.write(chunk);
-      //     },
-      //     close: () => pending--,
-      //     abort: () => pending--
-      //   }))
-      // })
-      // .then(writer.close.bind(writer))
-      // .catch(writer.abort.bind(writer))
-      // .catch((e) => { });
-    });
-  });
+    };
+  }
 }
 
 /**
  * Executes a message against all target busses in one after the other.
  */
 
-export const createSequenceBus = <T>(targets: FanoutDispatcherTargetsParamType<T>) => createFanoutDispatcher(targets,  <T>(items:T[], each: (value: T) => Promise<any>) => {
+export const createSequenceDispatcher = <T>(targets: FanoutDispatcherTargetsParamType<T>) => createFanoutDispatcher(targets,  <T>(items:T[], each: (value: T) => Promise<any>) => {
   return new Promise((resolve, reject) => {
     const next = (index: number) => {
       if (index === items.length) return resolve();

@@ -1,47 +1,68 @@
 import { expect } from "chai";
 import { createQueue } from "./queue";
 
+const timeout = (ms = 0) => new Promise(resolve => setTimeout(resolve, ms));
+
 describe(__filename + "#", () => {
   it("can push & pop items", async function() {
-    const [push, pop] = createQueue<number>();
-    push(1);
+    const queue = createQueue<number>();
 
-    expect(await pop()).to.eql(1);
+    queue.unshift(1);
+
+    expect((await queue.next()).value).to.eql(1);
     
-    push(2);
-    push(3);
-    expect(await pop()).to.eql(2);
-    expect(await pop()).to.eql(3);
+    queue.unshift(2);
+    queue.unshift(3);
+    expect((await queue.next()).value).to.eql(2);
+    expect((await queue.next()).value).to.eql(3);
   });
-  it("pop waits for push", function() {
-    const [push, pop] = createQueue<number>();
+
+  it("can use the queue as an async iterable iterator", async function() {
+    const queue = createQueue<number>();
+    queue.unshift(1);
+    queue.unshift(2);
+    queue.unshift(3);
+    queue.done();
+
+    const buffer = [];
+    for await (const value of queue) {
+      buffer.push(value);
+    }
+
+    expect(buffer).to.eql([1, 2, 3]);
+  });
+  
+
+  it("next() waits for unshift()", function() {
+    const {next, unshift} = createQueue<number>();
 
     const p = (async (resolve, reject) => {
-      expect(await pop()).to.eql(1);
-      expect(await pop()).to.eql(2);
+      expect((await next()).value).to.eql(1);
+      expect((await next()).value).to.eql(2);
     })();
 
-    push(1);
-    push(2);
+    unshift(1);
+    unshift(2);
 
     return p;
   });
-  const timeout = (ms = 0) => new Promise(resolve => setTimeout(resolve, ms));
+
   it("push waits for pop", async function() {
-    const [push, pop] = createQueue<number>();
+    const {next, unshift} = createQueue<number>();
     let c = 0;
     const p = (async () => {
-      await push(1);
+      await unshift(1);
       c++;
-      await push(2);
+      await unshift(2);
       c++;
     })();
     await timeout();
     expect(c).to.eql(0);
-    expect(await pop()).to.eql(1);
+    expect(await next()).to.eql({ value: 1, done: false });
     await timeout();
     expect(c).to.eql(1);
-    expect(await pop()).to.eql(2);
+    expect(await next()).to.eql({ value: 2, done: false });
+    await timeout();
     expect(c).to.eql(2);
   });
 });

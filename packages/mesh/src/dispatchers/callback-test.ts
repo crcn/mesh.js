@@ -20,4 +20,11 @@ describe(__filename + "#", () => {
     expect(await dispatch({})).to.equal(1);
     expect(await dispatch({})).to.equal(2);
   });
+
+  it("returns an async iterable iterator", async () => {
+    const split = createCallbackDispatcher(function*(str: string) { yield* str.split('') });
+    const dispatch = createCallbackDispatcher(function*() {
+      
+    });
+  });
 });

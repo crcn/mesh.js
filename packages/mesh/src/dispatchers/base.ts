@@ -1,4 +1,8 @@
 import { DuplexStream } from "../streams";
 
-export type Dispatcher<T, U> = (message: T) => U;
-export type StreamableDispatcher<T> = Dispatcher<T, DuplexStream<any, any>>;
+interface DuplexIterableIterator<TInput, TOutput> extends AsyncIterableIterator<TOutput> {
+  next(value?: TInput): Promise<IteratorResult<TOutput>>;
+}
+
+export type Dispatcher<TMessage, UOutput> = (message: TMessage) => UOutput;
+export type StreamableDispatcher<TMessage, UInput, VOutput> = Dispatcher<TMessage, DuplexIterableIterator<UInput, VOutput>>;

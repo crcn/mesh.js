@@ -1,5 +1,7 @@
 var mesh = require('../..');
 
+(Symbol as any).asyncIterator = Symbol.asyncIterator || Symbol("Symbol.asyncIterator");
+
 var SequenceBus = mesh.SequenceBus;
 var NoopBus = mesh.NoopBus;
 var Bus = mesh.Bus;

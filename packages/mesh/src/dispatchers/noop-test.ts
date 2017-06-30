@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { NoopBus } from "./noop";
+// import { NoopBus } from "./noop";
 describe(__filename + "#", () => {
   it("can be created", () => {
     new NoopBus();
