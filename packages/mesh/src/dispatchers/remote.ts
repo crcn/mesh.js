@@ -215,7 +215,7 @@
 //       };
 //     }
 
-//     this._proxy = new ProxyBus(new CallbackBus(this._dispatchRemoteMessage.bind(this)));
+//     this._proxy = new ProxyBus(this._dispatchRemoteMessage.bind(this));
 //     this._proxy.pause();
 
 //     this._testMessage = testMessage || (message => true);

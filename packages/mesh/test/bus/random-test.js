@@ -1,5 +1,5 @@
 var mesh = require('../..');
-var RandomBus = mesh.RandomBus;
+var createRandomDispatcher = mesh.createRandomDispatcher;
 var BufferedBus = mesh.BufferedBus;
 var Bus = mesh.Bus;
 var expect = require('expect.js');
@@ -9,12 +9,12 @@ var _ = require('lodash');
 describe(__filename + '#', function() {
 
   it('is a bus', function() {
-    expect(RandomBus.create()).to.be.an(Bus);
+    expect(createRandomDispatcher.create()).to.be.an(Bus);
   });
 
   it('can execute an operation on any bus at random', co.wrap(function*() {
 
-    var bus = RandomBus.create([
+    var bus = createRandomDispatcher.create([
       BufferedBus.create(void 0, 'a'),
       BufferedBus.create(void 0, 'b'),
       BufferedBus.create(void 0, 'c')
