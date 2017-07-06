@@ -2,6 +2,9 @@ interface Queue<T> extends AsyncIterableIterator<T> {
   unshift(value: T);
   done(returnValue?: T);
   error(e: any);
+  readonly pushingCount: number;
+  readonly pullingCount: number;
+  readonly isPushing: boolean;
 }
 
 export const createQueue = <T>(): Queue<T> => {
@@ -9,18 +12,35 @@ export const createQueue = <T>(): Queue<T> => {
   const _pushing = [];
   let _e: any;
   let _done: boolean;
+  let _isPushing: boolean;
 
   const write = (value: T, done = false) => {
-    return (_pulling.shift() || [((chunk) => new Promise((resolve) => {
+    _isPushing = true;
+    return new Promise((resolve, reject) => {
+      if (_pulling.length) {
+        _pulling.shift()[0]({ value, done });
+        _isPushing = false;
+        resolve();
+      } else {
         _pushing.push(() => {
-          resolve(); 
-          return Promise.resolve(chunk);
+          resolve();
+          _isPushing = _pushing.length === 0;
+          return Promise.resolve({ value, done });
         });
-      })
-    ), null])[0]({ value, done });
+      }
+    });
   };
 
   return {
+    get isPushing() {
+      return _isPushing;
+    },
+    get pushingCount() {
+      return _pushing.length;
+    },
+    get pullingCount() {
+      return _pulling.length;
+    },
     [Symbol.asyncIterator]() {
       return this;
     },
@@ -42,6 +62,9 @@ export const createQueue = <T>(): Queue<T> => {
       return write(value);
     },
     done(returnValue) {
+      if (_done) {
+        return Promise.resolve();
+      }
       _done = true;
       return write(returnValue, true);
     },
@@ -134,76 +157,47 @@ export function through<TInput, TOutput>(fn: (input: TInput) => AsyncIterableIte
 
 // TODO - possibly endOnNoInput
 export function through<TInput>(fn: (input: TInput) => any, keepOpen: boolean = false) {
-  let current: AsyncIterableIterator<TInput>;
-  const queue: TInput[] = [];
-  let _inputListeners: Array<(v) => any> = [];
-  let _inputPromise: Promise<any>;
-  let _done: boolean;
+  let _running: boolean;
+  let _pumping: boolean;
   const outputQueue = createQueue();
+  const inputQueue  = createQueue<TInput>();
+
+  const run = () => {
+    if (_running) {
+      return;
+    }
+    _running = true;
+
+    const nextInput = () => {
+      inputQueue.next().then(({value}) => {
+        _pumping = true;
+        return pump(wrapAsyncIterableIterator(fn(value)), (value) => {
+          return outputQueue.unshift(value);
+        }).then(() => {
+          _pumping = false;
+          nextInput();
+        });
+      });
+    };
+
+    nextInput();
+  }
+
 
   function next(value?: TInput) {
     if (value != null) {
-      queue.push(value);
-    }
-
-    if (!current && !_done && queue.length) {
-      console.log('MAKING NEW CURRENT', queue[0]);
-      current = wrapAsyncIterableIterator(fn(queue.shift()));
-      // return next();
-      // if (queue.length) {
-      // } else if (keepOpen) {
-      //   return new Promise((resolve) => {
-      //     const listener = (v) => {
-      //       _inputListeners.splice(_inputListeners.indexOf(listener), 1);
-      //       resolve(v);
-      //     }
-      //     _inputListeners.push(listener);
-      //   });
-      // } else {
-      //   return Promise.resolve({ done: true });
-      // }
-    }
-
-    if (current) {
-      console.log('NEXTING');
-      return current.next().then((result) => {
-        console.log(result, keepOpen, queue.length);
-        if (result.done) {
-          current = undefined;
-          if (queue.length) {
-            return next();
-          } else if (!keepOpen) {
-            _done = true;
-            outputQueue.done(result.value);
-          } else {
-            console.log('WAITING FOR NEWXT INPUT');
-          }
-        } else {
-          console.log('UNSHIFTING');
-          outputQueue.unshift(result.value);
+      run();
+      inputQueue.unshift(value);
+    } else if (!keepOpen) {
+      Promise.resolve().then(() => {
+        if (!_pumping) {
+          outputQueue.done();
         }
-
-        return outputQueue.next();
-      }); 
+      });
     }
 
     return outputQueue.next();
-    // return new Promise((resolve, reject) => {
-    //   current.next().then((result) => {
-    //     console.log(result);
-    //     if (result.done) {
-    //       console.log('SET TO UNDEFINED');
-    //       current = undefined;
-    //       return next().then(resolve, reject);
-    //     } else {
-    //       for (const listener of _inputListeners) {
-    //         listener(result);
-    //       }
-    //       resolve(result);
-    //     }
-    //   }, reject);
-    // })
-  };
+  }
 
   return {
     [Symbol.asyncIterator]: () => this,
@@ -224,8 +218,7 @@ export function pump<TOutput>(source: any, each: (value: TOutput) => any) {
     const next = () => {
       iterable.next().then(({ value, done }) => {
         if (done) return resolve();
-        each(value);
-        next();
+        wrapPromise(each(value)).then(next);
       }, reject);
     };
     next();
@@ -272,6 +265,12 @@ export function wrapAsyncIterableIterator<TInput, TOutput>(source: any): AsyncIt
     }
   }
 }
+
+export function wrapPromise<TValue>(value: TValue | Promise<TValue>): Promise<TValue> {
+  if (value && value["then"]) return value as Promise<TValue>;
+  return Promise.resolve(value);
+}
+
 
 /*
 1. need to be able to abort stream from dispatched

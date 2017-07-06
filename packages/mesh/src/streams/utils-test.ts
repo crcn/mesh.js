@@ -8,9 +8,7 @@ describe(__filename + "#", () => {
   describe("through#", () => {
     it("can be used with a vanilla adder function", async () => {
       const iter = through((value: number) => value + 1);
-      console.log("NEXT");
       expect((await iter.next(1)).value).to.eql(2);
-      console.log("NEXT");
       expect((await iter.next(2)).value).to.eql(3);
     });
 
@@ -37,7 +35,8 @@ describe(__filename + "#", () => {
         }
       });
 
-      expect((await iter.next(2)).value).to.eql(1);
+      expect((await iter.next(3)).value).to.eql(2);
+      expect((await iter.next()).value).to.eql(1);
       expect((await iter.next()).value).to.eql(0);
       expect((await iter.next()).done).to.eql(true);
       expect((await iter.next()).done).to.eql(true);
@@ -66,54 +65,17 @@ describe(__filename + "#", () => {
 
       const iter = through(function*(amount: number) {
         for (let i = amount; i--;) {
-          console.log('YIELDING', amount, i);
           yield i;
         }
       }, true);
 
       expect((await iter.next(2)).value).to.eql(1);
       expect((await iter.next()).value).to.eql(0);
-      console.log('GETTING NEXT');
       const p  = iter.next();
-      console.log('NEXTING WITH THREEEEE');
       const p2 = iter.next(3);
-      console.log('awaiting P1');
       expect((await p).value).to.eq(2);
-      console.log('awaiting P2');
-      expect((await p2).value).to.eql(2);
-      console.log('AWATING');
-      expect((await iter.next()).value).to.eql(1);
-      console.log('ZEO');
+      expect((await p2).value).to.eql(1);
       expect((await iter.next()).value).to.eql(0);
-
-    });
-
-    it("pom pom", async () => {
-
-      async function* a() {
-        yield await Promise.resolve(1);
-        yield await Promise.resolve(2);
-        yield await Promise.resolve(3);
-        yield await Promise.resolve(4);
-      }
-
-      const it = a();
-      it.next().then((a) => {
-        console.log(a);
-      });
-      it.next().then((a) => {
-        console.log(a);
-      });
-      it.next().then((a) => {
-        console.log(a);
-      });
-      it.next().then((a) => {
-        console.log(a);
-      });
-      it.next().then((a) => {
-        console.log(a);
-      });
-
     });
   });
 

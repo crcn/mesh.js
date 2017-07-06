@@ -1,5 +1,5 @@
-import { Dispatcher, StreamableDispatcher } from "./base";
-import { wrapDuplexStream, TransformStream } from "../streams";
+import { Dispatcher } from "./base";
+import { wrapDuplexStream } from "../streams";
 
 const noop = () => {};
 

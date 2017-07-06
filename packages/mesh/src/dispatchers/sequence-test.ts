@@ -98,9 +98,36 @@ describe(__filename + "#", () => {
 
   it("can pipe input and receive output", async () => {
     const dispatch = createSequenceDispatcher(() => [
-      m => through((v: number) => -v, true)
+      m => through((v: number) => -v)
     ]);
 
     expect(await readAll(pipe([1, 2, 3], dispatch({})))).to.eql([-1, -2, -3]);
+  });
+
+  it("can nest sequence dispatchers", async () => {
+    let i = '';
+    const dispatch = createSequenceDispatcher([
+      createSequenceDispatcher([
+        m => i += 'a',
+        m => i += 'b',
+        m => i += 'c'
+      ]),
+      createSequenceDispatcher([
+        m => i += 'd',
+        m => i += 'e',
+        m => i += 'f'
+      ]),
+        m => i += 'g'
+    ]);
+
+    const stream = dispatch({});
+    expect((await stream.next()).value).to.eql('a');
+    expect((await stream.next()).value).to.eql('ab');
+    expect((await stream.next()).value).to.eql('abc');
+    expect((await stream.next()).value).to.eql('abcd');
+    expect((await stream.next()).value).to.eql('abcde');
+    expect((await stream.next()).value).to.eql('abcdef');
+    expect((await stream.next()).value).to.eql('abcdefg');
+    expect((await stream.next()).done).to.eql(true);
   });
 });

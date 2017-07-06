@@ -19,19 +19,26 @@ export const createFanoutDispatcher = <TMessage, TInput, TOutput>(
   return (message: TMessage) => {
     const dispatchers  = getDispatchers(message);
     const q            = createQueue();
-    const inputBuffers = Array.from({ length: dispatchers.length }).map(v => []);
+    const inputBuffers = Array.from({ length: dispatchers.length }).map(v => createQueue());
     let running;
 
     const start = () => {
-      iterator(dispatchers, async dispatch => {
+      iterator(dispatchers, dispatch => {
         const index = dispatchers.indexOf(dispatch);
         const inputBuffer = inputBuffers[index];
         const iter = wrapAsyncIterableIterator(dispatch(message));
-        while(true) {
-          const { value, done } = await iter.next(inputBuffer.shift());
-          if (done) break;
-          await q.unshift(value);
-        }
+        const next = () => {
+          return inputBuffer.next().then(({ value, done }) => {
+            return iter.next(value).then(({ value, done }) => {
+              if (done) {
+                return;
+              } else {
+                return q.unshift(value).then(next);
+              }
+            });
+          });
+        };
+        return next();
       }).then(() => q.done(), e => q.error(e));
     }
 
@@ -40,10 +47,11 @@ export const createFanoutDispatcher = <TMessage, TInput, TOutput>(
         return this;
       },
       next(value: TInput) {
-        if (value != null) {
-          for (const buffer of inputBuffers) {
-            buffer.push(value);
-          }
+
+        // signal target dispatchers that they can yield the next value. Note that if
+        // value is null or undefined, it won't count as an input
+        for (const buffer of inputBuffers) {
+          buffer.unshift(value);
         }
         if (!running) {
           running = true;

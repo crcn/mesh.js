@@ -18,6 +18,18 @@ describe(__filename + "#", () => {
     expect(i).to.equal(3);
   });
 
+  it("dispatches messages in parallel", async () => {
+    let i = 0;
+    const dispatch = createParallelDispatcher([
+      m => i++,
+      m => i++,
+      m => i++
+    ]);
+
+    dispatch({}).next();
+    expect(i).to.eql(3);
+  });
+
   it("dispatches a message against multiple dispatchers", async () => {
     let i = 0;
     const dispatch = createParallelDispatcher([
@@ -59,33 +71,6 @@ describe(__filename + "#", () => {
       m => i++
     ]);
 
-    expect(await readAll(dispatch({}))).to.eql([3, 0, 1, 2]);
+    expect(await readAll(dispatch({}))).to.eql([0, 1, 2, 3]);
   });
-
-  // it("can write & read transformed data to a request", async () => {
-  //   const dispatch = createParallelDispatcher([
-  //     m => new DuplexStream((input, output => {
-  //       const writer = output.getWriter();
-  //       input.pipeTo(new WritableStream({
-  //         write(chunk: number) {
-  //           const p = [];
-  //           for (let i = chunk; i >= 0; i--) {
-  //             p.push(writer.write(i));
-  //           }
-  //           return Promise.all(p);
-  //         },
-  //         close() {
-  //           writer.close();
-  //         }
-  //       }))
-  //     }))
-  //   ]);
-  //   const { writable, readable } = dispatch({});
-  //   const writer = writable.getWriter();
-  //   await writer.write(1);
-  //   await writer.write(2);
-  //   await writer.close();
-
-  //   expect(await readAllChunks(readable)).to.eql([1, 0, 2, 1, 0]);
-  // });
 });
