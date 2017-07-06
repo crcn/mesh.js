@@ -6,7 +6,6 @@ import {
   pump,
   createQueue,
   DuplexStream,
-  wrapDuplexStream,
   wrapAsyncIterableIterator
 } from "../streams";
 

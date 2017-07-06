@@ -81,27 +81,20 @@ export interface DuplexStream<TInput, UOutput> extends AsyncIterableIterator<UOu
   next(input?: TInput): Promise<IteratorResult<UOutput>>;
 }
 
-export const createDuplexStream = <TInput, UOutput>(handler: () => DuplexStream<TInput, UOutput>) => {
-  let handlerIterator;
+export const createDuplexStream = <TInput, TOutput>(): DuplexStream<TInput, TOutput> & { input: Queue<TInput>, output: Queue<TOutput> } => {
+  const input  = createQueue<TInput>();
+  const output = createQueue<TOutput>();
+
   return {
-    [Symbol.asyncIterator]() {
-      return this;
-    },
-    async next(input: TInput) {
-      if (!handlerIterator) {
-        handlerIterator = handler();
-        await handlerIterator.next();
-        return await handlerIterator.next(input);
-      }
+    [Symbol.asyncIterator]: () => this,
+    input,
+    output,
+    next(value: TInput) {
+      input.unshift(value);
+      return output.next();
     }
-  }
-};
-
-export const wrapDuplexStream = <T, U>(value): DuplexStream<T, U> => typeof value === 'function' ? value : () => value[Symbol.asyncIterator] || value[Symbol.iterator] ? () => value : () => ({
-  [Symbol.asyncIterator]: () => this,
-  next: () => Promise.resolve(value)
-});
-
+  };
+}
 
 // pipe(async function*() => yield 1, duplex)
 

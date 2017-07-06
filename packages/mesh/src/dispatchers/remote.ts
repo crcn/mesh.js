@@ -1,26 +1,18 @@
-// import { ProxyBus } from "./proxy";
-// import { createCallbackDispatcher } from "./callback";
+// import {createProxyDispatcher } from "./proxy";
 // import { Dispatcher, StreamableDispatcher } from "./base";
 // import {
-//   Sink,
-//   ChunkQueue,
 //   DuplexStream,
-//   ReadableStream,
-//   WritableStream,
-//   TransformStream,
 //   wrapDuplexStream,
-//   WritableStreamDefaultWriter,
-//   ReadableStreamDefaultReader
 // } from "../streams";
 
-// export interface IRemoteBusAdapter {
+// export interface RemoteDispatcherAdapter {
 //   send(message: any): any;
 //   addListener(message: any): any;
 // }
 
 // export type RemoteBusMessageTester<T> = (message: T, thisFamily: string, destFamily: string) => boolean;
 
-// export interface IRemoteBusOptions {
+// export interface RemoteDispatcherOptions {
 
 //   /**
 //    * Family describing the type of application being established
@@ -32,7 +24,7 @@
 //    * adapter for sending and receiving messages
 //    */
 
-//   adapter: IRemoteBusAdapter;
+//   adapter: RemoteDispatcherAdapter;
 
 //   /**
 //    */
@@ -42,31 +34,35 @@
 
 // const PASSED_THROUGH_KEY = "$$passedThrough";
 
+// export enum RemoteMessageType {
+//   HELLO    = 0,
+//   DISPATCH = RemoteMessageType.HELLO    + 1,
+//   RESPONSE = RemoteMessageType.DISPATCH + 1,
+//   CHUNK    = RemoteMessageType.RESPONSE + 1,
+//   RESOLVE  = RemoteMessageType.CHUNK    + 1,
+//   REJECT   = RemoteMessageType.RESOLVE  + 1,
+//   CLOSE    = RemoteMessageType.REJECT   + 1,
+//   ABORT    = RemoteMessageType.CLOSE    + 1,
+// }
+
+// export interface RemoteMessage {
+//   messageId: number;
+//   type: RemoteMessageType;
+//   source: string;
+//   dest: string;
+//   payload: any;
+// };
+
 // let _messageCount = 0;
-// export class RemoteBusMessage {
 
-//   static readonly HELLO    = 0;
-//   static readonly DISPATCH = RemoteBusMessage.HELLO    + 1;
-//   static readonly RESPONSE = RemoteBusMessage.DISPATCH + 1;
-//   static readonly CHUNK    = RemoteBusMessage.RESPONSE + 1;
-//   static readonly RESOLVE  = RemoteBusMessage.CHUNK    + 1;
-//   static readonly REJECT   = RemoteBusMessage.RESOLVE  + 1;
-//   static readonly CLOSE    = RemoteBusMessage.REJECT   + 1;
-//   static readonly ABORT    = RemoteBusMessage.CLOSE    + 1;
-
-//   public messageId: string;
-
-//   constructor(readonly type: number, readonly source: string, readonly dest: string, readonly payload?: any) {
-//     this.messageId = String(_messageCount++);
-//   }
-//   serialize(serializer) {
-//     return [this.type, this.messageId, this.source, this.dest, serializer.serialize(this.payload)];
-//   }
-//   static deserialize([type, messageId, source, dests, payload]: any[], serializer) {
-//     const message = new RemoteBusMessage(type, source, dests, serializer.deserialize(payload));
-//     message.messageId = messageId;
-//     return message;
-//   }
+// export const createRemoteMessage = (type: RemoteMessageType, source: string, dest: string, payload?: any) => {
+//   return {
+//     messageId: _messageCount++,
+//     type,
+//     source,
+//     dest,
+//     payload
+//   };
 // }
 
 // const seed = fill0(Math.round(Math.random() * 100), 3);
@@ -184,13 +180,14 @@
 //   deserialize : i => i
 // };
 
-// export const createRemoteDispatcher = <T>({ adapter, family, testMessage }: IRemoteBusOptions, localDispatcher: Dispatcher<T, any> = (() => {}), serializer: any = defaultSerializer) => {
+// export const createRemoteDispatcher = <T>({ adapter, family, testMessage }: RemoteDispatcherOptions, localDispatcher: Dispatcher<T, any> = (() => {}), serializer: any = defaultSerializer) => {
 //   let uid: string = createUID();
 //   let proxy: Dispatcher<any, any> = ;
 //   let destFamily: string;
 //   let _pendingConnections: Map<string, RemoteConnection> = new Map();
 
 // };
+
 
 // export class RemoteBus<T> implements IStreamableBus<T>, IMessageTester<T> {
 

@@ -1,77 +1,29 @@
+import { Dispatcher } from "./base";
 import {
-  DuplexStream,
-  ReadableStream,
-  WritableStream,
-  TransformStream,
-  wrapDuplexStream,
+  createQueue,
+  wrapPromise,
   createDuplexStream,
+  wrapAsyncIterableIterator,
 } from "../streams";
 
-import { Dispatcher, StreamableDispatcher } from "./base";
-
-/**
- * proxies a target bus, and queues messages
- * if there is none until there is
- */
-
-export const createProxyDispatcher = (getTarget?: () => Dispatcher<any, any> | Promise<Dispatcher<any, any>>) => message => {
-    createDuplexStream()
-}
-
-export class ProxyBus implements IStreamableBus<any>, IMessageTester<any> {
-
-  private _queue: Array<{ input: ReadableStream<any>, output: WritableStream<any>, message: any }> = [];
-  private _paused: boolean;
-
-  constructor(private _target?: IBus<any, any>) {
-  }
-
-  testMessage(message: any) {
-    return testBusMessage(this._target, message);
-  }
-
-  dispatch(message) {
-    // no target? put the message in a queue until there is
-    if (this.paused) {
-      return new DuplexStream((input, output) => {
-        this._queue.push({ message, input, output });
+export const createProxyDispatcher = <TMessage, TOutput>(getTarget?: (message?: TMessage) => Dispatcher<TMessage, TOutput> | Promise<Dispatcher<TMessage, TOutput>>) => (message: TMessage) => {
+  const q = createQueue();
+  const duplex = createDuplexStream();
+  wrapPromise(getTarget(message)).then((dispatch) => {
+    const iter = wrapAsyncIterableIterator(dispatch(message));
+    const next = () => {
+      duplex.input.next().then(({ value }) => {
+        iter.next(value).then(({ value, done }) => {
+          if (done) {
+            duplex.output.done();
+          } else {
+            duplex.output.unshift(value).then(next);
+          }
+        });
       });
-    }
+    };
+    next();
+  });
 
-    return wrapDuplexStream(this.target.dispatch(message));
-  }
-
-  get paused() {
-    return this._paused || !this._target;
-  }
-
-  pause() {
-    this._paused = true;
-  }
-
-  resume() {
-    this._paused = false;
-    this._drain();
-  }
-
-  get target() {
-    return this._target;
-  }
-
-  set target(value) {
-    this._target = value;
-
-    // try draining the proxy now.
-    this._drain();
-  }
-
-  _drain() {
-    if (this.paused) return;
-    const queue = this._queue.concat();
-    this._queue = [];
-    while (queue.length) {
-      const { input, output, message } = queue.shift();
-      wrapDuplexStream(this.target.dispatch(message)).readable.pipeTo(output);
-    }
-  }
+  return duplex;
 }
