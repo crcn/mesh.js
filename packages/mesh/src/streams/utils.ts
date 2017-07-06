@@ -77,6 +77,23 @@ export const createQueue = <T>(): Queue<T> => {
   }
 };
 
+export const createDeferredPromise = <T>() => {
+  let resolve;
+  let reject;
+  let promise: Promise<T>;
+
+  promise = new Promise((resolve, reject) => {
+    resolve = resolve;
+    reject = reject;
+  });
+  
+  return {
+    promise,
+    resolve,
+    reject,
+  }
+}
+
 export interface DuplexStream<TInput, UOutput> extends AsyncIterableIterator<UOutput> {
   next(input?: TInput): Promise<IteratorResult<UOutput>>;
 }
@@ -175,7 +192,6 @@ export function through<TInput>(fn: (input: TInput) => any, keepOpen: boolean = 
 
     nextInput();
   }
-
 
   function next(value?: TInput) {
     if (value != null) {
