@@ -1,4 +1,4 @@
-interface Queue<T> extends AsyncIterableIterator<T> {
+export interface Queue<T> extends AsyncIterableIterator<T> {
   unshift(value: T);
   done(returnValue?: T);
   error(e: any);
@@ -77,14 +77,20 @@ export const createQueue = <T>(): Queue<T> => {
   }
 };
 
-export const createDeferredPromise = <T>() => {
+export interface DeferredPromise<T> {
+  resolve: (result: T) => any;
+  reject: (result?: any) => any;
+  promise: Promise<T>;
+}
+
+export const createDeferredPromise = <T>(): DeferredPromise<T> => {
   let resolve;
   let reject;
   let promise: Promise<T>;
 
-  promise = new Promise((resolve, reject) => {
-    resolve = resolve;
-    reject = reject;
+  promise = new Promise((_resolve, _reject) => {
+    resolve = _resolve;
+    reject  = _reject;
   });
   
   return {
@@ -95,6 +101,8 @@ export const createDeferredPromise = <T>() => {
 }
 
 export interface DuplexStream<TInput, UOutput> extends AsyncIterableIterator<UOutput> {
+  input: Queue<TInput>;
+  output: Queue<UOutput>;
   next(input?: TInput): Promise<IteratorResult<UOutput>>;
 }
 

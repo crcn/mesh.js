@@ -1,173 +1,175 @@
-// import { expect } from "chai";
-// import { EventEmitter } from "events";
-// import { RemoteBus, NoopBus, readAllChunks, DuplexStream, TransformStream } from "../";
+import { expect } from "chai";
+import { timeout } from "../test";
+import { EventEmitter } from "events";
+import { createRemoteDispatcher, readAll, pipe, through } from "../";
 
-// describe(__filename + "#", () => {
+describe(__filename + "#", () => {
 
-//   const createOptions = (family?: string, input?: EventEmitter, output?: EventEmitter) => {
-//     if (!input || !output) {
-//       input = output = new EventEmitter();
-//     }
-//     return {
-//       family: family,
-//       testMessage: () => true,
-//       adapter: {
-//         addListener : input.on.bind(input, "message"),
-//         send        : output.emit.bind(output, "message")
-//       }
-//     }
-//   }
+  const createOptions = ({ timeout = 100 }: { timeout?: number } = {}, input?: EventEmitter, output?: EventEmitter) => {
+    if (!input || !output) {
+      input = output = new EventEmitter();
+    }
+    return {
+      timeout: timeout,
+      adapter: {
+        addListener : input.on.bind(input, "message"),
+        send        : input.emit.bind(input, "message")
+      }
+    }
+  }
 
-//   it("can send and receive a remote message", async () => {
+  interface TestMessage {
+    text: string;
+  }
 
-//     const abus = new RemoteBus(createOptions(), ({ text } => {
-//       return text.toUpperCase();
-//     }));
+  it("can send and receive a remote message", async () => {
 
-//     const bbus = new RemoteBus(abus);
+    const options = createOptions();
 
-//     expect(await readAllChunks(bbus.dispatch({ text: "hello" }))).to.eql(["HELLO"]);
-//   });
+    const adispatch = createRemoteDispatcher<TestMessage>(options, (({ text }) => {
+      return text.toUpperCase();
+    }));
 
-//   // it("can send and receive a remote stream", async () => {
+    const bdispatch = createRemoteDispatcher<TestMessage>(options);
 
-//   //   const abus = new RemoteBus(createOptions(), ({ text } => {
-//   //     return new TransformStream({
-//   //       start(controller) {
-//   //         text.split("").forEach(chunk => controller.enqueue(chunk));
-//   //         controller.close();
-//   //       }
-//   //     })
-//   //   }));
+    expect(await readAll(bdispatch({ text: "hello" }))).to.eql(["HELLO"]);
+  });
 
+  it("can send and receive a remote stream", async () => {
 
-//   //   const bbus = new RemoteBus(abus);
+    const options = createOptions();
 
-//   //   expect(await readAllChunks(bbus.dispatch({ text: "hello" }))).to.eql(["h", "e", "l", "l", "o"]);
-//   // });
+    const adispatch = createRemoteDispatcher(options, function*({ text }) {
+      for (const char of text.split("")) {
+        yield char;
+      }
+    });
 
-//   // it("can write chunks to a remote stream", async () => {
-//   //   const abus = new RemoteBus(createOptions(), (message: any => {
-//   //     return new TransformStream({
-//   //       transform(chunk: string, controller) {
-//   //         controller.enqueue(chunk.toUpperCase());
-//   //       }
-//   //     })
-//   //   }));
+    const bdispatch = createRemoteDispatcher(options);
 
-//   //   const bbus = new RemoteBus(abus);
+    expect(await readAll(bdispatch({ text: "hello" }))).to.eql(["h", "e", "l", "l", "o"]);
+  });
 
-//   //   const { writable, readable } = bbus.dispatch({});
-//   //   const writer = writable.getWriter();
-//   //   writer.write("a");
-//   //   writer.write("b");
-//   //   writer.write("c");
-//   //   await writer.write("d");
-//   //   writer.close();
+  it("can write chunks to a remote stream", async () => {
+    const options = createOptions();
 
-//   //   expect(await readAllChunks(readable)).to.eql(["A", "B", "C", "D"]);
-//   // });
+    const adispatch = createRemoteDispatcher(options, () => through((char: string) => char.toUpperCase()));
 
-//   // it("can abort a remote stream", async () => {
-//   //   const abus = new RemoteBus(createOptions(), (message: any => {
-//   //     return new TransformStream({
-//   //       transform(chunk: string, controller) {
-//   //         controller.enqueue(chunk.toUpperCase());
-//   //       }
-//   //     })
-//   //   }));
-//   //   const bbus = new RemoteBus(abus);
+    const bdispatch = createRemoteDispatcher(options);
 
-//   //   const { writable, readable } = bbus.dispatch({});
-//   //   const writer = writable.getWriter();
-//   //   const reader = readable.getReader();
-//   //   writer.write("a").catch(e => {});
-//   //   writer.write("b").catch(e => {});
-//   //   writer.write("c").catch(e => {});
-//   //   await writer.abort(new Error("Cannot write anymore"));
+    expect(await readAll(pipe(["a", "b", "c", "d"], bdispatch({})))).to.eql(["A", "B", "C", "D"]);
 
-//   //   let error;
+  });
 
-//   //   try {
-//   //     await reader.read();
-//   //   } catch(e) {
-//   //     error = e;
-//   //   }
+  // xit("can abort a remote stream", async () => {
+  //   const options = createOptions();
+  //   const adispatch = createRemoteDispatcher(options, () => through((char: string) => char.toUpperCase()));
 
-//   //   expect(error.message).to.equal("Writable side aborted");
-//   // });
+  //   const bdispatch = createRemoteDispatcher(options);
 
-//   // it("can cancel a read stream", async () => {
+  //   const { writable, readable } = bbus.dispatch({});
+  //   const writer = writable.getWriter();
+  //   const reader = readable.getReader();
+  //   writer.write("a").catch(e => {});
+  //   writer.write("b").catch(e => {});
+  //   writer.write("c").catch(e => {});
+  //   await writer.abort(new Error("Cannot write anymore"));
 
-//   //   const abus = new RemoteBus(createOptions(), ({ text } => {
-//   //     return new TransformStream({
-//   //       start(controller) {
-//   //         text.split("").forEach(chunk => controller.enqueue(chunk.toUpperCase()));
-//   //       }
-//   //     })
-//   //   }));
-//   //   const bbus = new RemoteBus(abus);
+  //   let error;
 
-//   //   const { writable, readable } = bbus.dispatch({ text: "abcde" });
-//   //   const reader = readable.getReader();
-//   //   expect((await reader.read()).value).to.equal("A");
-//   //   expect((await reader.read()).value).to.equal("B");
-//   //   expect((await reader.read()).value).to.equal("C");
-//   //   reader.cancel("not interested");
-//   //   expect((await reader.read()).done).to.equal(true);
-//   // });
+  //   try {
+  //     await reader.read();
+  //   } catch(e) {
+  //     error = e;
+  //   }
+
+  //   expect(error.message).to.equal("Writable side aborted");
+  // });
+
+  // it("can cancel a read stream", async () => {
+
+  //   const abus = new RemoteBus(createOptions(), ({ text } => {
+  //     return new TransformStream({
+  //       start(controller) {
+  //         text.split("").forEach(chunk => controller.enqueue(chunk.toUpperCase()));
+  //       }
+  //     })
+  //   }));
+  //   const bbus = new RemoteBus(abus);
+
+  //   const { writable, readable } = bbus.dispatch({ text: "abcde" });
+  //   const reader = readable.getReader();
+  //   expect((await reader.read()).value).to.equal("A");
+  //   expect((await reader.read()).value).to.equal("B");
+  //   expect((await reader.read()).value).to.equal("C");
+  //   reader.cancel("not interested");
+  //   expect((await reader.read()).done).to.equal(true);
+  // });
 
 
-//   // it("doesn\'t get re-dispatched against the same remote bus", async () => {
-//   //   let i = 0;
-//   //   const abus = new RemoteBus(createOptions(), (message: string => {
-//   //     i++;
-//   //     return abus.dispatch(message);
-//   //   }));
-//   //   const bbus = new RemoteBus(abus);
+  it("doesn\'t get re-dispatched against the same remote dispatcher", async () => {
+    let i = 0;
+    const options = createOptions();
+    const adispatch = createRemoteDispatcher(options, (message: string) => {
+      i++;
+      return adispatch(message);
+    });
 
-//   //   const { writable, readable } = bbus.dispatch({});
-//   //   expect(i).to.equal(1);
-//   // });
+    const bdispatch = createRemoteDispatcher(options);
+    const iter = await bdispatch({});
+    await iter.next();
+    await iter.next();
+    await iter.next();
+    expect(i).to.equal(1);
+  });
 
-//   // it("gets re-dispatched against other remote busses", async () => {
-//   //   let i = 0;
-//   //   const abus = new RemoteBus(createOptions(), (message: string => {
-//   //     i++;
-//   //     return dbus.dispatch(message);
-//   //   }));
+  it("gets re-dispatched against other remote dispatchers", async () => {
+    let i = 0;
+    const optionsA = createOptions();
+    const adispatch = createRemoteDispatcher(optionsA, (message: string) => {
+      i++;
+      return ddispatch(message);
+    });
 
-//   //   const bbus = new RemoteBus(abus);
+    const bdispatch = createRemoteDispatcher(optionsA);
 
-//   //   const cbus = new RemoteBus(createOptions(), (message: string => {
-//   //     i++;
-//   //     return abus.dispatch(message);
-//   //   }));
+    const optionsB = createOptions();
 
-//   //   const dbus = new RemoteBus(cbus);
+    createRemoteDispatcher(optionsB, (message: string) => {
+      i++;
+      return adispatch(message);
+    });
 
-//   //   const { writable, readable } = bbus.dispatch({});
-//   //   expect(i).to.equal(2);
-//   // });
+    const ddispatch = createRemoteDispatcher(optionsB);
+    const iter = bdispatch({});
+    await iter.next();
 
-//   // it("defines the remote family type wen connected", async() => {
+    expect(i).to.equal(2);
+  });
 
-//   //   const a = new EventEmitter();
-//   //   const b = new EventEmitter();
+  it("ends a dispatch that takes too long to respond", async () => {
+    const options = createOptions({ timeout: 5 });
+    type TestMessage = {
+      timeout?: number
+    };
 
-//   //   let i = 0;
+    const adispatch = createRemoteDispatcher<TestMessage>(options, (message: TestMessage) => {
+      return "a";
+    });
 
-//   //   const abus = new RemoteBus(createOptions("a", a, b), (message: string => {
-//   //     i++;
-//   //     return bbus.dispatch(message);
-//   //   }));
+    
+    const bdispatch = createRemoteDispatcher<TestMessage>(options, (message: TestMessage) => {
+      return "b";
+    });
 
+    const cdispatch = createRemoteDispatcher<TestMessage>(options, (message: TestMessage) => {
+      // if (message.timeout) {
+        // await timeout(message.timeout);
+      // }
+      return "c";
+    });
 
-//   //   const bbus = new RemoteBus(createOptions("b", b, a), (message: string => {
-//   //     i++;
-//   //     return bbus.dispatch(message);
-//   //   }));
-
-//   //   expect(bbus["_destFamily"]).to.equal("a");
-//   // })
-// });
+    expect(await readAll(adispatch({ timeout: 0 }))).to.eql(["b", "c"]);
+    
+  });
+});

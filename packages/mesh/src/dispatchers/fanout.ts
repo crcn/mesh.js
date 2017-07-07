@@ -52,6 +52,7 @@ export const createFanoutDispatcher = <TMessage, TInput, TOutput>(
         for (const buffer of inputBuffers) {
           buffer.unshift(value);
         }
+        
         if (!running) {
           running = true;
           start();
