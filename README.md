@@ -1,40 +1,41 @@
 [![Build Status](https://travis-ci.org/crcn/mesh.js.svg)](https://travis-ci.org/crcn/mesh.js) [![Coverage Status](https://coveralls.io/repos/crcn/mesh.js/badge.svg?branch=master&service=github)](https://coveralls.io/github/crcn/mesh.js?branch=master) [![Join the chat at https://gitter.im/crcn/mesh.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/mesh.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
-**Much of the newer source code for this library is [temporarily in the Tandem repository](https://github.com/tandemcode/tandem/tree/master/src/%40tandem/mesh) until it matures a bit more.**
-
 <p align="center">
   <img width="300px" style="margin:0px auto" src="https://cloud.githubusercontent.com/assets/757408/11253633/a825c1c8-8df1-11e5-972d-e9256d9b2e13.png">
 </p>
+
+Mesh is a streamable data flow library that utilizes [async iterable iterators](https://github.com/tc39/proposal-async-iteration). 
 
 Mesh is a utility library that makes it easy to wrangle sophisticated data flows. Easily connect things together, such as [mongodb](https://www.mongodb.org/), [pubnub](http://pubnub.com/), [socket.io](http://socket.io/) `webrtc` and more to build powerful features such as rollbacks, offline-mode, and realtime data.
 
 Here's a basic example:
 
-```javascript
-import SocketIoBus from 'mesh-socket-io-bus';
-import LocalStorageDsBus from 'mesh-local-storage-ds-bus';
-import { ParallelBus } from 'mesh';
+```typescript
+import { createInsertMessage } from 'mesh-ds';
+import { createParallelDispatcher } from 'mesh';
+import { createSocketIODispatcher } from 'mesh-socket-io';
+import { createLocalStorageDispatcher } from 'mesh-local-storage';
 
-// var mongoBus = MongoDsBus.create();
-var storageBus = LocalStorageDsBus.create();
+// createMongoDBDispatcher(mongodbClient)
+// createMySQLDispatcher(sqlClient)
+const storageDispatch = createLocalStorageDispatcher();
 
-// persist all operations to socket.io & any operations from socket.io
-// back to local storage.
-var mainBus = ParallelBus.create([
-  storageBus,
-  SocketIoBus.create({ channel: "operations" }, storageBus)
+// main dispatch function
+const dispatch = createParallelDispatcher([
+
+  storageDispatch,
+
+  // persist all operations to socket.io & any operations from socket.io
+  // back to local storage.
+  createSocketIODispatcher({
+    channel: "operations",
+  }, storageDispatch)
 ]);
 
-// insert data. Persists to local storage, and gets
-// broadcasted to all connected clients.
-mainBus.execute({
-  action : "insert",
-  collection : "messages"
-  data : { text: "hello world" }
-}).readAll().then(function() {
-  // handle response
-});
+for await (const chunk of dispatch(createInsertMessage("messages", { text: "hello world" }))) {
+  // handle response inserts
+}
 ```
 
 #### Installation
@@ -70,25 +71,3 @@ mainBus.execute({
 - Articles
   - [Why re-write code when you can strangle it?](http://blog.hellosign.com/why-rewrite-your-code-when-you-can-strangle-it/)
 
-## Licence (MIT)
-
-Copyright (c) 2015 [Craig Condon](http://crcn.io)
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
