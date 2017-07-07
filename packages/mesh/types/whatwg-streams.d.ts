@@ -1,5 +1,5 @@
 // Type definitions for Streams API
-// Project: https://github.com/whatwg/streams
+// Project: https://github.com/what../utils
 // Definitions by: Kagami Sascha Rosylight <https://github.com/saschanaz>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 

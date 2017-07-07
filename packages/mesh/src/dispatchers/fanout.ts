@@ -1,3 +1,4 @@
+import { castGetter } from "../utils";
 import { Dispatcher, StreamableDispatcher } from "./base";
 
 export type IteratorType<T> = (items: T[], each: (value: T) => any) => any;
@@ -7,14 +8,14 @@ import {
   createQueue,
   DuplexStream,
   wrapAsyncIterableIterator
-} from "../streams";
+} from "../utils";
 
 export type FanoutDispatcherTargetsParamType<T> = Dispatcher<T, any>[] | (<T>(message: T) => Dispatcher<T, any>[]);
 
 export const createFanoutDispatcher = <TMessage, TInput, TOutput>(
   dispatchers: FanoutDispatcherTargetsParamType<TMessage>, 
   iterator: IteratorType<Dispatcher<TMessage, TOutput | StreamableDispatcher<TMessage, TInput, TOutput> | void>>): StreamableDispatcher<TMessage, TInput, TOutput> => {
-  const getDispatchers = typeof dispatchers === "function" ? dispatchers : () => dispatchers;
+  const getDispatchers = castGetter(dispatchers);
   return (message: TMessage) => {
     const dispatchers  = getDispatchers(message);
     const q            = createQueue();

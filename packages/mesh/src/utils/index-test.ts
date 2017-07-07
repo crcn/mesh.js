@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { timeout } from "../test";
-import { pipe, through, readAll, createQueue } from "./utils";
+import { pipe, through, readAll, createQueue } from "./index";
 
 (Symbol as any).asyncIterator = Symbol.asyncIterator || Symbol("Symbol.asyncIterator");
 

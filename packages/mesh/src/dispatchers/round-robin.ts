@@ -1,7 +1,7 @@
 import { FanoutDispatcherTargetsParamType, createFanoutDispatcher} from "./fanout";
 
 /**
- * Executes a message against one target bus that is rotated with each message.
+ * Executes a message against one target dispatcher that is rotated with each message.
  */
 
 

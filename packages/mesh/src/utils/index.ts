@@ -7,6 +7,8 @@ export interface Queue<T> extends AsyncIterableIterator<T> {
   readonly isPushing: boolean;
 }
 
+export const castGetter = <T>(value: T | ((...rest: any[]) => T)): ((...rest: any[]) => T) => typeof value === "function" ? value : () => value;
+
 export const createQueue = <T>(): Queue<T> => {
   const _pulling: Array<[(r: IteratorResult<T>) => any, (r: any) => any]> = [];
   const _pushing = [];
@@ -101,27 +103,23 @@ export const createDeferredPromise = <T>(): DeferredPromise<T> => {
 }
 
 export interface DuplexStream<TInput, UOutput> extends AsyncIterableIterator<UOutput> {
-  input: Queue<TInput>;
-  output: Queue<UOutput>;
   next(input?: TInput): Promise<IteratorResult<UOutput>>;
 }
 
-export const createDuplexStream = <TInput, TOutput>(): DuplexStream<TInput, TOutput> & { input: Queue<TInput>, output: Queue<TOutput> } => {
+export const createDuplexStream = <TInput, TOutput>(handler: (input: Queue<TInput>, output: Queue<TOutput>) => any): DuplexStream<TInput, TOutput> => {
   const input  = createQueue<TInput>();
   const output = createQueue<TOutput>();
 
+  handler(input, output);
+
   return {
     [Symbol.asyncIterator]: () => this,
-    input,
-    output,
     next(value: TInput) {
       input.unshift(value);
       return output.next();
     }
   };
 }
-
-// pipe(async function*() => yield 1, duplex)
 
 export function readAll<T>(stream: DuplexStream<any, T>): Promise<T[]>;
 export function readAll<T>(stream: AsyncIterableIterator<T>): Promise<T[]>;
@@ -226,6 +224,8 @@ export function through<TInput>(fn: (input: TInput) => any, keepOpen: boolean = 
  * await pump(stream, this.onChunk)
  */
 
+export function pump<TOutput>(stream: Iterable<TOutput>, each: (value: TOutput) => any);
+export function pump<TOutput>(stream: AsyncIterable<TOutput>, each: (value: TOutput) => any);
 export function pump<TOutput>(stream: IterableIterator<TOutput>, each: (value: TOutput) => any);
 export function pump<TOutput>(stream: AsyncIterableIterator<TOutput>, each: (value: TOutput) => any);
 
@@ -268,7 +268,7 @@ export function wrapAsyncIterableIterator<TInput, TOutput>(source: any): AsyncIt
     }
   }
 
-  let result: Promise<IteratorResult<TOutput>> = typeof source === "object" && source != null && !!source.then ? source.then(result => Promise.resolve({ value: result, done: false })) : Promise.resolve({ value: source, done: false });
+  let result: Promise<IteratorResult<TOutput>> = typeof source === "object" && source != null && !!source.then ? source.then(result => Promise.resolve({ value: result, done: false })) : Promise.resolve({ value: source, done: source == null });
 
   let nexted = false;
   return {

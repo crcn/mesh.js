@@ -1,7 +1,7 @@
 import { FanoutDispatcherTargetsParamType, createFanoutDispatcher } from "./fanout";
 
 /**
- * Executes a message against one target bus that is selected at random.
+ * Executes a message against one target dispatcher that is selected at random.
  */
 
 export const createRandomDispatcher = <T>(targets: FanoutDispatcherTargetsParamType<T>, weights?: number[]) => createFanoutDispatcher(targets, (<T>() => {

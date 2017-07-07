@@ -1,4 +1,4 @@
-import { DuplexStream } from "../streams";
+import { DuplexStream } from "../utils";
 
 interface DuplexIterableIterator<TInput, TOutput> extends AsyncIterableIterator<TOutput> {
   next(value?: TInput): Promise<IteratorResult<TOutput>>;

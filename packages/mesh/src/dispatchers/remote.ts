@@ -9,7 +9,7 @@ import {
   createDuplexStream,
   createDeferredPromise,
   wrapAsyncIterableIterator,
-} from "../streams";
+} from "../utils";
 
 const noop = () => {};
 

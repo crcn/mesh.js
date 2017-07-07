@@ -61,52 +61,6 @@ describe(__filename + "#", () => {
 
   });
 
-  // xit("can abort a remote stream", async () => {
-  //   const options = createOptions();
-  //   const adispatch = createRemoteDispatcher(options, () => through((char: string) => char.toUpperCase()));
-
-  //   const bdispatch = createRemoteDispatcher(options);
-
-  //   const { writable, readable } = bbus.dispatch({});
-  //   const writer = writable.getWriter();
-  //   const reader = readable.getReader();
-  //   writer.write("a").catch(e => {});
-  //   writer.write("b").catch(e => {});
-  //   writer.write("c").catch(e => {});
-  //   await writer.abort(new Error("Cannot write anymore"));
-
-  //   let error;
-
-  //   try {
-  //     await reader.read();
-  //   } catch(e) {
-  //     error = e;
-  //   }
-
-  //   expect(error.message).to.equal("Writable side aborted");
-  // });
-
-  // it("can cancel a read stream", async () => {
-
-  //   const abus = new RemoteBus(createOptions(), ({ text } => {
-  //     return new TransformStream({
-  //       start(controller) {
-  //         text.split("").forEach(chunk => controller.enqueue(chunk.toUpperCase()));
-  //       }
-  //     })
-  //   }));
-  //   const bbus = new RemoteBus(abus);
-
-  //   const { writable, readable } = bbus.dispatch({ text: "abcde" });
-  //   const reader = readable.getReader();
-  //   expect((await reader.read()).value).to.equal("A");
-  //   expect((await reader.read()).value).to.equal("B");
-  //   expect((await reader.read()).value).to.equal("C");
-  //   reader.cancel("not interested");
-  //   expect((await reader.read()).done).to.equal(true);
-  // });
-
-
   it("doesn\'t get re-dispatched against the same remote dispatcher", async () => {
     let i = 0;
     const options = createOptions();

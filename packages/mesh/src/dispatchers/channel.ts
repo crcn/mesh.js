@@ -1,11 +1,10 @@
-import { IMessage } from "../messages";
 import { createRemoteDispatcher } from "./remote";
 import { StreamableDispatcher, Dispatcher } from "./base";
 import { 
   pump,
   DuplexStream,
   createDuplexStream,
-} from "../streams";
+} from "../utils";
 
 /**
  * Creates a new messaging channel over an existing message stream.
