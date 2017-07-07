@@ -5,9 +5,7 @@
   <img width="300px" style="margin:0px auto" src="https://cloud.githubusercontent.com/assets/757408/11253633/a825c1c8-8df1-11e5-972d-e9256d9b2e13.png">
 </p>
 
-Mesh is a streamable data flow library that utilizes [async iterable iterators](https://github.com/tc39/proposal-async-iteration). 
-
-Mesh is a utility library that makes it easy to wrangle sophisticated data flows. Easily connect things together, such as [mongodb](https://www.mongodb.org/), [pubnub](http://pubnub.com/), [socket.io](http://socket.io/) `webrtc` and more to build powerful features such as rollbacks, offline-mode, and realtime data.
+Mesh is a utility library for [async iterable iterators](https://github.com/tc39/proposal-async-iteration). 
 
 Here's a basic example:
 
