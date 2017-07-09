@@ -1,5 +1,4 @@
 import { pump } from "./pump";
-import { Dispatcher } from "./base";
 import { createQueue, Queue } from "./queue";
 import { createDuplexStream } from "./duplex-stream";
 import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
@@ -7,13 +6,13 @@ import { createDeferredPromise, DeferredPromise } from "./deferred-promise";
 
 const noop = () => {};
 
-export type RemoteDispatcherAdapter = {
+export type RemoteAsyncGeneratorAdapter = {
   send(message: any);
   addListener(listener: (message: any) => any);
 }
 
-export type RemoteDispatcherOptions = {
-  adapter: RemoteDispatcherAdapter;
+export type RemoteAsyncGeneratorOptions = {
+  adapter: RemoteAsyncGeneratorAdapter;
   info?: any;
 };
 
@@ -52,7 +51,7 @@ const PASSED_THROUGH_KEY = `$$passedThrough`;
 
 const createRemoteMessage = (type: RemoteMessageType, sid: string, did: string, payload?: any) => ({ type, sid, did, payload });
 
-export const remote = <TOutgoingMessage>({ adapter, info = {} }: RemoteDispatcherOptions, localDispatch: Dispatcher<any, any> = noop) => {
+export const remote = <TOutgoingMessage>({ adapter, info = {} }: RemoteAsyncGeneratorOptions, call: Function = noop) => {
 
   const uid = createUID();
   const dests: any = {};
@@ -60,7 +59,7 @@ export const remote = <TOutgoingMessage>({ adapter, info = {} }: RemoteDispatche
   const promises: Map<string, DeferredPromise<any>> = new Map();
   const messageQueue = createQueue();
 
-  const shouldDispatch = (message: TOutgoingMessage) => {
+  const shouldCall = (message: TOutgoingMessage) => {
     let passedThrough = Reflect.getMetadata(PASSED_THROUGH_KEY, message) || [];
     if (passedThrough.indexOf(uid) !== -1) {
       return false;
@@ -77,8 +76,8 @@ export const remote = <TOutgoingMessage>({ adapter, info = {} }: RemoteDispatche
   }
 
   const onCall = ({ sid, payload: [info, cid, message] }: RemoteMessage) => {
-    if (shouldDispatch(message)) {
-      connections.set(cid, wrapAsyncIterableIterator(localDispatch(message)));
+    if (shouldCall(message)) {
+      connections.set(cid, wrapAsyncIterableIterator(call(message)));
       adapter.send(createRemoteMessage(RemoteMessageType.YIELD, uid, sid, [cid, [uid, info]]));
     }
   };
@@ -169,7 +168,7 @@ export const remote = <TOutgoingMessage>({ adapter, info = {} }: RemoteDispatche
       });
     };
 
-    if (shouldDispatch(message)) {
+    if (shouldCall(message)) {
       waitForResponse();
       adapter.send(createRemoteMessage(RemoteMessageType.CALL, uid, null, [info, cid, message])); 
     } else {

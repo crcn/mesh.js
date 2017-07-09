@@ -1,7 +1,7 @@
-import { combine, FanoutDispatcherTargetsParamType } from "./combine";
+import { combine } from "./combine";
 
 /**
- * Executes a message against one target dispatcher that is rotated with each message.
+ * Executes a message against one target function that is rotated with each message.
  */
 
 

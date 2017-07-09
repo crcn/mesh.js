@@ -1,12 +1,11 @@
-import { Dispatcher } from "./base";
 import { wrapPromise } from "./wrap-promise";
 import { createDuplexStream } from "./duplex-stream";
 import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
 
-export const proxy = <TMessage, TOutput>(getTarget?: (message?: TMessage) => Dispatcher<TMessage, TOutput> | Promise<Dispatcher<TMessage, TOutput>>) => (message: TMessage) => {
+export const proxy = <TMessage, TOutput>(getFn?: (...args: any[]) => Function | Promise<Function>) => (message: TMessage) => {
   return createDuplexStream((input, output) => {
-    wrapPromise(getTarget(message)).then((dispatch) => {
-      const iter = wrapAsyncIterableIterator(dispatch(message));
+    wrapPromise(getFn(message)).then((fn) => {
+      const iter = wrapAsyncIterableIterator(fn(message));
       const next = () => {
         input.next().then(({ value }) => {
           iter.next(value).then(({ value, done }) => {

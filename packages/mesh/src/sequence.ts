@@ -1,7 +1,7 @@
 import { combine } from "./combine";
 
 /**
- * Executes a message against all target dispatchers in one after the other.
+ * Executes a message against all target functions in one after the other.
  */
 
 export const sequence = <T>(...fns: Function[]) => combine(fns,  <T>(items:T[], each: (value: T) => Promise<any>) => {

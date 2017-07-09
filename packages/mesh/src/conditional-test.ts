@@ -7,8 +7,8 @@ describe(__filename + "#", () => {
     conditional(() => false);
   });
   it("can redirect messages based on the tester", async () => {
-    const dispatch = conditional(({pass}) => pass, () => "a", () => "b");
-    expect(await readAll(dispatch({}))).to.eql(["b"]);
-    expect(await readAll(dispatch({ pass: true }))).to.eql(["a"]);
+    const fn = conditional(({pass}) => pass, () => "a", () => "b");
+    expect(await readAll(fn({}))).to.eql(["b"]);
+    expect(await readAll(fn({ pass: true }))).to.eql(["a"]);
   });
 });

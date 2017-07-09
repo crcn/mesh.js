@@ -1,7 +1,7 @@
 import { combine } from "./combine";
 
 /**
- * Executes a message against one target dispatcher that is selected at random.
+ * Executes a message against one target function that is selected at random.
  */
 
 type WeightedOptions = Function | [number, Function];

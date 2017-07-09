@@ -3,16 +3,16 @@ import { timeout } from "./test";
 import { sequence, pipe, readAll, through } from ".";
 
 describe(__filename + "#", () => {
-  it("can dispatch a message to multiple endpoints in sequence", async () => {
+  it("can call a message to multiple endpoints in sequence", async () => {
     let i = 0;
 
-    const dispatch = sequence(
+    const fn = sequence(
       m => i++,
       m => i++,
       m => i++
     );
 
-    const iterable = dispatch({});
+    const iterable = fn({});
     expect((await iterable.next()).value).to.eql(0);
     expect((await iterable.next()).value).to.eql(1);
     expect((await iterable.next()).value).to.eql(2);
@@ -21,7 +21,7 @@ describe(__filename + "#", () => {
   it("can yield all values from targets", async () => {
     let i = 0;
 
-    const dispatch = sequence(
+    const fn = sequence(
       function *(m) {
         yield "a";
         yield "b";
@@ -36,7 +36,7 @@ describe(__filename + "#", () => {
       }
     );
 
-    const iterable = dispatch({});
+    const iterable = fn({});
     expect((await iterable.next()).value).to.eql("a");
     expect((await iterable.next()).value).to.eql("b");
     expect((await iterable.next()).value).to.eql("c");
@@ -46,55 +46,55 @@ describe(__filename + "#", () => {
     expect((await iterable.next()).done).to.eql(true);
   });
 
-  it("ignores returned values from target dispatchers", async () => {
-    const dispatch = sequence(
+  it("ignores returned values from target functions", async () => {
+    const fn = sequence(
       function *(m) {
         yield "a";
         yield "b";
         return "c";
       }
     );
-    const iterable = dispatch({});
+    const iterable = fn({});
     expect((await iterable.next()).value).to.eql("a");
     expect((await iterable.next()).value).to.eql("b");
     expect((await iterable.next()).value).to.eql(undefined);
   });
 
-  it("can write data to all dispatchers", async () => {
-    const dispatch = sequence(
+  it("can write data to all functions", async () => {
+    const fn = sequence(
       m => through((chunk: string) => chunk.toUpperCase()),
       m => through((chunk: string) => `${chunk}!`)
     );
 
-    const iterable = dispatch({});
+    const iterable = fn({});
     expect((await iterable.next("a")).value).to.eql("A");
     expect((await iterable.next()).value).to.eql("a!");
     expect((await iterable.next()).done).to.eql(true);
   });
 
-  it("can write data to all dispatchers", async () => {
-    const dispatch = sequence(
+  it("can write data to all functions", async () => {
+    const fn = sequence(
       m => through((chunk: string) => chunk.toUpperCase()),
       m => through((chunk: string) => `${chunk}!`)
     );
 
-    const iterable = dispatch({});
+    const iterable = fn({});
     expect((await iterable.next("a")).value).to.eql("A");
     expect((await iterable.next()).value).to.eql("a!");
     expect((await iterable.next()).done).to.eql(true);
   });
 
   it("can pipe input and receive output", async () => {
-    const dispatch = sequence(
+    const fn = sequence(
       m => through((v: number) => -v)
     );
 
-    expect(await readAll(pipe([1, 2, 3], dispatch({})))).to.eql([-1, -2, -3]);
+    expect(await readAll(pipe([1, 2, 3], fn({})))).to.eql([-1, -2, -3]);
   });
 
-  it("can nest sequence dispatchers", async () => {
+  it("can nest sequence functions", async () => {
     let i = '';
-    const dispatch = sequence(
+    const fn = sequence(
       sequence(
         m => i += 'a',
         m => i += 'b',
@@ -108,7 +108,7 @@ describe(__filename + "#", () => {
       m => i += 'g'
     );
 
-    const stream = dispatch({});
+    const stream = fn({});
     expect((await stream.next()).value).to.eql('a');
     expect((await stream.next()).value).to.eql('ab');
     expect((await stream.next()).value).to.eql('abc');

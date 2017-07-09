@@ -7,17 +7,17 @@ describe(__filename + "#", () => {
   });
   it("resumes a proxy when getTarget returns a target", async () => {
     let i = 0;
-    const dispatch = proxy(() => () => i++);
-    await dispatch({}).next();
+    const fn = proxy(() => () => i++);
+    await fn({}).next();
     expect(i).to.eql(1);
   });
   it("asynchronously waits for a proxy target", async () => {
     let i = 0;
-    const dispatch = proxy(() => {
+    const fn = proxy(() => {
       return new Promise((resolve, reject) => {
         setTimeout(resolve, 20, ({a}) => a);
       });
     });
-    expect(await dispatch({ a: "b" }).next()).to.eql({ value: "b", done: false });
+    expect(await fn({ a: "b" }).next()).to.eql({ value: "b", done: false });
   });
 });

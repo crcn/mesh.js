@@ -6,51 +6,51 @@ describe(__filename + "#", () => {
     parallel();
   });
 
-  it("dispatch a message against one entry", async () => {
+  it("call a message against one entry", async () => {
     let i = 0;
-    const dispatch = parallel(
+    const fn = parallel(
       m => i++
     );
 
-    dispatch({}).next();
-    dispatch({}).next();
-    dispatch({}).next();
+    fn({}).next();
+    fn({}).next();
+    fn({}).next();
     expect(i).to.equal(3);
   });
 
-  it("dispatches messages in parallel", async () => {
+  it("calls messages in parallel", async () => {
     let i = 0;
-    const dispatch = parallel(
+    const fn = parallel(
       m => i++,
       m => i++,
       m => i++
     );
 
-    dispatch({}).next();
+    fn({}).next();
     expect(i).to.eql(3);
   });
 
-  it("dispatches a message against multiple dispatchers", async () => {
+  it("calls a message against multiple functions", async () => {
     let i = 0;
-    const dispatch = parallel(
+    const fn = parallel(
       m => i++,
       m => i++,
       m => i++
     );
 
-    expect(await readAll(dispatch({}))).to.eql([0, 1, 2]);
+    expect(await readAll(fn({}))).to.eql([0, 1, 2]);
   });
 
-  it("Can handle a dispatch that returns a rejection", async () => {
+  it("Can handle a call that returns a rejection", async () => {
     let i = 0;
-    const dispatch = parallel(
+    const fn = parallel(
       m => i++,
       m => Promise.reject(new Error("some error"))
     );
 
     let error;
     try {
-      await readAll(dispatch({}));
+      await readAll(fn({}));
     } catch(e) {
       error = e;
     }
@@ -60,9 +60,9 @@ describe(__filename + "#", () => {
   });
 
 
-  it("can nest parallel dispatches", async () => {
+  it("can nest parallel functions", async () => {
     let i = 0;
-    const dispatch = parallel(
+    const fn = parallel(
       parallel(
         m => i++,
         m => i++,
@@ -71,7 +71,7 @@ describe(__filename + "#", () => {
       m => i++
     );
 
-    expect(await readAll(dispatch({}))).to.eql([0, 1, 2, 3]);
+    expect(await readAll(fn({}))).to.eql([0, 1, 2, 3]);
   });
 
   it("can pass multiple arguments", async () => {

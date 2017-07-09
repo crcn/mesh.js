@@ -6,8 +6,8 @@ describe(__filename + "#", () => {
     random();
   });
 
-  it("can dispatch randomly against different targets", async () => {
-    const dispatch = random(
+  it("can call randomly against different targets", async () => {
+    const fn = random(
       m => 1,
       m => 2,
       m => 3,
@@ -15,7 +15,7 @@ describe(__filename + "#", () => {
     
     const counts = {1: 0, 2: 0, 3: 0} as any;
     for (let i = 1000; i--;) {
-      counts[(await dispatch({}).next()).value as number]++;
+      counts[(await fn({}).next()).value as number]++;
     }
 
     expect(counts[1] !== counts[2] !== counts[3]).to.eql(true);
@@ -25,7 +25,7 @@ describe(__filename + "#", () => {
   });
 
   it("can add a 0 weight to a target", async () => {
-    const dispatch = random(
+    const fn = random(
       [3, m => 1],
       [1, m => 2],
       [0, m => 3],
@@ -33,13 +33,13 @@ describe(__filename + "#", () => {
     
     const counts = {1: 0, 2: 0, 3: 0} as any;
     for (let i = 1000; i--;) {
-      counts[(await dispatch({}).next()).value as number]++;
+      counts[(await fn({}).next()).value as number]++;
     }
     expect(counts[3]).to.eql(0);
   });
 
   it("can add more weight to one target", async () => {
-    const dispatch = random(
+    const fn = random(
       [5, m => 1],
       [1, m => 2],
       [1, m => 3],
@@ -48,7 +48,7 @@ describe(__filename + "#", () => {
     const counts = {1: 0, 2: 0, 3: 0} as any;
     const n = 2000;
     for (let i = n; i--;) {
-      counts[(await dispatch({}).next()).value as number]++;
+      counts[(await fn({}).next()).value as number]++;
     }
     expect(counts[1] > 0.6).to.eql(true);
   });

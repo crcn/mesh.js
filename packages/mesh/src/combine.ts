@@ -1,12 +1,9 @@
-import { Dispatcher, StreamableDispatcher } from "./base";
 import { pump } from "./pump";
 import { createQueue } from "./queue";
 import { createDuplexStream } from "./duplex-stream";
 import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
 
 export type IteratorType<T> = (items: T[], each: (value: T) => any) => any;
-
-export type FanoutDispatcherTargetsParamType<T> = Function[] | (<T>(message: T) => Function[]);
 
 export const combine = <TMessage, TInput, TOutput>(
   fns: Function[], 
@@ -17,10 +14,10 @@ export const combine = <TMessage, TInput, TOutput>(
     let running;
 
     const start = () => {
-      iterator(fns, dispatch => {
-        const index = fns.indexOf(dispatch);
+      iterator(fns, call => {
+        const index = fns.indexOf(call);
         const inputBuffer = inputBuffers[index];
-        const iter = wrapAsyncIterableIterator(dispatch(...args));
+        const iter = wrapAsyncIterableIterator(call(...args));
         const next = () => {
           return inputBuffer.next().then(({ value, done }) => {
             return iter.next(value).then(({ value, done }) => {
@@ -42,7 +39,7 @@ export const combine = <TMessage, TInput, TOutput>(
       },
       next(value: TInput) {
 
-        // signal target dispatchers that they can yield the next value. Note that if
+        // signal target functions that they can yield the next value. Note that if
         // value is null or undefined, it won't count as an input
         for (const buffer of inputBuffers) {
           buffer.unshift(value);

@@ -1,4 +1,3 @@
-import { Dispatcher } from "./base";
 import { pump } from "./pump";
 import { createDuplexStream } from "./duplex-stream";
 import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
@@ -10,13 +9,13 @@ export const fallback = <TMessage>(...fns: Function[]) => {
       const buffer  = [];
 
       const nextTarget = () => {
-        const targetDispatch = targets.shift();
+        const targetFn = targets.shift();
 
-        if (!targetDispatch) {
+        if (!targetFn) {
           return output.done();
         }
 
-        const targetIter = wrapAsyncIterableIterator(targetDispatch(message));
+        const targetIter = wrapAsyncIterableIterator(targetFn(message));
         let hasData = false;
 
         const next = (value) => {

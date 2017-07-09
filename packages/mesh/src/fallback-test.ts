@@ -5,25 +5,25 @@ describe(__filename + "#", () => {
   it("can be created", () => {
     fallback();
   });
-  it("can return values from the first dispatcher", async () => {
-    const dispatch = fallback(
+  it("can return values from the first function", async () => {
+    const fn = fallback(
       m => "a"
     );
     
-    expect(await readAll(dispatch({}))).to.eql(["a"]);
+    expect(await readAll(fn({}))).to.eql(["a"]);
   });
 
-  it("can return values from the second dispatcher if the first doesn't return anything", async () => {
-    const dispatch = fallback(
+  it("can return values from the second function if the first doesn't return anything", async () => {
+    const fn = fallback(
       m => undefined,
       m => "b"
     );
     
-    expect(await readAll(dispatch({}))).to.eql(["b"]);
+    expect(await readAll(fn({}))).to.eql(["b"]);
   });
 
-  it("can return all yields from the first dispatcher, and not the rest", async () => {
-    const dispatch = fallback(
+  it("can return all yields from the first function, and not the rest", async () => {
+    const fn = fallback(
       function*() {
         yield "a";
         yield "b";
@@ -32,15 +32,15 @@ describe(__filename + "#", () => {
       m => "d"
     );
     
-    expect(await readAll(dispatch({}))).to.eql(["a", "b", "c"]);
+    expect(await readAll(fn({}))).to.eql(["a", "b", "c"]);
   });
 
   it("can take input data", async () => {
-    const dispatch = fallback(
+    const fn = fallback(
       m => through(a => -a),
       m => "d"
     );
     
-    expect(await readAll(pipe([1, 2, 3], dispatch({})))).to.eql([-1, -2, -3]);
+    expect(await readAll(pipe([1, 2, 3], fn({})))).to.eql([-1, -2, -3]);
   });
 });

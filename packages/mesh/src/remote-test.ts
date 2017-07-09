@@ -26,104 +26,104 @@ describe(__filename + "#", () => {
 
     const options = createOptions();
 
-    const adispatch = remote<TestMessage>(options, (({ text }) => {
+    const afn = remote<TestMessage>(options, (({ text }) => {
       return text.toUpperCase();
     }));
 
-    const bdispatch = remote<TestMessage>(options);
+    const bfn = remote<TestMessage>(options);
 
-    expect(await readAll(bdispatch({ text: "hello" }))).to.eql(["HELLO"]);
+    expect(await readAll(bfn({ text: "hello" }))).to.eql(["HELLO"]);
   });
 
   it("can send and receive a remote stream", async () => {
 
     const options = createOptions();
 
-    const adispatch = remote(options, function*({ text }) {
+    const afn = remote(options, function*({ text }) {
       for (const char of text.split("")) {
         yield char;
       }
     });
 
-    const bdispatch = remote(options);
+    const bfn = remote(options);
 
-    expect(await readAll(bdispatch({ text: "hello" }))).to.eql(["h", "e", "l", "l", "o"]);
+    expect(await readAll(bfn({ text: "hello" }))).to.eql(["h", "e", "l", "l", "o"]);
   });
 
   it("can write chunks to a remote stream", async () => {
     const options = createOptions();
 
-    const adispatch = remote(options, () => through((char: string) => char.toUpperCase()));
+    const afn = remote(options, () => through((char: string) => char.toUpperCase()));
 
-    const bdispatch = remote(options);
+    const bfn = remote(options);
 
-    expect(await readAll(pipe(["a", "b", "c", "d"], bdispatch({})))).to.eql(["A", "B", "C", "D"]);
+    expect(await readAll(pipe(["a", "b", "c", "d"], bfn({})))).to.eql(["A", "B", "C", "D"]);
 
   });
 
-  it("doesn\'t get re-dispatched against the same remote dispatcher", async () => {
+  it("doesn\'t get re-fned against the same remote function", async () => {
     let i = 0;
     const options = createOptions();
-    const adispatch = remote(options, (message: string) => {
+    const afn = remote(options, (message: string) => {
       i++;
-      return adispatch(message);
+      return afn(message);
     });
 
-    const bdispatch = remote(options);
-    const iter = await bdispatch({});
+    const bfn = remote(options);
+    const iter = await bfn({});
     await iter.next();
     await iter.next();
     await iter.next();
     expect(i).to.equal(1);
   });
 
-  it("gets re-dispatched against other remote dispatchers", async () => {
+  it("gets re-fned against other remote functions", async () => {
     let i = 0;
     const optionsA = createOptions();
-    const adispatch = remote(optionsA, (message: string) => {
+    const afn = remote(optionsA, (message: string) => {
       i++;
-      return ddispatch(message);
+      return dfn(message);
     });
 
-    const bdispatch = remote(optionsA);
+    const bfn = remote(optionsA);
 
     const optionsB = createOptions();
 
     remote(optionsB, (message: string) => {
       i++;
-      return adispatch(message);
+      return afn(message);
     });
 
-    const ddispatch = remote(optionsB);
-    const iter = bdispatch({});
+    const dfn = remote(optionsB);
+    const iter = bfn({});
     await iter.next();
 
     expect(i).to.equal(2);
   });
 
-  it("ends a dispatch that takes too long to respond", async () => {
+  it("ends a fn that takes too long to respond", async () => {
     const options = createOptions({ timeout: 5 });
     type TestMessage = {
       timeout?: number
     };
 
-    const adispatch = remote<TestMessage>(options, (message: TestMessage) => {
+    const afn = remote<TestMessage>(options, (message: TestMessage) => {
       return "a";
     });
 
     
-    const bdispatch = remote<TestMessage>(options, (message: TestMessage) => {
+    const bfn = remote<TestMessage>(options, (message: TestMessage) => {
       return "b";
     });
 
-    const cdispatch = remote<TestMessage>(options, (message: TestMessage) => {
+    const cfn = remote<TestMessage>(options, (message: TestMessage) => {
       // if (message.timeout) {
         // await timeout(message.timeout);
       // }
       return "c";
     });
 
-    expect(await readAll(adispatch({ timeout: 0 }))).to.eql(["b", "c"]);
+    expect(await readAll(afn({ timeout: 0 }))).to.eql(["b", "c"]);
     
   });
 });

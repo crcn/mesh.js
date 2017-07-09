@@ -6,15 +6,15 @@ describe(__filename + "#", () => {
     roundRobin();
   });
 
-  it("alternates dispatchers each each message, round robin style", async () => {
-    const dispatch = roundRobin(
+  it("alternates functions each each message, round robin style", async () => {
+    const fn = roundRobin(
       m => "a",
       m => "b",
       m => "c"
     );
 
-    expect((await dispatch({}).next()).value).to.equal("a");
-    expect((await dispatch({}).next()).value).to.equal("b");
-    expect((await dispatch({}).next()).value).to.equal("c");
+    expect((await fn({}).next()).value).to.equal("a");
+    expect((await fn({}).next()).value).to.equal("b");
+    expect((await fn({}).next()).value).to.equal("c");
   });
 });

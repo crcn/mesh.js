@@ -1,14 +1,13 @@
 import { pump } from "./pump";
 import { remote } from "./remote";
 import { createDuplexStream } from "./duplex-stream";
-import { StreamableDispatcher, Dispatcher } from "./base";
 
 /**
  * Creates a new messaging channel over an existing message stream.
  */
 
-export const createChannelDispatcher = <TMessage>(channel: AsyncIterableIterator<any>, localDispatch: Dispatcher<any, any> = (() => {}), info?: any) => {
-   const remoteDispatch = remote({
+export const channel = <TMessage>(channel: AsyncIterableIterator<any>, call: Function, info?: any) => {
+   const callRemote = remote({
     info: info,
     adapter: {
       send(message) {
@@ -17,7 +16,7 @@ export const createChannelDispatcher = <TMessage>(channel: AsyncIterableIterator
 
       }
     }
-  }, localDispatch);
+  }, call);
 
   return (message: TMessage) => {
     
