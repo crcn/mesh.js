@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { timeout } from "../test";
+import { timeout } from "./test";
 import { EventEmitter } from "events";
-import { createRemoteDispatcher, readAll, pipe, through } from "../";
+import { remote, readAll, pipe, through } from ".";
 
 describe(__filename + "#", () => {
 
@@ -26,11 +26,11 @@ describe(__filename + "#", () => {
 
     const options = createOptions();
 
-    const adispatch = createRemoteDispatcher<TestMessage>(options, (({ text }) => {
+    const adispatch = remote<TestMessage>(options, (({ text }) => {
       return text.toUpperCase();
     }));
 
-    const bdispatch = createRemoteDispatcher<TestMessage>(options);
+    const bdispatch = remote<TestMessage>(options);
 
     expect(await readAll(bdispatch({ text: "hello" }))).to.eql(["HELLO"]);
   });
@@ -39,13 +39,13 @@ describe(__filename + "#", () => {
 
     const options = createOptions();
 
-    const adispatch = createRemoteDispatcher(options, function*({ text }) {
+    const adispatch = remote(options, function*({ text }) {
       for (const char of text.split("")) {
         yield char;
       }
     });
 
-    const bdispatch = createRemoteDispatcher(options);
+    const bdispatch = remote(options);
 
     expect(await readAll(bdispatch({ text: "hello" }))).to.eql(["h", "e", "l", "l", "o"]);
   });
@@ -53,9 +53,9 @@ describe(__filename + "#", () => {
   it("can write chunks to a remote stream", async () => {
     const options = createOptions();
 
-    const adispatch = createRemoteDispatcher(options, () => through((char: string) => char.toUpperCase()));
+    const adispatch = remote(options, () => through((char: string) => char.toUpperCase()));
 
-    const bdispatch = createRemoteDispatcher(options);
+    const bdispatch = remote(options);
 
     expect(await readAll(pipe(["a", "b", "c", "d"], bdispatch({})))).to.eql(["A", "B", "C", "D"]);
 
@@ -64,12 +64,12 @@ describe(__filename + "#", () => {
   it("doesn\'t get re-dispatched against the same remote dispatcher", async () => {
     let i = 0;
     const options = createOptions();
-    const adispatch = createRemoteDispatcher(options, (message: string) => {
+    const adispatch = remote(options, (message: string) => {
       i++;
       return adispatch(message);
     });
 
-    const bdispatch = createRemoteDispatcher(options);
+    const bdispatch = remote(options);
     const iter = await bdispatch({});
     await iter.next();
     await iter.next();
@@ -80,21 +80,21 @@ describe(__filename + "#", () => {
   it("gets re-dispatched against other remote dispatchers", async () => {
     let i = 0;
     const optionsA = createOptions();
-    const adispatch = createRemoteDispatcher(optionsA, (message: string) => {
+    const adispatch = remote(optionsA, (message: string) => {
       i++;
       return ddispatch(message);
     });
 
-    const bdispatch = createRemoteDispatcher(optionsA);
+    const bdispatch = remote(optionsA);
 
     const optionsB = createOptions();
 
-    createRemoteDispatcher(optionsB, (message: string) => {
+    remote(optionsB, (message: string) => {
       i++;
       return adispatch(message);
     });
 
-    const ddispatch = createRemoteDispatcher(optionsB);
+    const ddispatch = remote(optionsB);
     const iter = bdispatch({});
     await iter.next();
 
@@ -107,16 +107,16 @@ describe(__filename + "#", () => {
       timeout?: number
     };
 
-    const adispatch = createRemoteDispatcher<TestMessage>(options, (message: TestMessage) => {
+    const adispatch = remote<TestMessage>(options, (message: TestMessage) => {
       return "a";
     });
 
     
-    const bdispatch = createRemoteDispatcher<TestMessage>(options, (message: TestMessage) => {
+    const bdispatch = remote<TestMessage>(options, (message: TestMessage) => {
       return "b";
     });
 
-    const cdispatch = createRemoteDispatcher<TestMessage>(options, (message: TestMessage) => {
+    const cdispatch = remote<TestMessage>(options, (message: TestMessage) => {
       // if (message.timeout) {
         // await timeout(message.timeout);
       // }

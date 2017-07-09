@@ -1,17 +1,12 @@
 import { Dispatcher } from "./base";
-import { 
-  pump,
-  castGetter, 
-  createDuplexStream, 
-  wrapAsyncIterableIterator,
-} from "../utils";
+import { pump } from "./pump";
+import { createDuplexStream } from "./duplex-stream";
+import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
 
-export const createFallbackDispatcher = <TMessage>(targets: Dispatcher<TMessage, any>[] | ((message: TMessage) => Dispatcher<TMessage, any>[])) => {
-  const getTargets = castGetter(targets);
+export const fallback = <TMessage>(...fns: Function[]) => {
   return (message: TMessage) => {
     return createDuplexStream((input, output) => {
-      
-      const targets = getTargets(message).concat();
+      const targets = fns.concat();
       const buffer  = [];
 
       const nextTarget = () => {

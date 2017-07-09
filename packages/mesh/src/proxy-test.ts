@@ -1,19 +1,19 @@
-import { createProxyDispatcher } from "..";
+import { proxy } from ".";
 import { expect } from "chai";
 
 describe(__filename + "#", () => {
   it("can be created", () => {
-    createProxyDispatcher();
+    proxy();
   });
   it("resumes a proxy when getTarget returns a target", async () => {
     let i = 0;
-    const dispatch = createProxyDispatcher(() => () => i++);
+    const dispatch = proxy(() => () => i++);
     await dispatch({}).next();
     expect(i).to.eql(1);
   });
   it("asynchronously waits for a proxy target", async () => {
     let i = 0;
-    const dispatch = createProxyDispatcher(() => {
+    const dispatch = proxy(() => {
       return new Promise((resolve, reject) => {
         setTimeout(resolve, 20, ({a}) => a);
       });

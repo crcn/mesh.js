@@ -1,32 +1,26 @@
-import { castGetter } from "../utils";
 import { Dispatcher, StreamableDispatcher } from "./base";
+import { pump } from "./pump";
+import { createQueue } from "./queue";
+import { createDuplexStream } from "./duplex-stream";
+import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
 
 export type IteratorType<T> = (items: T[], each: (value: T) => any) => any;
 
-import {
-  pump,
-  createQueue,
-  DuplexStream,
-  wrapAsyncIterableIterator
-} from "../utils";
+export type FanoutDispatcherTargetsParamType<T> = Function[] | (<T>(message: T) => Function[]);
 
-export type FanoutDispatcherTargetsParamType<T> = Dispatcher<T, any>[] | (<T>(message: T) => Dispatcher<T, any>[]);
-
-export const createFanoutDispatcher = <TMessage, TInput, TOutput>(
-  dispatchers: FanoutDispatcherTargetsParamType<TMessage>, 
-  iterator: IteratorType<Dispatcher<TMessage, TOutput | StreamableDispatcher<TMessage, TInput, TOutput> | void>>): StreamableDispatcher<TMessage, TInput, TOutput> => {
-  const getDispatchers = castGetter(dispatchers);
-  return (message: TMessage) => {
-    const dispatchers  = getDispatchers(message);
+export const combine = <TMessage, TInput, TOutput>(
+  fns: Function[], 
+  iterator: IteratorType<Function>): ((...args: any[]) => AsyncIterableIterator<TOutput>) => {
+  return (...args: any[]) => {
     const q            = createQueue();
-    const inputBuffers = Array.from({ length: dispatchers.length }).map(v => createQueue());
+    const inputBuffers = Array.from({ length: fns.length }).map(v => createQueue());
     let running;
 
     const start = () => {
-      iterator(dispatchers, dispatch => {
-        const index = dispatchers.indexOf(dispatch);
+      iterator(fns, dispatch => {
+        const index = fns.indexOf(dispatch);
         const inputBuffer = inputBuffers[index];
-        const iter = wrapAsyncIterableIterator(dispatch(message));
+        const iter = wrapAsyncIterableIterator(dispatch(...args));
         const next = () => {
           return inputBuffer.next().then(({ value, done }) => {
             return iter.next(value).then(({ value, done }) => {

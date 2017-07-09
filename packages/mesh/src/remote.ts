@@ -1,15 +1,9 @@
-import "reflect-metadata";
+import { pump } from "./pump";
 import { Dispatcher } from "./base";
-import { createParallelDispatcher } from "./parallel";
-import { 
-  pump,
-  Queue,
-  createQueue,
-  DeferredPromise,
-  createDuplexStream,
-  createDeferredPromise,
-  wrapAsyncIterableIterator,
-} from "../utils";
+import { createQueue, Queue } from "./queue";
+import { createDuplexStream } from "./duplex-stream";
+import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
+import { createDeferredPromise, DeferredPromise } from "./deferred-promise";
 
 const noop = () => {};
 
@@ -58,7 +52,7 @@ const PASSED_THROUGH_KEY = `$$passedThrough`;
 
 const createRemoteMessage = (type: RemoteMessageType, sid: string, did: string, payload?: any) => ({ type, sid, did, payload });
 
-export const createRemoteDispatcher = <TOutgoingMessage>({ adapter, info = {} }: RemoteDispatcherOptions, localDispatch: Dispatcher<any, any> = noop) => {
+export const remote = <TOutgoingMessage>({ adapter, info = {} }: RemoteDispatcherOptions, localDispatch: Dispatcher<any, any> = noop) => {
 
   const uid = createUID();
   const dests: any = {};

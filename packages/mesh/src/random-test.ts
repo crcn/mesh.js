@@ -1,17 +1,17 @@
-import { createRandomDispatcher } from "..";
+import { random } from ".";
 import { expect } from "chai";
 
 describe(__filename + "#", () => {
   it("can be created", () => {
-    createRandomDispatcher([]);
+    random();
   });
 
   it("can dispatch randomly against different targets", async () => {
-    const dispatch = createRandomDispatcher([
+    const dispatch = random(
       m => 1,
       m => 2,
       m => 3,
-    ]);
+    );
     
     const counts = {1: 0, 2: 0, 3: 0} as any;
     for (let i = 1000; i--;) {
@@ -25,11 +25,11 @@ describe(__filename + "#", () => {
   });
 
   it("can add a 0 weight to a target", async () => {
-    const dispatch = createRandomDispatcher([
-      m => 1,
-      m => 2,
-      m => 3,
-    ], [3, 1, 0]);
+    const dispatch = random(
+      [3, m => 1],
+      [1, m => 2],
+      [0, m => 3],
+    );
     
     const counts = {1: 0, 2: 0, 3: 0} as any;
     for (let i = 1000; i--;) {
@@ -39,11 +39,11 @@ describe(__filename + "#", () => {
   });
 
   it("can add more weight to one target", async () => {
-    const dispatch = createRandomDispatcher([
-      m => 1,
-      m => 2,
-      m => 3,
-    ], [5, 1, 1]);
+    const dispatch = random(
+      [5, m => 1],
+      [1, m => 2],
+      [1, m => 3],
+    );
     
     const counts = {1: 0, 2: 0, 3: 0} as any;
     const n = 2000;

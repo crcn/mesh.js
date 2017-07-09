@@ -4,7 +4,7 @@
   "description": "Data flow library for WHATWG streams",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./lib/**/*.js",
+    "test": "mocha ./lib",
     "build": "mkdir -p lib/streams/std; cp -R src/streams/std lib/streams; tsc --declaration",
     "clean": "rm -rf lib"
   },

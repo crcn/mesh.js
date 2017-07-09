@@ -1,17 +1,17 @@
 import { expect } from "chai";
-import { createRoundRobinDispatcher } from "..";
+import { roundRobin } from ".";
 
 describe(__filename + "#", () => {
   it("can be created", () => {
-    createRoundRobinDispatcher([]);
+    roundRobin();
   });
 
   it("alternates dispatchers each each message, round robin style", async () => {
-    const dispatch = createRoundRobinDispatcher([
+    const dispatch = roundRobin(
       m => "a",
       m => "b",
       m => "c"
-    ]);
+    );
 
     expect((await dispatch({}).next()).value).to.equal("a");
     expect((await dispatch({}).next()).value).to.equal("b");
