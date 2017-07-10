@@ -22,11 +22,11 @@ describe(__filename + "#", () => {
 
     const options = createOptions();
 
-    const afn = remote(options, (({ text }) => {
+    const afn = remote(() => options, (({ text }) => {
       return text.toUpperCase();
     }));
 
-    const bfn = remote(options);
+    const bfn = remote(() => options);
 
     expect(await readAll(bfn({ text: "hello" }))).to.eql(["HELLO"]);
   });
@@ -35,13 +35,13 @@ describe(__filename + "#", () => {
 
     const options = createOptions();
 
-    const afn = remote(options, function*({ text }) {
+    const afn = remote(() => options, function*({ text }) {
       for (const char of text.split("")) {
         yield char;
       }
     });
 
-    const bfn = remote(options);
+    const bfn = remote(() => options);
 
     expect(await readAll(bfn({ text: "hello" }))).to.eql(["h", "e", "l", "l", "o"]);
   });
@@ -49,9 +49,9 @@ describe(__filename + "#", () => {
   it("can write chunks to a remote stream", async () => {
     const options = createOptions();
 
-    const afn = remote(options, () => through((char: string) => char.toUpperCase()));
+    const afn = remote(() => options, () => through((char: string) => char.toUpperCase()));
 
-    const bfn = remote(options);
+    const bfn = remote(() => options);
 
     expect(await readAll(pipe(["a", "b", "c", "d"], bfn({})))).to.eql(["A", "B", "C", "D"]);
 
@@ -60,12 +60,12 @@ describe(__filename + "#", () => {
   it("doesn\'t get re-fned against the same remote function", async () => {
     let i = 0;
     const options = createOptions();
-    const afn = remote(options, (message: string) => {
+    const afn = remote(() => options, (message: string) => {
       i++;
       return afn(message);
     });
 
-    const bfn = remote(options);
+    const bfn = remote(() => options);
     const iter = await bfn({});
     await iter.next();
     await iter.next();
@@ -76,21 +76,21 @@ describe(__filename + "#", () => {
   it("gets re-fned against other remote functions", async () => {
     let i = 0;
     const optionsA = createOptions();
-    const afn = remote(optionsA, (message: string) => {
+    const afn = remote(() => optionsA, (message: string) => {
       i++;
       return dfn(message);
     });
 
-    const bfn = remote(optionsA);
+    const bfn = remote(() => optionsA);
 
     const optionsB = createOptions();
 
-    remote(optionsB, (message: string) => {
+    remote(() => optionsB, (message: string) => {
       i++;
       return afn(message);
     });
 
-    const dfn = remote(optionsB);
+    const dfn = remote(() => optionsB);
     const iter = bfn({});
     await iter.next();
 
@@ -103,9 +103,9 @@ describe(__filename + "#", () => {
       timeout?: number
     };
 
-    const afn = remote(options, () => "a");
-    const bfn = remote(options, () => "b");
-    const cfn = remote(options, () => "c");
+    const afn = remote(() => options, () => "a");
+    const bfn = remote(() => options, () => "b");
+    const cfn = remote(() => options, () => "c");
 
     expect(await readAll(afn({ timeout: 0 }))).to.eql(["b", "c"]);
   });
@@ -116,8 +116,8 @@ describe(__filename + "#", () => {
       timeout?: number
     };
 
-    const add = remote(options, (a, b) => a + b);
-    const remoteAdd = remote(options);
+    const add = remote(() => options, (a, b) => a + b);
+    const remoteAdd = remote(() => options);
 
     expect(await readAll(remoteAdd(1, 2))).to.eql([3]);
   });

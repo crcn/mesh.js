@@ -7,6 +7,7 @@ export function through<TInput, TOutput>(fn: (input: TInput) => TOutput, keepOpe
 export function through<TInput, TOutput>(fn: (input: TInput) => IterableIterator<TOutput>, keepOpen?: boolean): AsyncIterableIterator<TOutput>;
 export function through<TInput, TOutput>(fn: (input: TInput) => AsyncIterableIterator<TOutput>, keepOpen?: boolean): AsyncIterableIterator<TOutput>;
 
+
 // TODO - possibly endOnNoInput
 export function through<TInput>(fn: (input: TInput) => any, keepOpen: boolean = false) {
   return createDuplex<any, any>((input, output) => {
