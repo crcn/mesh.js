@@ -5,7 +5,7 @@ import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
 
 export type IteratorType<T> = (items: T[], each: (value: T) => any) => any;
 
-export const combine = <TMessage, TInput, TOutput>(
+export const combine = <TInput, TOutput>(
   fns: Function[], 
   iterator: IteratorType<Function>): ((...args: any[]) => AsyncIterableIterator<TOutput>) => {
   return (...args: any[]) => {

@@ -2,9 +2,6 @@ export interface Queue<T> extends AsyncIterableIterator<T> {
   unshift(value: T);
   done(returnValue?: T);
   error(e: any);
-  readonly pushingCount: number;
-  readonly pullingCount: number;
-  readonly isPushing: boolean;
 }
 
 export const createQueue = <T>(): Queue<T> => {
@@ -12,19 +9,15 @@ export const createQueue = <T>(): Queue<T> => {
   const _pushing = [];
   let _e: any;
   let _done: boolean;
-  let _isPushing: boolean;
 
   const write = (value: T, done = false) => {
-    _isPushing = true;
     return new Promise((resolve, reject) => {
       if (_pulling.length) {
         _pulling.shift()[0]({ value, done });
-        _isPushing = false;
         resolve();
       } else {
         _pushing.push(() => {
           resolve();
-          _isPushing = _pushing.length === 0;
           return Promise.resolve({ value, done });
         });
       }
@@ -32,15 +25,6 @@ export const createQueue = <T>(): Queue<T> => {
   };
 
   return {
-    get isPushing() {
-      return _isPushing;
-    },
-    get pushingCount() {
-      return _pushing.length;
-    },
-    get pullingCount() {
-      return _pulling.length;
-    },
     [Symbol.asyncIterator]() {
       return this;
     },

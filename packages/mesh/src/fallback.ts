@@ -2,7 +2,7 @@ import { pump } from "./pump";
 import { createDuplexStream } from "./duplex-stream";
 import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
 
-export const fallback = <F extends Function>(...fns: F[]) => (...args) => {
+export const fallback = (...fns: Function[]) => (...args) => {
   return createDuplexStream((input, output) => {
     const targets = fns.concat();
     const buffer  = [];
