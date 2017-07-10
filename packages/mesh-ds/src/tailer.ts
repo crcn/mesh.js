@@ -2,7 +2,7 @@ import sift from "sift";
 
 import { 
   IMessage,
-  DuplexStream,
+  DuplexAsyncIterableIterator,
   IStreamableBus,
   WritableStream,
   TransformStream,
@@ -35,7 +35,7 @@ export class DSTailer implements IStreamableBus<any> {
       }
       const tailCollection = this._tails[tailRequest.collectionName];
 
-      return new DuplexStream((input, output) => {
+      return new DuplexAsyncIterableIterator((input, output) => {
 
         const writer = output.getWriter();
 
@@ -62,7 +62,7 @@ export class DSTailer implements IStreamableBus<any> {
         tailCollection.push(tail);
       });
     } else if ([DSInsertRequest.DS_INSERT, DSRemoveRequest.DS_REMOVE, DSUpdateRequest.DS_UPDATE].indexOf(message.type) > -1) {
-      return new DuplexStream((input, output) => {
+      return new DuplexAsyncIterableIterator((input, output) => {
         const writer = output.getWriter();
 
         const tailCollection = this._tails[(message as DSMessage).collectionName] || [];

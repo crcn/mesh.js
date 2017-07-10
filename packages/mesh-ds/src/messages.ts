@@ -1,4 +1,4 @@
-import { IMessage, IStreamableBus, readAllChunks, readOneChunk, DuplexStream } from "mesh";
+import { IMessage, IStreamableBus, readAllChunks, readOneChunk, DuplexAsyncIterableIterator } from "mesh";
 import sift from "sift";
 // import { serializable } from "@tandem/common/serialize";
 
@@ -54,8 +54,8 @@ export class DSTailRequest extends DSMessage {
   constructor(collectionName: string, readonly query: any) {
     super(DSTailRequest.DS_TAIL, collectionName);
   }
-  static dispatch(collectionName: string, query: any, dispatcher: IStreamableBus<any>): DuplexStream<any, DSTailedOperation> {
-    return dispatcher.dispatch(new DSTailRequest(collectionName, query)) as DuplexStream<any, DSTailedOperation>;
+  static dispatch(collectionName: string, query: any, dispatcher: IStreamableBus<any>): DuplexAsyncIterableIterator<any, DSTailedOperation> {
+    return dispatcher.dispatch(new DSTailRequest(collectionName, query)) as DuplexAsyncIterableIterator<any, DSTailedOperation>;
   }
 }
 

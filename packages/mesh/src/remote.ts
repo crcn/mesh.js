@@ -1,6 +1,6 @@
 import { pump } from "./pump";
 import { createQueue, Queue } from "./queue";
-import { createDuplexStream } from "./duplex-stream";
+import { createDuplex } from "./duplex";
 import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
 import { createDeferredPromise, DeferredPromise } from "./deferred-promise";
 
@@ -51,7 +51,7 @@ const PASSED_THROUGH_KEY = `$$passedThrough`;
 
 const createRemoteMessage = (type: RemoteMessageType, sid: string, did: string, payload?: any) => ({ type, sid, did, payload });
 
-export const remote = <TOutgoingMessage>({ adapter, info = {} }: RemoteAsyncGeneratorOptions, call: Function = noop) => {
+export const remote = ({ adapter, info = {} }: RemoteAsyncGeneratorOptions, call: Function = noop) => {
 
   const uid = createUID();
   const dests: any = {};
@@ -59,13 +59,17 @@ export const remote = <TOutgoingMessage>({ adapter, info = {} }: RemoteAsyncGene
   const promises: Map<string, DeferredPromise<any>> = new Map();
   const messageQueue = createQueue();
 
-  const shouldCall = (message: TOutgoingMessage) => {
-    let passedThrough = Reflect.getMetadata(PASSED_THROUGH_KEY, message) || [];
-    if (passedThrough.indexOf(uid) !== -1) {
-      return false;
-    }
-    Reflect.defineMetadata(PASSED_THROUGH_KEY, [...passedThrough, uid], message);
-    return true;
+  const shouldCall = (...args) => {
+    return args.some(arg => {
+      if (typeof arg === "object") {
+        let passedThrough = Reflect.getMetadata(PASSED_THROUGH_KEY, arg) || [];
+        if (passedThrough.indexOf(uid) !== -1) {
+          return false;
+        }
+        Reflect.defineMetadata(PASSED_THROUGH_KEY, [...passedThrough, uid], arg);
+      } 
+      return true;
+    });
   }
 
   const getConnection = (uid: string, each: (connection: AsyncIterableIterator<any>) => any) => {
@@ -75,9 +79,9 @@ export const remote = <TOutgoingMessage>({ adapter, info = {} }: RemoteAsyncGene
     }
   }
 
-  const onCall = ({ sid, payload: [info, cid, message] }: RemoteMessage) => {
-    if (shouldCall(message)) {
-      connections.set(cid, wrapAsyncIterableIterator(call(message)));
+  const onCall = ({ sid, payload: [info, cid, ...args] }: RemoteMessage) => {
+    if (shouldCall(...args)) {
+      connections.set(cid, wrapAsyncIterableIterator(call(...args)));
       adapter.send(createRemoteMessage(RemoteMessageType.YIELD, uid, sid, [cid, [uid, info]]));
     }
   };
@@ -116,7 +120,7 @@ export const remote = <TOutgoingMessage>({ adapter, info = {} }: RemoteAsyncGene
     }
   });
 
-  return (message: TOutgoingMessage) => {
+  return (...args) => {
     const cid    = createUID();
     const cpom   = createDeferredPromise();
     const output = createQueue();
@@ -168,9 +172,9 @@ export const remote = <TOutgoingMessage>({ adapter, info = {} }: RemoteAsyncGene
       });
     };
 
-    if (shouldCall(message)) {
+    if (shouldCall(...args)) {
       waitForResponse();
-      adapter.send(createRemoteMessage(RemoteMessageType.CALL, uid, null, [info, cid, message])); 
+      adapter.send(createRemoteMessage(RemoteMessageType.CALL, uid, null, [info, cid, ...args])); 
     } else {
       output.done();
     }

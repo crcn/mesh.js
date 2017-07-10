@@ -1,10 +1,10 @@
 import { tee } from "./tee";
 import { pump } from "./pump";
-import { createDuplexStream } from "./duplex-stream";
+import { createDuplex } from "./duplex";
 import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
 
 export const race = (...fns: Function[]) => (...args): AsyncIterableIterator<any> => {
-  return createDuplexStream((input, output) => {
+  return createDuplex((input, output) => {
     let primaryInput = input as AsyncIterableIterator<any>;
     let wonFn;
     fns.forEach((fn, i) => {

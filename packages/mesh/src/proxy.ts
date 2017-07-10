@@ -1,9 +1,9 @@
 import { wrapPromise } from "./wrap-promise";
-import { createDuplexStream } from "./duplex-stream";
+import { createDuplex } from "./duplex";
 import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
 
 export const proxy = <TOutput>(getFn?: (...args: any[]) => Function | Promise<Function>) => (...args) => {
-  return createDuplexStream((input, output) => {
+  return createDuplex((input, output) => {
     wrapPromise(getFn(...args)).then((fn) => {
       const iter = wrapAsyncIterableIterator(fn(...args));
       const next = () => {

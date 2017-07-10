@@ -1,13 +1,13 @@
 import { tee } from "./tee";
 import { pump } from "./pump";
-import { createDuplexStream } from "./duplex-stream";
+import { createDuplex } from "./duplex";
 import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
 
 export type IteratorType<T> = (items: T[], each: (value: T) => any) => any;
 
 export const combine = <TInput, TOutput>(
   fns: Function[], 
-  iterator: IteratorType<Function>) => (...args: any[]) => createDuplexStream((input, output) => {
+  iterator: IteratorType<Function>) => (...args: any[]) => createDuplex((input, output) => {
   let primaryInput   = input as AsyncIterableIterator<any>;
 
   const inputs = Array.from({ length: fns.length }).map(v => {

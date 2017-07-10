@@ -1,6 +1,6 @@
 import sift from "sift";
 import { BaseDataStore, DSFindRequest, DSFindAllRequest, DSInsertRequest, DSRemoveRequest, DSUpdateRequest, DSMessage } from "mesh-ds";
-import { ReadableStream, DuplexStream } from "mesh";
+import { ReadableStream, DuplexAsyncIterableIterator } from "mesh";
 import mongoid = require("mongoid-js");
 
 export class MemoryDataStore extends BaseDataStore {
@@ -16,7 +16,7 @@ export class MemoryDataStore extends BaseDataStore {
 
   dsFind({ type, collectionName, query, multi }: DSFindRequest<any>) {
     const found = this.getCollection(collectionName).filter(sift(query) as any);
-    return DuplexStream.fromArray(found.length ? multi ? found : [found[0]] : []);
+    return DuplexAsyncIterableIterator.fromArray(found.length ? multi ? found : [found[0]] : []);
   }
 
   dsInsert({ type, collectionName, data }: DSInsertRequest<any>) {
@@ -24,7 +24,7 @@ export class MemoryDataStore extends BaseDataStore {
     if (!ret._id) ret._id = mongoid();
     ret = Array.isArray(ret) ? ret : [ret];
     this.getCollection(collectionName).push(...ret);
-    return DuplexStream.fromArray(ret);
+    return DuplexAsyncIterableIterator.fromArray(ret);
   }
 
   dsRemove({ type, collectionName, query }: DSRemoveRequest<any>) {
@@ -38,7 +38,7 @@ export class MemoryDataStore extends BaseDataStore {
         collection.splice(i, 1);
       }
     }
-    return DuplexStream.fromArray(ret);
+    return DuplexAsyncIterableIterator.fromArray(ret);
   }
 
   dsUpdate({ type, collectionName, query, data }: DSUpdateRequest<any, any>) {
@@ -53,7 +53,7 @@ export class MemoryDataStore extends BaseDataStore {
       }
     }
 
-    return DuplexStream.fromArray(ret);
+    return DuplexAsyncIterableIterator.fromArray(ret);
   }
 
   private getCollection(collectionName: string) {

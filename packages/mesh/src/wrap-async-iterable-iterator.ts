@@ -12,7 +12,12 @@ export function wrapAsyncIterableIterator<TInput, TOutput>(source: any): AsyncIt
           return this;
         },
         next(value?: TInput) {
-          const v = (<IterableIterator<TOutput>>iterator).next(value);
+          let v;
+          try {
+            v = (<IterableIterator<TOutput>>iterator).next(value);
+          } catch(e) {
+            return Promise.reject(e);
+          }
           return Promise.resolve(v);
         },
         return: source.return ? (value?: TOutput) => {

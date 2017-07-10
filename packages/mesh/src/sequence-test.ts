@@ -118,4 +118,21 @@ describe(__filename + "#", () => {
     expect((await stream.next()).value).to.eql('abcdefg');
     expect((await stream.next()).done).to.eql(true);
   });
+
+  it("throws an error if a target emits one", async () => {
+    let i = '';
+    const fn = sequence(
+      m => { throw new Error("some error") }
+    );
+
+    const iter = fn({});
+    let err: Error;
+    try {
+      await iter.next();
+    } catch(e) {
+      err = e;
+    }
+
+    expect(err.message).to.eql("some error");
+  });
 });

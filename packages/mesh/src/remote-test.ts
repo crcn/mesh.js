@@ -107,23 +107,22 @@ describe(__filename + "#", () => {
       timeout?: number
     };
 
-    const afn = remote<TestMessage>(options, (message: TestMessage) => {
-      return "a";
-    });
-
-    
-    const bfn = remote<TestMessage>(options, (message: TestMessage) => {
-      return "b";
-    });
-
-    const cfn = remote<TestMessage>(options, (message: TestMessage) => {
-      // if (message.timeout) {
-        // await timeout(message.timeout);
-      // }
-      return "c";
-    });
+    const afn = remote(options, () => "a");
+    const bfn = remote(options, () => "b");
+    const cfn = remote(options, () => "c");
 
     expect(await readAll(afn({ timeout: 0 }))).to.eql(["b", "c"]);
-    
+  });
+
+  it("can pass multiple arguments to remote functions", async () => {
+    const options = createOptions({ timeout: 5 });
+    type TestMessage = {
+      timeout?: number
+    };
+
+    const add = remote(options, (a, b) => a + b);
+    const remoteAdd = remote(options);
+
+    expect(await readAll(remoteAdd(1, 2))).to.eql([3]);
   });
 });

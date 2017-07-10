@@ -1,6 +1,6 @@
 import { ProxyBus } from "mesh";
 import { DSMessage, DSInsertRequest, DSFindRequest, DSFindAllRequest, DSRemoveRequest, DSUpdateRequest } from "./messages";
-import { IStreamableBus, DuplexStream, wrapDuplexStream, TransformStream } from "mesh";
+import { IStreamableBus, DuplexAsyncIterableIterator, wrapDuplexAsyncIterableIterator, TransformStream } from "mesh";
 
 export abstract class BaseDataStore implements IStreamableBus<DSMessage> {
   private _proxy: ProxyBus;
@@ -10,11 +10,11 @@ export abstract class BaseDataStore implements IStreamableBus<DSMessage> {
       dispatch: (message: DSMessage) => {
         const method = this[message.type];
         if (method) {
-          return new DuplexStream((input, output) => {
-            wrapDuplexStream(method.call(this, message)).readable.pipeTo(output);
+          return new DuplexAsyncIterableIterator((input, output) => {
+            wrapDuplexAsyncIterableIterator(method.call(this, message)).readable.pipeTo(output);
           });
         }
-        return DuplexStream.empty();
+        return DuplexAsyncIterableIterator.empty();
       }
     });
 

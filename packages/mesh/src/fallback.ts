@@ -1,9 +1,9 @@
 import { pump } from "./pump";
-import { createDuplexStream } from "./duplex-stream";
+import { createDuplex } from "./duplex";
 import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
 
 export const fallback = (...fns: Function[]) => (...args) => {
-  return createDuplexStream((input, output) => {
+  return createDuplex((input, output) => {
     const targets = fns.concat();
     const buffer  = [];
 
@@ -36,6 +36,12 @@ export const fallback = (...fns: Function[]) => (...args) => {
           return hasData ? true : new Promise(() => {
             nextTarget();
           })
+        }, (e) => {
+          if (targets.length && !hasData) {
+            nextTarget();
+          } else {
+            output.error(e);
+          }
         });
       }
 

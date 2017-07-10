@@ -18,7 +18,7 @@ export * from "./pump";
 export * from "./deferred-promise";
 export * from "./queue";
 export * from "./wrap-async-iterable-iterator";
-export * from "./duplex-stream";
+export * from "./duplex";
 export * from "./read-all";
 export * from "./race";
 export * from "./tee";

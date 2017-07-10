@@ -1,6 +1,6 @@
 import { pump } from "./pump";
 import { remote } from "./remote";
-import { createDuplexStream } from "./duplex-stream";
+import { createDuplex } from "./duplex";
 
 /**
  * Creates a new messaging channel over an existing message stream.

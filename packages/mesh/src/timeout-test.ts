@@ -67,4 +67,21 @@ describe(__filename + "#", () => {
       expect(e.message).to.eql("Timeout calling function.");
     }
   }); 
+
+  it("re-throws an error from the target function", async () => {
+    const t = timeoutQuick(
+      function*() {
+        throw new Error("some error");
+      }
+    );
+    let err: Error;
+    const iter = t();
+    try {
+      await iter.next();
+    } catch(e) {
+      err = e;
+    }
+
+    expect(err.message).to.eql("some error");
+  });
 });
