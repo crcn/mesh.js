@@ -1,10 +1,6 @@
 import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
 import { wrapPromise } from "./wrap-promise";
 
-/**
- * await pump(stream, this.onChunk)
- */
-
 export function pump<TOutput>(stream: Iterable<TOutput>, each: (value: TOutput) => any);
 export function pump<TOutput>(stream: AsyncIterable<TOutput>, each: (value: TOutput) => any);
 export function pump<TOutput>(stream: IterableIterator<TOutput>, each: (value: TOutput) => any);

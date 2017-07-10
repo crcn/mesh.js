@@ -22,3 +22,4 @@ export * from "./duplex-stream";
 export * from "./read-all";
 export * from "./race";
 export * from "./tee";
+export * from "./timeout";
