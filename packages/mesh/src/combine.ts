@@ -7,7 +7,7 @@ export type IteratorType<T> = (items: T[], each: (value: T) => any) => any;
 
 export const combine = <TInput, TOutput>(
   fns: Function[], 
-  iterator: IteratorType<Function>): ((...args: any[]) => AsyncIterableIterator<TOutput>) => (...args: any[]) => createDuplexStream((input, output) => {
+  iterator: IteratorType<Function>) => (...args: any[]) => createDuplexStream((input, output) => {
   let primaryInput   = input as AsyncIterableIterator<any>;
 
   const inputs = Array.from({ length: fns.length }).map(v => {
