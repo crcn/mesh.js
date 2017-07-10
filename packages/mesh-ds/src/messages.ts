@@ -1,8 +1,12 @@
-import { IMessage, IStreamableBus, readAllChunks, readOneChunk, DuplexAsyncIterableIterator } from "mesh";
+import { readAll, DuplexAsyncIterableIterator } from "mesh";
 import sift from "sift";
 // import { serializable } from "@tandem/common/serialize";
 
-export class DSMessage implements IMessage {
+interface Message {
+  type: string;
+}
+
+export class DSMessage implements Message {
   readonly timestamp: number = Date.now();
   constructor(readonly type: string, readonly collectionName: string) {
   }
@@ -15,7 +19,7 @@ export class DSInsertRequest<T> extends DSMessage {
     super(DSInsertRequest.DS_INSERT, collectionName);
   }
   static async dispatch(collectionName: string, data: any, dispatcher: IStreamableBus<any>) {
-    return await readAllChunks(dispatcher.dispatch(new DSInsertRequest(collectionName, data)));
+    return await readAll(dispatcher.dispatch(new DSInsertRequest(collectionName, data)));
   }
 }
 
@@ -26,8 +30,8 @@ export class DSUpdateRequest<T, U> extends DSMessage {
     super(DSUpdateRequest.DS_UPDATE, collectionName);
   }
 
-  static async dispatch(collectionName: string, data: any, query: any, dispatcher: IStreamableBus<any>): Promise<Array<any>> {
-    return await readAllChunks(dispatcher.dispatch(new DSUpdateRequest(collectionName, data, query)));
+  static async dispatch(collectionName: string, data: any, query: any, dispatch: IStreamableBus<any>): Promise<Array<any>> {
+    return await readAll(dispatcher.dispatch(new DSUpdateRequest(collectionName, data, query)));
   }
 }
 
@@ -44,7 +48,7 @@ export class DSFindRequest<T> extends DSMessage {
     return (await readOneChunk<any>(dispatcher.dispatch(new DSFindRequest(collectionName, query, true)))).value;
   }
   static async findMulti(collectionName: string, query: Object, dispatcher: IStreamableBus<any>): Promise<any[]> {
-    return await readAllChunks(dispatcher.dispatch(new DSFindRequest(collectionName, query, true)));
+    return await readAll(dispatcher.dispatch(new DSFindRequest(collectionName, query, true)));
   }
 }
 
@@ -60,7 +64,7 @@ export class DSTailRequest extends DSMessage {
 }
 
 // @serializable("DSTailedOperation")
-export class DSTailedOperation implements IMessage {
+export class DSTailedOperation implements Message {
   static readonly DS_TAILED_OPERATION   = "tsTailedOperation";
   readonly type = DSTailedOperation.DS_TAILED_OPERATION;
   constructor(request: DSUpdateRequest<any, any>|DSRemoveRequest<any>|DSInsertRequest<any>, readonly data: any) {
