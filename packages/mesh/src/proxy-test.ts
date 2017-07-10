@@ -20,4 +20,12 @@ describe(__filename + "#", () => {
     });
     expect(await fn({ a: "b" }).next()).to.eql({ value: "b", done: false });
   });
+
+  it("the proxy target can be undefined", async () => {
+    let i = 0;
+    const fn = proxy(() => {
+      return null;
+    });
+    expect(await fn({ a: "b" }).next()).to.eql({ value: undefined, done: true });
+  });
 });

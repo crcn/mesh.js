@@ -1,9 +1,8 @@
 import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
-
-const noop = () => {};
+import { proxy } from "./proxy";
 
 /**
  * Executes a message against target function if filter returns true, otherwise execute a message against falsy function is provided.
  */
 
-export const conditional = <T>(_if: (message: T) => boolean, _then: Function = noop, _else: Function = noop) => (message: T) => wrapAsyncIterableIterator((_if(message) ? _then : _else)(message))
+export const conditional = <T>(_if: (...args) => boolean, _then?: Function, _else?: Function) => proxy((...args) => _if(...args) ? _then : _else);
