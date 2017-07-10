@@ -11,7 +11,7 @@ export function pump<TOutput>(source: any, each: (value: TOutput) => any) {
     const iterable = wrapAsyncIterableIterator<any, TOutput>(source);
     const next = () => {
       iterable.next().then(({ value, done }) => {
-        if (done) return resolve();
+        if (done) return resolve(value);
         wrapPromise(each(value)).then(next);
       }, reject);
     };

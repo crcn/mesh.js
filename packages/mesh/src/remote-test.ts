@@ -121,4 +121,25 @@ describe(__filename + "#", () => {
 
     expect(await readAll(remoteAdd(1, 2))).to.eql([3]);
   });
+
+  it("ends a remote call if the caller returns the iterator", async () => {
+    const options = createOptions({ timeout: 5 });
+    type TestMessage = {
+      timeout?: number
+    };
+
+    const repeat = remote(() => options, function*({ n }) {
+      for (let i = n; i--;) {
+        yield i;
+      }
+    });
+
+    const remoteRepeat = remote(() => options);
+    expect(await readAll(remoteRepeat({ n: 4 }))).to.eql([3, 2, 1, 0]);
+
+    const iter = remoteRepeat({ n: 3 });
+    expect(await iter.next()).to.eql({ value: 2, done: false });
+    await iter.return();
+    expect(await iter.next()).to.eql({ done: true });
+  });
 });

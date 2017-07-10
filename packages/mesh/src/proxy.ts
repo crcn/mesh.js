@@ -9,7 +9,7 @@ export const proxy = <TOutput>(getFn?: (...args: any[]) => Function | Promise<Fu
       const next = () => {
         input.next().then(({ value, done }) => {
           if (done) {
-            return iter.return(value);
+            return iter.return(value).then(output.return);
           }
           iter.next(value).then(({ value, done }) => {
             if (done) {

@@ -19,8 +19,9 @@ export type RemoteAsyncGeneratorOptions = {
 
 enum RemoteMessageType {
   CALL     = 0,
-  NEXT     = CALL + 1,
-  YIELD    = NEXT + 1,
+  NEXT     = CALL  + 1,
+  YIELD    = NEXT  + 1,
+  RETURN   = YIELD + 1,
 }
 
 type RemoteMessage = {
@@ -97,6 +98,9 @@ export const remote = (getOptions: () => RemoteAsyncGeneratorOptions | Promise<R
     const onNext = ({ sid, did, payload: [pid, cid, value] }: RemoteMessage) => {
       if (uid === did) {
         getConnection(cid, connection => connection.next(value).then(chunk => {
+          if (chunk.done) {
+            connections.delete(cid);
+          }
           adapter.send(createRemoteMessage(RemoteMessageType.YIELD, uid, sid, [pid, chunk]))
         }));
       }
@@ -106,6 +110,17 @@ export const remote = (getOptions: () => RemoteAsyncGeneratorOptions | Promise<R
       if (uid === did && promises.has(pid)) {
         promises.get(pid).resolve(chunk);
         promises.delete(pid);
+      }
+    };
+
+    const onReturn = ({ sid, did, payload: [pid, cid, value] }: RemoteMessage) => {
+      if (uid === did) {
+        getConnection(cid, connection => connection.return(value).then(chunk => {
+          if (chunk.done) {
+            connections.delete(cid);
+          }
+          adapter.send(createRemoteMessage(RemoteMessageType.YIELD, uid, sid, [pid, chunk]))
+        }));
       }
     };
 
@@ -125,49 +140,41 @@ export const remote = (getOptions: () => RemoteAsyncGeneratorOptions | Promise<R
         case RemoteMessageType.CALL: return onCall(message);
         case RemoteMessageType.NEXT: return onNext(message);
         case RemoteMessageType.YIELD: return onYield(message);
+        case RemoteMessageType.RETURN: return onReturn(message);
       }
     });
 
-    resolveRemote((...args) => {
+    resolveRemote((...args) => createDuplex((input, output) => {
       const cid    = createUID();
       const cpom   = createDeferredPromise();
-      const output = createQueue();
-
-      // TODO: possibly add timeout to remove buffer after N seconds (gives time for
-      // remote handlers to response) so that this doesn't clog up memory. 
-      let buffer = [];
-      let inputs: Queue<any>[] = [];
-      let numRemoteHandlers = 0;
 
       const pumpRemoteCall = (did: string, info: any) => {
-        numRemoteHandlers++;
-        const input = createQueue();
-        inputs.push(input);
-        for (const value of buffer) {
-          input.unshift(value);
-        }
-        const next = () => {
-          input.next().then(({ value }) => {
-            const pid = createUID();
-            const pom = createDeferredPromise();
-            promises.set(pid, pom);
-
+        pump(input, (value) => {
+          const pid = createUID();
+          const pom = createDeferredPromise();
+          promises.set(pid, pom);
+    
+          return new Promise((resolve, reject) => {
             pom.promise.then(({ value, done }) => {
               promises.delete(pid);
               if (done) {
-                if (!--numRemoteHandlers) {
-                  output.return();
-                }
+                output.return();
+                resolve();
               } else {
                 output.unshift(value);
-                next();
+                resolve();
               }
             });
 
             adapter.send(createRemoteMessage(RemoteMessageType.NEXT, uid, did, [pid, cid, value]));
           });
-        };
-        next();
+        }).then((value) => {
+          const pid = createUID();
+          const pom = createDeferredPromise();
+          promises.set(pid, pom);
+          pom.promise.then(output.return);
+          adapter.send(createRemoteMessage(RemoteMessageType.RETURN, uid, did, [pid, cid, value]));
+        });
       };
 
       const waitForResponse = () => {
@@ -186,19 +193,7 @@ export const remote = (getOptions: () => RemoteAsyncGeneratorOptions | Promise<R
       } else {
         output.return();
       }
-
-      return {
-        [Symbol.asyncIterator]: () => this,
-        next(value?: any) {
-          buffer.push(value);
-          for (const input of inputs) {
-            input.unshift(value);
-          }
-          
-          return output.next();
-        }
-      };
-    });
+    }));
   });
 
   return proxy(() => remotePromise);
