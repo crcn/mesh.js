@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha ./lib",
-    "build": "mkdir -p lib/streams/std; cp -R src/streams/std lib/streams; tsc --declaration",
+    "build": "npm run build:ts;",
+    "build:ts": "mkdir -p lib/streams/std; cp -R src/streams/std lib/streams; tsc --declaration",
     "clean": "rm -rf lib"
   },
   "repository": {

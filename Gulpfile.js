@@ -4,10 +4,13 @@ const gulp      = require('gulp');
 const glob      = require('glob');
 const gutil     = require('gulp-util');
 const merge     = require('merge2');
-const {join}    = require('path');
 const {argv}    = require('yargs');
 const {spawn}   = require('child_process');
 const gsequence = require('gulp-sequence');
+const docdown   = require('docdown');
+const mkdirp    = require("mkdirp");
+const {join, dirname}    = require('path');
+const {writeFileSync} = require('fs');
 const {keys, intersection} = require('lodash');
 
 gulp.task('default', ['build']);
@@ -60,6 +63,19 @@ gulp.task('build', () => {
   )));
 });
 
+gulp.task('build:docs', () => {
+  for (const sourcePath of glob.sync(join(__dirname, 'packages', '*', 'lib', '*.js'))) {
+    if (/-test.ts$/.test(sourcePath)) continue;
+    const outputPath = sourcePath.replace(/js$/, "md").replace('lib/', 'docs/');
+    mkdirp.sync(dirname(outputPath));
+    const md = docdown({
+      path: sourcePath,
+      url: sourcePath
+    });
+    writeFileSync(outputPath, md);
+  }
+});
+
 gulp.task('clean', () => {
   return merge(PACKAGE_DIRS.map((dir) => (
     gulpSpawn('npm', ['run', 'clean'], { cwd: dir })
@@ -97,9 +113,6 @@ gulp.task('yarn:link:cross', () => {
       }));
     })
   );
-  return merge(PACKAGE_DIRS.map((dir) => (
-    gulpSpawn('yarn', ['link'], { cwd: dir })
-  )));
 });
 
 gulp.task('npm:patch', () => {

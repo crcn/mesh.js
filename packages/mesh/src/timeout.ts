@@ -7,7 +7,7 @@ const createDefaultError = (...args) => new Error(`Timeout calling function.`);
 
 export const timeout = (fn: Function, ms: number = TIMEOUT, createError = createDefaultError) => (...args) => {
   let _completed: boolean;
-  let _timeout: number;
+  let _timeout: any;
   let _error: any;
 
   const resetTimeout = () => {

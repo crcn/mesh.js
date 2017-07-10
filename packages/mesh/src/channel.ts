@@ -7,16 +7,16 @@ import { createDuplex } from "./duplex";
  */
 
 export const channel = (channel: AsyncIterableIterator<any>, call: Function, info?: any) => {
-   const callRemote = remote({
-    info: info,
-    adapter: {
-      send(message) {
-      },
-      addListener(listener) {
+  //  const callRemote = remote({
+  //   info: info,
+  //   adapter: {
+  //     send(message) {
+  //     },
+  //     addListener(listener) {
 
-      }
-    }
-  }, call);
+  //     }
+  //   }
+  // }, call);
 
   return (...args) => {
     

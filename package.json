@@ -1,0 +1,38 @@
+{
+  "devDependencies": {
+    "docdown": "^0.7.2",
+    "gulp": "^3.9.1",
+    "gulp-sequence": "^0.4.6",
+    "merge2": "^1.1.0",
+    "mkdirp": "^0.5.1",
+    "yargs": "^8.0.2"
+  },
+  "name": "mesh.js",
+  "description": "[![Build Status](https://travis-ci.org/crcn/mesh.js.svg)](https://travis-ci.org/crcn/mesh.js) [![Coverage Status](https://coveralls.io/repos/crcn/mesh.js/badge.svg?branch=master&service=github)](https://coveralls.io/github/crcn/mesh.js?branch=master) [![Join the chat at https://gitter.im/crcn/mesh.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/mesh.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples"
+  },
+  "dependencies": {
+    "docdown": "^0.7.2",
+    "doctrine": "^2.0.0",
+    "esutils": "^2.0.2",
+    "isarray": "^1.0.0",
+    "lodash": "^4.17.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crcn/mesh.js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/crcn/mesh.js/issues"
+  },
+  "homepage": "https://github.com/crcn/mesh.js#readme"
+}
