@@ -11,13 +11,14 @@ export const fallback = (...fns: Function[]) => (...args) => {
       const targetFn = targets.shift();
 
       if (!targetFn) {
-        return output.done();
+        return output.return();
       }
 
       const targetIter = wrapAsyncIterableIterator(targetFn(...args));
       let hasData = false;
 
       const next = (value) => {
+
         return targetIter.next(value).then(({value, done}) => {
           if (!hasData) {
             hasData = !done;
@@ -25,7 +26,7 @@ export const fallback = (...fns: Function[]) => (...args) => {
 
           if (hasData) {
             if (done) {
-              output.done();
+              output.return();
             } else {
               output.unshift(value);
             }
@@ -40,16 +41,20 @@ export const fallback = (...fns: Function[]) => (...args) => {
           if (targets.length && !hasData) {
             nextTarget();
           } else {
-            output.error(e);
+            output.throw(e);
           }
         });
       }
 
       const pumpInput = () => {
-        return input.next().then(({value}) => {
-          buffer.push(value);
-          return next(value);
-        }).then(pumpInput);
+        return input.next().then(({ value, done }) => {
+          if (done) {
+            return targetIter.return(value);
+          } else {
+            buffer.push(value);
+            return next(value).then(pumpInput);
+          }
+        });
       };
       
       pump(buffer, next).then(pumpInput);

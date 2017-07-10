@@ -16,12 +16,15 @@ export const createDuplex = <TInput, TOutput>(handler: (input: Queue<TInput>, ou
     handler(input, output);
   }
 
-
   return {
     [Symbol.asyncIterator]: () => this,
     next(value: TInput) {
       start();
       input.unshift(value);
+      return output.next();
+    },
+    return(value?) {
+      input.return(value);
       return output.next();
     }
   };

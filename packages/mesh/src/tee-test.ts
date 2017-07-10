@@ -7,7 +7,7 @@ describe(__filename + "#", () => {
     input.unshift(1);
     input.unshift(2);
     input.unshift(3);
-    input.done();
+    input.return();
     const [a, b] = tee(input);
     expect(await readAll(a)).to.eql([1, 2, 3]);
     expect(await readAll(b)).to.eql([1, 2, 3]);
@@ -17,7 +17,7 @@ describe(__filename + "#", () => {
     input.unshift(1);
     input.unshift(2);
     input.unshift(3);
-    input.done();
+    input.return();
     const [a, b] = tee(input);
     expect(await readAll(a)).to.eql([1, 2, 3]);
     const [c, d] = tee(b);

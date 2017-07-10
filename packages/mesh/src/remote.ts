@@ -51,6 +51,10 @@ const PASSED_THROUGH_KEY = `$$passedThrough`;
 
 const createRemoteMessage = (type: RemoteMessageType, sid: string, did: string, payload?: any) => ({ type, sid, did, payload });
 
+/**
+ * Remote message me this ´doSomething´
+ */
+
 export const remote = ({ adapter, info = {} }: RemoteAsyncGeneratorOptions, call: Function = noop) => {
 
   const uid = createUID();
@@ -148,7 +152,7 @@ export const remote = ({ adapter, info = {} }: RemoteAsyncGeneratorOptions, call
             promises.delete(pid);
             if (done) {
               if (!--numRemoteHandlers) {
-                output.done();
+                output.return();
               }
             } else {
               output.unshift(value);
@@ -176,7 +180,7 @@ export const remote = ({ adapter, info = {} }: RemoteAsyncGeneratorOptions, call
       waitForResponse();
       adapter.send(createRemoteMessage(RemoteMessageType.CALL, uid, null, [info, cid, ...args])); 
     } else {
-      output.done();
+      output.return();
     }
 
     return {

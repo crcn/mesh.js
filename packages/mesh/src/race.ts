@@ -19,14 +19,14 @@ export const race = (...fns: Function[]) => (...args): AsyncIterableIterator<any
           }
           wonFn = fn;
           if (done) {
-            output.done();
+            output.return();
           } else {
             output.unshift(value);
           }
         });
       }).then(() => {
         if (wonFn === fn) {
-          output.done();
+          output.return();
         }
       });
     });

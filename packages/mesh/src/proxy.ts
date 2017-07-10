@@ -7,10 +7,13 @@ export const proxy = <TOutput>(getFn?: (...args: any[]) => Function | Promise<Fu
     wrapPromise(getFn(...args)).then((fn) => {
       const iter = wrapAsyncIterableIterator(fn(...args));
       const next = () => {
-        input.next().then(({ value }) => {
+        input.next().then(({ value, done }) => {
+          if (done) {
+            return iter.return(value);
+          }
           iter.next(value).then(({ value, done }) => {
             if (done) {
-              output.done();
+              output.return();
             } else {
               output.unshift(value).then(next);
             }

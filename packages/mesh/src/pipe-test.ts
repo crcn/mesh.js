@@ -54,4 +54,28 @@ describe(__filename + "#", () => {
   it("can be used in conjuction with readAll", async function() {
     expect(await readAll(pipe([1, 2, 3], through(v => -v)))).to.eql([-1, -2, -3]);
   });
+
+  it("calls return on all async iterables after the pipeline as finished", async function() {
+    let _returned = 0;
+    const pipeline = pipe(
+      [1, 2, 3],
+      {
+        [Symbol.asyncIterator]: () => this,
+        next: (v) => Promise.resolve({ value: v + 1, done: false }),
+        return() {
+          _returned++;
+        }
+      },
+      {
+        [Symbol.asyncIterator]: () => this,
+        next: (v) => Promise.resolve({ value: -v, done: false }),
+        return() {
+          _returned++;
+        }
+      }
+    );
+
+    expect(await readAll(pipeline)).to.eql([-2, -3, -4]);
+    expect(_returned).to.eql(2);
+  });
 });

@@ -23,3 +23,4 @@ export * from "./read-all";
 export * from "./race";
 export * from "./tee";
 export * from "./timeout";
+export * from "./limit";

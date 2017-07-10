@@ -1,8 +1,15 @@
+const noReturn = () => Promise.resolve({ done: true });
+const noThrow  = noReturn;
 
 export function wrapAsyncIterableIterator<TInput, TOutput>(source: any): AsyncIterableIterator<TOutput> {
   if (source != null && typeof source === "object") {
     if (source[Symbol.asyncIterator]) {
-      return source;
+      return {
+        [Symbol.asyncIterator]: () => this,
+        next: source.next,
+        return: source.return ? source.return : noReturn,
+        throw: source.throw ? source.throw : noThrow
+      };
     }
 
     if (source[Symbol.iterator]) {
@@ -22,10 +29,10 @@ export function wrapAsyncIterableIterator<TInput, TOutput>(source: any): AsyncIt
         },
         return: source.return ? (value?: TOutput) => {
           return Promise.resolve((<IterableIterator<TOutput>>iterator).return(value));
-        } : null,
+        } : noReturn,
         throw: source.throw ? (error: any) => {
-          return Promise.resolve((<IterableIterator<TOutput>>iterator).throw(error));
-        } : null
+          return Promise.reject((<IterableIterator<TOutput>>iterator).throw(error));
+        } : noThrow
       }
     }
   }
@@ -41,6 +48,8 @@ export function wrapAsyncIterableIterator<TInput, TOutput>(source: any): AsyncIt
       if (nexted) return Promise.resolve({ value: undefined, done: true });
       nexted = true;
       return result;
-    }
+    },
+    return: () => Promise.resolve({ done: true }),
+    throw: (e) => Promise.reject(e)
   }
 }

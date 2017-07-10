@@ -20,7 +20,14 @@ export function pipe<TInput, TOutput>(...pipeline: any[]) {
         }
 
         // if one piped item finishes, then we need to finish
-        if (!remaining.length || _done) return resolve({value, done});
+        if (!remaining.length || _done) {
+          if (methodName === "next") {
+            while(remaining.length) {
+              (remaining.shift().return || (() => {}))();
+            }
+          }
+          return resolve({ value, done });
+        }
         const fn = remaining.shift()[methodName];
         return fn ? fn(value).then(next, reject) : next(value);
       }

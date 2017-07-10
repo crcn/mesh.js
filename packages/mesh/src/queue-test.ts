@@ -21,7 +21,7 @@ describe("queue#", () => {
     queue.unshift(1);
     queue.unshift(2);
     queue.unshift(3);
-    queue.done();
+    queue.return();
 
     const buffer = [];
     for await (const value of queue) {

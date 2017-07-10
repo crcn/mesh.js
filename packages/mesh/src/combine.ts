@@ -16,14 +16,28 @@ export const combine = <TInput, TOutput>(
     return input;
   });
 
+  let pending: AsyncIterableIterator<any>[] = [];
+
+  const returnPending = (value) => {
+    for (const iter of pending) {
+      iter.return(value);
+    }
+  }
+
   iterator(fns, call => {
     const index = fns.indexOf(call);
     const input = inputs[index];
     const iter = wrapAsyncIterableIterator(call(...args));
+    pending.push(iter);
     const next = () => {
       return input.next().then(({ value, done }) => {
+        if (done) {
+          returnPending(value);
+          return;
+        }
         return iter.next(value).then(({ value, done }) => {
           if (done) {
+            pending.splice(pending.indexOf(iter), 1);
             return;
           } else {
             return output.unshift(value).then(next);
@@ -32,6 +46,6 @@ export const combine = <TInput, TOutput>(
       });
     };
     return next();
-  }).then(() => output.done(), e => output.error(e));
+  }).then(output.return, output.throw);
 });
 

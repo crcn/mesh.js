@@ -41,7 +41,7 @@ export function through<TInput>(fn: (input: TInput) => any, keepOpen: boolean = 
     } else if (!keepOpen) {
       Promise.resolve().then(() => {
         if (!_pumping) {
-          outputQueue.done();
+          outputQueue.return();
         }
       });
     }

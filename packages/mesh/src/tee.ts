@@ -16,7 +16,7 @@ export const tee = (source: AsyncIterableIterator<any>): [AsyncIterableIterator<
       source.next().then(({ value, done }) => {
         for (const input of inputs) {
           if (done) {
-            input.done();
+            input.return();
           } else {
             input.unshift(value);
           }

@@ -1,7 +1,5 @@
 export interface Queue<T> extends AsyncIterableIterator<T> {
-  unshift(value: T);
-  done(returnValue?: T);
-  error(e: any);
+  unshift(value?: T);
 }
 
 export const createQueue = <T>(): Queue<T> => {
@@ -11,7 +9,7 @@ export const createQueue = <T>(): Queue<T> => {
   let _done: boolean;
 
   const write = (value: T, done = false) => {
-    return new Promise((resolve, reject) => {
+    return new Promise<IteratorResult<any>>((resolve, reject) => {
       if (_pulling.length) {
         _pulling.shift()[0]({ value, done });
         resolve();
@@ -33,6 +31,8 @@ export const createQueue = <T>(): Queue<T> => {
         return Promise.reject(_e);
       }
       if (_pushing.length) {
+        if (_done) {
+        }
         return _pushing.shift()();
       }
       if (_done) {
@@ -45,18 +45,19 @@ export const createQueue = <T>(): Queue<T> => {
     unshift(value: T) {
       return write(value);
     },
-    done(returnValue) {
+    return(returnValue?) {
       if (_done) {
-        return Promise.resolve();
+        return Promise.resolve({ done: true });
       }
       _done = true;
       return write(returnValue, true);
     },
-    error(e) {
+    throw(e) {
       _e = e;
       if (_pulling.length) {
         _pulling.shift()[1](e);
       }
+      return Promise.resolve({ value: e, done: true });
     }
   }
 };

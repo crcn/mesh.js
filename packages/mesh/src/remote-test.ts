@@ -18,19 +18,15 @@ describe(__filename + "#", () => {
     }
   }
 
-  interface TestMessage {
-    text: string;
-  }
-
   it("can send and receive a remote message", async () => {
 
     const options = createOptions();
 
-    const afn = remote<TestMessage>(options, (({ text }) => {
+    const afn = remote(options, (({ text }) => {
       return text.toUpperCase();
     }));
 
-    const bfn = remote<TestMessage>(options);
+    const bfn = remote(options);
 
     expect(await readAll(bfn({ text: "hello" }))).to.eql(["HELLO"]);
   });
