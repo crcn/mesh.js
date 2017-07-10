@@ -1,7 +1,8 @@
 {
   "name": "mesh",
-  "version": "7.0.3",
-  "description": "Data flow library for WHATWG streams",
+  "version": "8.0.0",
+  "description": "Data flow library for async generators",
+  "tag": "alpha",
   "main": "index.js",
   "scripts": {
     "test": "mocha ./lib",
