@@ -1,4 +1,3 @@
-import "reflect-metadata";
 (Symbol as any).asyncIterator = Symbol.asyncIterator || Symbol("Symbol.asyncIterator");
 
 export * from "./base";

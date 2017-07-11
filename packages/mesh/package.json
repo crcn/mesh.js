@@ -4,10 +4,13 @@
   "description": "Data flow library for async generators",
   "tag": "alpha",
   "main": "index.js",
+  "browser": "lib/bundle.js",
   "scripts": {
     "test": "mocha ./lib",
-    "build": "npm run build:ts;",
-    "build:ts": "mkdir -p lib/streams/std; cp -R src/streams/std lib/streams; tsc --declaration",
+    "build": "npm run build:ts; npm run build:bundle; npm run build:docs;",
+    "build:ts": "tsc",
+    "build:bundle": "rollup -c rollup.config.js",
+    "build:docs": "mkdir -p docs; docdown lib/bundle.js docs/mesh.md url=http://github.com/crcn/mesh.js/packages/mesh/lib/bundle.js",
     "clean": "rm -rf lib"
   },
   "repository": {
@@ -17,9 +20,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/chai": "^4.0.1",
+    "@types/mocha": "^2.2.41",
     "@types/node": "^7.0.29",
+    "@types/reflect-metadata": "^0.0.5",
     "chai": "^4.0.2",
+    "docdown": "^0.7.2",
     "mocha": "^3.4.2",
-    "regenerator": "^0.9.7"
+    "reflect-metadata": "^0.1.10",
+    "regenerator": "^0.9.7",
+    "rollup": "^0.45.1",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0"
   }
 }

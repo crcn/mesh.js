@@ -1,0 +1,2 @@
+const { writeFileSync } = require('fs');
+

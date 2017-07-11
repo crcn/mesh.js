@@ -1,6 +1,13 @@
-# sequence.js API documentation
+# bundle.js API documentation
 
 <!-- div class="toc-container" -->
+
+<!-- div -->
+
+## `race`
+* <a href="#race">`race`</a>
+
+<!-- /div -->
 
 <!-- div -->
 
@@ -15,12 +22,35 @@
 
 <!-- div -->
 
+## `race`
+
+<!-- div -->
+
+<h3 id="race"><a href="#race">#</a>&nbsp;<code>race</code></h3>
+[&#x24C8;](http://github.com/crcn/mesh.js/packages/mesh/lib/bundle.js#L907 "View in source") [&#x24C9;][1]
+
+Calls all target functions in parallel, and returns the yielded values of the _fastest_ one.
+
+#### Example
+```js
+const ping = race(
+
+);
+```
+---
+
+<!-- /div -->
+
+<!-- /div -->
+
+<!-- div -->
+
 ## `sequence`
 
 <!-- div -->
 
 <h3 id="sequence"><a href="#sequence">#</a>&nbsp;<code>sequence</code></h3>
-[&#x24C8;](/Users/crcn/Developer/public/mesh.js/packages/mesh/lib/sequence.js#L21 "View in source") [&#x24C9;][1]
+[&#x24C8;](http://github.com/crcn/mesh.js/packages/mesh/lib/bundle.js#L645 "View in source") [&#x24C9;][1]
 
 Executes functions in sequence
 
@@ -44,4 +74,4 @@ await iter.next(); // { value: undefined, done: true }
 
 <!-- /div -->
 
- [1]: #sequence "Jump back to the TOC."
+ [1]: #race "Jump back to the TOC."

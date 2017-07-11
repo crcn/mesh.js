@@ -3,6 +3,16 @@ import { pump } from "./pump";
 import { createDuplex } from "./duplex";
 import { wrapAsyncIterableIterator } from "./wrap-async-iterable-iterator";
 
+/**
+ * Calls all target functions in parallel, and returns the yielded values of the _fastest_ one.
+ * 
+ * @example
+ * 
+ * const ping = race(
+ *  
+ * );
+ */
+
 export const race = (...fns: Function[]) => (...args): AsyncIterableIterator<any> => {
   return createDuplex((input, output) => {
     let primaryInput = input as AsyncIterableIterator<any>;
