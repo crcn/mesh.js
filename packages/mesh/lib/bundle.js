@@ -559,14 +559,55 @@ exports.remote = function (getOptions, call) {
 
 });
 
-var conditional = createCommonjsModule(function (module, exports) {
+var when = createCommonjsModule(function (module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
 /**
- * Executes a message against target function if filter returns true, otherwise execute a message against falsy function is provided.
+ * Conditional that calls target functions based on the tester
+ *
+ * @param {Function} tester test function for the arguments passed in `when`
+ * @param {Function} [then] called when test passes `true`
+ * @param {Function} [else] called when test passes `false`
+ *
+ * @example
+ *
+ * const sift = require("sift");
+ *
+ * const dataStore = (items) => {
+ *
+ *   const findMulti = (message) => items.filter(sift(message.query));
+ *   const findOne = (message) => items.find(sift(message.query));
+ *   const remove = (message) => { }
+ *
+ *   return when(
+ *     message => message.type === 'find',
+ *     when(
+ *       message => message.multi,
+ *       findMulti,
+ *       findOne
+ *     ),
+ *     when(
+ *       message => message.type === 'remove',
+ *       remove
+ *     )
+ *   )
+ *
+ *   return when(message => message.multi, findMulti, findOne);
+ * };
+ *
+ * const dsDispatch = dataStore([
+ *  { name: 'Jeff', age: 2 },
+ *  { name: 'Samantha', age: 65 },
+ *  { name: 'Craig', age: 99 }
+ * ]);
+ *
+ * const people = await readAll(dsDispatch({ multi: true, query: { age: { $gt: 2 } } })); // [[{ name: 'Samantha', age: 65 }, { name: 'Craig', age: 99 }]]
+ *
+ * const person = await readAll(dsDispatch({ query: { age: 2 }})); // [{ name: 'Jeff', age: 2 }]
+ *
  */
-exports.conditional = function (_if, _then, _else) { return proxy.proxy(function () {
+exports.when = function (_if, _then, _else) { return proxy.proxy(function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
@@ -1062,7 +1103,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 Symbol.asyncIterator = Symbol.asyncIterator || Symbol("Symbol.asyncIterator");
 __export(combine);
 __export(remote);
-__export(conditional);
+__export(when);
 __export(proxy);
 __export(channel);
 __export(parallel);

@@ -52,4 +52,4 @@ exports.when = function (_if, _then, _else) { return proxy_1.proxy(function () {
     }
     return _if.apply(void 0, args) ? _then : _else;
 }); };
-//# sourceMappingURL=conditional.js.map
+//# sourceMappingURL=when.js.map

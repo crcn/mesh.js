@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 Symbol.asyncIterator = Symbol.asyncIterator || Symbol("Symbol.asyncIterator");
 __export(require("./combine"));
 __export(require("./remote"));
-__export(require("./conditional"));
+__export(require("./when"));
 __export(require("./proxy"));
 __export(require("./channel"));
 __export(require("./parallel"));

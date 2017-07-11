@@ -7,34 +7,54 @@
 
 Mesh is a utility library for [async iterable iterators](https://github.com/tc39/proposal-async-iteration). 
 
-Here's a basic example:
+#### Motivation
+
+This library was originally created to handle complex data flows, and unify how application comminicate internally and externally. It also serves as a _single_ channel for _all_ communication which makes it more easy to control & reason about how your application is passing around data asynchronously. 
+
+Mesh provides a set of higher order functions that you can use to build your data flows out. Here's an example of that:
 
 ```typescript
-import { createInsertMessage } from 'mesh-ds';
-import { createParallelDispatcher } from 'mesh';
-import { createSocketIODispatcher } from 'mesh-socket-io';
-import { createLocalStorageDispatcher } from 'mesh-local-storage';
+import { when, wrapAsyncIterableIterator, fallback } from "mesh";
+import { 
+  DS_FIND, 
+  DS_INSERT, 
+  DS_REMOVE, 
+  DS_UPDATE, 
+  dataStore, 
+  DSFindMessage,
+  whenCollection,
+  DSInsertMessage,
+  DSRemoveMessage,
+  DSUpdateMessage,
+} from "mesh-ds";
 
-// createMongoDBDispatcher(mongodbClient)
-// createMySQLDispatcher(sqlClient)
-const storageDispatch = createLocalStorageDispatcher();
+const insertTodoItem = (message: DSInsertMessage) => (
+  wrapAsnycIterableIterator(fetch('/api/todos', {
+    method: 'POST',
+    body: message.data
+  }));
+);
 
-// main dispatch function
-const dispatch = createParallelDispatcher([
+const insert = fallback(
+  whenCollection('todos', insertTodoItem),
 
-  storageDispatch,
+  // more collections below
+  // whenCollection('users', insertUser),
+  // whenCollection('items', insertItem),
+);
 
-  // persist all operations to socket.io & any operations from socket.io
-  // back to local storage.
-  createSocketIODispatcher({
-    channel: "operations",
-  }, storageDispatch)
-]);
+const dsDispatch = dataStore({
+  [DS_INSERT] : insert,
 
-for await (const chunk of dispatch(createInsertMessage("messages", { text: "hello world" }))) {
-  // handle response inserts
-}
+  // other operations - similar code to insert
+  //[DS_REMOVE] : remove,
+  //[DS_UPDATE] : update,
+  //[DS_FIND]   : find
+});
 ```
+
+<!-- TODO - rollback,  -->
+
 
 #### Installation
 
