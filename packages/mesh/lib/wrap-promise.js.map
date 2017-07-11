@@ -1,0 +1,1 @@
+{"version":3,"file":"wrap-promise.js","sourceRoot":"","sources":["../src/wrap-promise.ts"],"names":[],"mappings":";;AACA,qBAAoC,KAA+B;IACjE,EAAE,CAAC,CAAC,KAAK,IAAI,KAAK,CAAC,MAAM,CAAC,CAAC;QAAC,MAAM,CAAC,KAAwB,CAAC;IAC5D,MAAM,CAAC,OAAO,CAAC,OAAO,CAAC,KAAK,CAAC,CAAC;AAChC,CAAC;AAHD,kCAGC"}

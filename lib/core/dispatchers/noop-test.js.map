@@ -1,0 +1,1 @@
+{"version":3,"file":"noop-test.js","sourceRoot":"","sources":["../../../src/core/dispatchers/noop-test.ts"],"names":[],"mappings":";;AACA,+BAAwC;AACxC,QAAQ,CAAC,UAAU,GAAG,GAAG,EAAE;IACzB,EAAE,CAAC,gBAAgB,EAAE;QACnB,IAAI,qBAAc,EAAE,CAAC;IACvB,CAAC,CAAC,CAAC;IACH,EAAE,CAAC,6CAA6C,EAAE;QAChD,IAAI,qBAAc,EAAE,CAAC,QAAQ,CAAC,EAAE,CAAC,CAAC;IACpC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC"}
