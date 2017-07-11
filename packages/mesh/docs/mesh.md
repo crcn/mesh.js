@@ -1,4 +1,4 @@
-# bundle.js API documentation
+# Mesh API
 
 <!-- div class="toc-container" -->
 
@@ -27,7 +27,7 @@
 <!-- div -->
 
 <h3 id="race"><code>race</code></h3>
-[&#x24C8;](http://github.com/crcn/mesh.js/packages/mesh/lib/bundle.js#L907 "View in source") [&#x24C9;][1]
+[&#x24C8;](http://github.com/crcn/mesh.js/blob/8.0.0/packages/mesh/lib/bundle.js#L907 "View in source") [&#x24C9;][1]
 
 Calls all target functions in parallel, and returns the yielded values of the _fastest_ one.
 
@@ -50,7 +50,7 @@ const ping = race(
 <!-- div -->
 
 <h3 id="sequence"><code>sequence</code></h3>
-[&#x24C8;](http://github.com/crcn/mesh.js/packages/mesh/lib/bundle.js#L645 "View in source") [&#x24C9;][1]
+[&#x24C8;](http://github.com/crcn/mesh.js/blob/8.0.0/packages/mesh/lib/bundle.js#L645 "View in source") [&#x24C9;][1]
 
 Executes functions in sequence
 

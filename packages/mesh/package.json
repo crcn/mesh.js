@@ -10,7 +10,7 @@
     "build": "npm run build:ts; npm run build:bundle; npm run build:docs;",
     "build:ts": "tsc",
     "build:bundle": "rollup -c rollup.config.js",
-    "build:docs": "mkdir -p docs; docdown lib/bundle.js docs/mesh.md style=github url=http://github.com/crcn/mesh.js/packages/mesh/lib/bundle.js",
+    "build:docs": "mkdir -p docs; docdown lib/bundle.js docs/mesh.md toc=properties style=github title='Mesh API' url=http://github.com/crcn/mesh.js/blob/8.0.0/packages/mesh/lib/bundle.js",
     "clean": "rm -rf lib"
   },
   "repository": {
