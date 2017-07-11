@@ -1,14 +1,31 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var wrap_async_iterable_iterator_1 = require("./wrap-async-iterable-iterator");
+/**
+ * Pipes yielded data though each iterable in the pipeline
+ *
+ * @param {AsyncIterableIterator|IterableIterator} source the first iterable in the pipeline
+ * @param {AsyncIterableIterator|IterableIterator} [through] proceeding iterables to pass yielded data through
+ *
+ * @example
+ * import { pipe, through, readAll } from "mesh";
+ *
+ * const negate = (values) => pipe(
+ *   values,
+ *   through(a => -a)
+ * );
+ *
+ * const negativeValues = await readAll(negate([1, 2, 3])); // [-1, -2, -3]
+ *
+ */
 function pipe() {
     var _this = this;
-    var pipeline = [];
+    var items = [];
     for (var _i = 0; _i < arguments.length; _i++) {
-        pipeline[_i] = arguments[_i];
+        items[_i] = arguments[_i];
     }
     var _done = false;
-    var targets = pipeline.map(wrap_async_iterable_iterator_1.wrapAsyncIterableIterator);
+    var targets = items.map(wrap_async_iterable_iterator_1.wrapAsyncIterableIterator);
     var call = function (methodName, value) {
         return new Promise(function (resolve, reject) {
             var remaining = targets.concat();

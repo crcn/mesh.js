@@ -4,11 +4,29 @@ export function pipe(...pipeline: any[]): AsyncIterableIterator<any>;
 export function pipe(...pipeline: IterableIterator<any>[]): AsyncIterableIterator<any>;
 export function pipe(...pipeline: AsyncIterableIterator<any>[]): AsyncIterableIterator<any>;
 
-export function pipe<TInput, TOutput>(...pipeline: any[]) {
+/**
+ * Pipes yielded data though each iterable in the pipeline
+ *  
+ * @param {AsyncIterableIterator|IterableIterator} source the first iterable in the pipeline
+ * @param {AsyncIterableIterator|IterableIterator} [through] proceeding iterables to pass yielded data through
+ * 
+ * @example
+ * import { pipe, through, readAll } from "mesh";
+ * 
+ * const negate = (values) => pipe(
+ *   values,
+ *   through(a => -a)
+ * );
+ * 
+ * const negativeValues = await readAll(negate([1, 2, 3])); // [-1, -2, -3]
+ * 
+ */
+
+export function pipe<TInput, TOutput>(...items: any[]) {
 
   let _done = false;
 
-  const targets = pipeline.map(wrapAsyncIterableIterator);
+  const targets = items.map(wrapAsyncIterableIterator);
 
   const call = (methodName: string, value: TInput) => {
     return new Promise((resolve, reject) => {
