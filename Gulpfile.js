@@ -7,7 +7,6 @@ const merge     = require('merge2');
 const {argv}    = require('yargs');
 const {spawn}   = require('child_process');
 const gsequence = require('gulp-sequence');
-const docdown   = require('docdown');
 const mkdirp    = require("mkdirp");
 const {join, dirname}    = require('path');
 const {writeFileSync} = require('fs');
@@ -63,18 +62,6 @@ gulp.task('build', () => {
   )));
 });
 
-gulp.task('build:docs', () => {
-  for (const sourcePath of glob.sync(join(__dirname, 'packages', '*', 'lib', '*.js'))) {
-    if (/-test.ts$/.test(sourcePath)) continue;
-    const outputPath = sourcePath.replace(/js$/, "md").replace('lib/', 'docs/');
-    mkdirp.sync(dirname(outputPath));
-    const md = docdown({
-      path: sourcePath,
-      url: sourcePath
-    });
-    writeFileSync(outputPath, md);
-  }
-});
 
 gulp.task('clean', () => {
   return merge(PACKAGE_DIRS.map((dir) => (
