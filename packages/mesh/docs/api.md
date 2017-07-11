@@ -1,4 +1,4 @@
-# <a href="https://mesh.js.com/">Mesh</a> <span>v8.0.1</span>
+# <a href="https://mesh.js.com/">Mesh</a> <span>v8.0.3</span>
 
 <!-- div class="toc-container" -->
 
@@ -21,7 +21,7 @@
 <!-- div -->
 
 <h3 id="race"><a href="#race">#</a>&nbsp;<code>race</code></h3>
-[View in source](https://github.com/crcn/mesh.js/blob/8.0.1/packages/mesh/lib/bundle.js#L907)
+[View in source](https://github.com/crcn/mesh.js/blob/8.0.3/packages/mesh/lib/bundle.js#L907)
 
 Calls all target functions in parallel, and returns the yielded values of the _fastest_ one.
 
@@ -38,7 +38,7 @@ const ping = race(
 <!-- div -->
 
 <h3 id="sequence"><a href="#sequence">#</a>&nbsp;<code>sequence</code></h3>
-[View in source](https://github.com/crcn/mesh.js/blob/8.0.1/packages/mesh/lib/bundle.js#L645)
+[View in source](https://github.com/crcn/mesh.js/blob/8.0.3/packages/mesh/lib/bundle.js#L645)
 
 Executes functions in sequence
 
