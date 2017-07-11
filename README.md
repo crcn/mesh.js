@@ -43,7 +43,8 @@ for await (const chunk of dispatch(createInsertMessage("messages", { text: "hell
 
 #### Resources
 
-- [Documentation](https://github.com/crcn/mesh.js/tree/master/docs)
+- Documentation
+  - [Core API](https://github.com/crcn/mesh.js/tree/master/packages/mesh/docs/api.md)
 - [Examples](./examples)
 - Modules
     - Data Store Adapters
