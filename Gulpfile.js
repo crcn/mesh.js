@@ -62,6 +62,11 @@ gulp.task('build', () => {
   )));
 });
 
+gulp.task('build:docs', () => {
+  return merge(PACKAGE_DIRS.map((dir) => (
+    gulpSpawn('npm', ['run', 'build:docs', ...(WATCH ? ['--', '--watch'] : [])], { cwd: dir })
+  )));
+});
 
 gulp.task('clean', () => {
   return merge(PACKAGE_DIRS.map((dir) => (
