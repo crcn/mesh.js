@@ -32,7 +32,7 @@ const insertTodoItem = (message: DSInsertMessage) => (
   wrapAsnycIterableIterator(fetch('/api/todos', {
     method: 'POST',
     body: message.data
-  }));
+  }))
 );
 
 const insert = fallback(
