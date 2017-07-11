@@ -9,7 +9,7 @@ Mesh is a utility library for [async iterable iterators](https://github.com/tc39
 
 #### Motivation
 
-This library was originally created to handle complex data flows, and unify how application comminicate internally and externally. It also serves as a _single_ channel for _all_ communication which makes it more easy to control & reason about how your application is passing around data asynchronously. 
+This library was originally created to handle complex data flows, and unify how applications communicate internally and externally. It also serves as a _single_ channel for _all_ communication which makes it more easy to control & reason about how your application is passing around data asynchronously. 
 
 Mesh provides a set of higher order functions that you can use to build your data flows out. Here's an example of that:
 
