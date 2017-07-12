@@ -2,7 +2,7 @@ import { timeout as _timeout } from "./test";
 import { expect } from "chai";
 import { timeout, sequence, readAll } from "./index";
 
-const timeoutQuick = (fn: Function, createError?) => timeout(fn, 3, createError);
+const timeoutQuick = (fn: Function, createError?) => timeout(fn, 4, createError);
 
 describe(__filename + "#", () => {
 

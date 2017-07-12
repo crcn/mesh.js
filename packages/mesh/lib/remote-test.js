@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
+require("reflect-metadata");
 var chai_1 = require("chai");
 var events_1 = require("events");
 var _1 = require(".");
@@ -255,7 +256,7 @@ describe(__filename + "#", function () {
                     _c = chai_1.expect;
                     return [4 /*yield*/, iter.next()];
                 case 4:
-                    _c.apply(void 0, [_d.sent()]).to.eql({ done: true });
+                    _c.apply(void 0, [_d.sent()]).to.eql({ value: undefined, done: true });
                     return [2 /*return*/];
             }
         });

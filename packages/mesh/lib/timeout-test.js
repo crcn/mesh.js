@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var test_1 = require("./test");
 var chai_1 = require("chai");
 var index_1 = require("./index");
-var timeoutQuick = function (fn, createError) { return index_1.timeout(fn, 3, createError); };
+var timeoutQuick = function (fn, createError) { return index_1.timeout(fn, 4, createError); };
 describe(__filename + "#", function () {
     it("can return yielded values from a target function", function () { return __awaiter(_this, void 0, void 0, function () {
         var t, _a;

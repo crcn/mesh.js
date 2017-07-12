@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { expect } from "chai";
 import { timeout } from "./test";
 import { EventEmitter } from "events";
@@ -140,6 +141,6 @@ describe(__filename + "#", () => {
     const iter = remoteRepeat({ n: 3 });
     expect(await iter.next()).to.eql({ value: 2, done: false });
     await iter.return();
-    expect(await iter.next()).to.eql({ done: true });
+    expect(await iter.next()).to.eql({ value: undefined, done: true });
   });
 });
