@@ -1,87 +1,74 @@
 import { readAll, DuplexAsyncIterableIterator } from "mesh";
-import sift from "sift";
-// import { serializable } from "@tandem/common/serialize";
 
-interface Message {
+export type Message = {
   type: string;
 }
 
-export class DSMessage implements Message {
-  readonly timestamp: number = Date.now();
-  constructor(readonly type: string, readonly collectionName: string) {
-  }
-}
+export const DS_FIND   = "DS_FIND";
+export const DS_INSERT = "DS_INSERT";
+export const DS_UPDATE = "DS_UPDATE";
+export const DS_REMOVE = "DS_REMOVE";
+export const DS_TAIL   = "DS_TAIL";
 
-// @serializable("DSInsertRequest")
-export class DSInsertRequest<T> extends DSMessage {
-  static readonly DS_INSERT = "dsInsert";
-  constructor(collectionName: string, readonly data: T) {
-    super(DSInsertRequest.DS_INSERT, collectionName);
-  }
-  static async dispatch(collectionName: string, data: any, dispatcher: IStreamableBus<any>) {
-    return await readAll(dispatcher.dispatch(new DSInsertRequest(collectionName, data)));
-  }
-}
+export type DSMessage = Message & {
+  collectionName: string,
+  createdAt: number;
+};
 
-// @serializable("DSUpdateRequest")
-export class DSUpdateRequest<T, U> extends DSMessage {
-  static readonly DS_UPDATE = "dsUpdate";
-  constructor(collectionName: string, readonly data: T, readonly query: U) {
-    super(DSUpdateRequest.DS_UPDATE, collectionName);
-  }
+export type DSInsertRequest<T> = DSMessage & {
+  data: T;
+};
 
-  static async dispatch(collectionName: string, data: any, query: any, dispatch: IStreamableBus<any>): Promise<Array<any>> {
-    return await readAll(dispatcher.dispatch(new DSUpdateRequest(collectionName, data, query)));
-  }
-}
+export type DSUpdateRequest<T, U> = DSMessage & {
+  data: T;
+  query: U;
+};
 
-// @serializable("DSFindRequest")
-export class DSFindRequest<T> extends DSMessage {
-  static readonly DS_FIND   = "dsFind";
-  constructor(collectionName: string, readonly query: T, readonly multi: boolean = false) {
-    super(DSFindRequest.DS_FIND, collectionName);
-  }
-  static createFilter(collectionName: string) {
-    return sift({ collectionName: collectionName } as any);
-  }
-  static async findOne(collectionName: string, query: Object, dispatcher: IStreamableBus<any>): Promise<any> {
-    return (await readOneChunk<any>(dispatcher.dispatch(new DSFindRequest(collectionName, query, true)))).value;
-  }
-  static async findMulti(collectionName: string, query: Object, dispatcher: IStreamableBus<any>): Promise<any[]> {
-    return await readAll(dispatcher.dispatch(new DSFindRequest(collectionName, query, true)));
-  }
-}
+export type DSFindRequest<T> = DSMessage & {
+  data: T;
+  multi: boolean;
+};
 
-// @serializable("DSTailRequest")
-export class DSTailRequest extends DSMessage {
-  static readonly DS_TAIL   = "dsTail";
-  constructor(collectionName: string, readonly query: any) {
-    super(DSTailRequest.DS_TAIL, collectionName);
-  }
-  static dispatch(collectionName: string, query: any, dispatcher: IStreamableBus<any>): DuplexAsyncIterableIterator<any, DSTailedOperation> {
-    return dispatcher.dispatch(new DSTailRequest(collectionName, query)) as DuplexAsyncIterableIterator<any, DSTailedOperation>;
-  }
-}
+export type DSTailRequest<T> = DSMessage & {
+  query: T
+};
 
-// @serializable("DSTailedOperation")
-export class DSTailedOperation implements Message {
-  static readonly DS_TAILED_OPERATION   = "tsTailedOperation";
-  readonly type = DSTailedOperation.DS_TAILED_OPERATION;
-  constructor(request: DSUpdateRequest<any, any>|DSRemoveRequest<any>|DSInsertRequest<any>, readonly data: any) {
-  }
-}
+export type DSRemoveRequest<T> = DSMessage & {
+  query: T;
+  multi: boolean;
+};
 
-// @serializable("DSFindAllRequest")
-export class DSFindAllRequest extends DSFindRequest<any> {
-  constructor(collectionName: string) {
-    super(collectionName, {}, true);
-  }
-}
+export const dsMessage = (type: string, collectionName: string, props: any = {}): DSMessage => ({
+  ...props,
+  type,
+  collectionName,
+  createdAt: Date.now(),
+});
 
-// @serializable("DSRemoveRequest")
-export class DSRemoveRequest<T> extends DSMessage {
-  static readonly DS_REMOVE   = "dsRemove";
-  constructor(collectionName: string, readonly query: T) {
-    super(DSRemoveRequest.DS_REMOVE, collectionName);
-  }
-}
+export const dSInsertRequest = <T>(collectionName: string, data: T) => dsMessage(DS_INSERT, collectionName, {
+  data
+}) as DSInsertRequest<T>;
+
+export const dSUpdateRequest = <T, U>(collectionName: string, data: T, query: U) => dsMessage(DS_UPDATE, collectionName, {
+  data,
+  query
+}) as DSUpdateRequest<T, U>;
+
+export const dSFindRequest = <T>(collectionName: string, query: T, multi: boolean = false) => dsMessage(DS_FIND, collectionName, {
+  query,
+  multi
+}) as DSFindRequest<T>;
+
+export const dSFindAllRequest = <T>(collectionName: string) => dsMessage(DS_FIND, collectionName, {
+  query: {},
+  multi: true
+}) as DSFindRequest<T>;
+
+export const dSRemoveRequest = <T>(collectionName: string, query: T, multi: boolean = false) => dsMessage(DS_REMOVE, collectionName, {
+  query,
+  multi
+}) as DSRemoveRequest<T>;
+
+export const dSTailRequest = <T>(collectionName: string, query: T) => dsMessage(DS_TAIL, collectionName, {
+  query
+}) as DSTailRequest<T>;

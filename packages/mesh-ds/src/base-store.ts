@@ -1,4 +1,4 @@
-import { DSMessage, DSInsertRequest, DSFindRequest, DSFindAllRequest, DSRemoveRequest, DSUpdateRequest } from "./messages";
+import { DSMessage, DSInsertRequest, DSFindRequest, DSRemoveRequest, DSUpdateRequest } from "./messages";
 import { proxy } from "mesh";
 
 type DataStoreOptions = {
