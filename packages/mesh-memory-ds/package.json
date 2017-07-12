@@ -19,5 +19,8 @@
     "mesh-ds": "1.0.x",
     "mongoid-js": "1.1.x",
     "sift": "^3.3.12"
+  },
+  "devDependencies": {
+    "@types/reflect-metadata": "^0.0.5"
   }
 }

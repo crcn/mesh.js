@@ -2,15 +2,25 @@
 # yarn lockfile v1
 
 
-mesh-ds@0.0.x:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/mesh-ds/-/mesh-ds-0.0.4.tgz#f7d9461046210ba8778bf46a37bd0ea93e39df13"
+"@types/reflect-metadata@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@types/reflect-metadata/-/reflect-metadata-0.0.5.tgz#9c042bfa9803d577aad4f57dfbca4b7cae4286fe"
+
+mesh-ds@1.0.x:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/mesh-ds/-/mesh-ds-1.0.0.tgz#7aa51ee115173984c77486a6d9a4f4842d29e1ef"
   dependencies:
+    "@types/reflect-metadata" "^0.0.5"
     mesh "7.0.x"
+    sift "^3.3.12"
 
 mesh@7.0.x:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/mesh/-/mesh-7.0.3.tgz#963572be8513fa3955a1147f3e3109e5b0155af0"
+
+mesh@8.0.x:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/mesh/-/mesh-8.0.2.tgz#7dc412f847ef941800ddf202945df2eac38ea7e5"
 
 mongoid-js@1.1.x:
   version "1.1.2"
