@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var noReturn = function () { return Promise.resolve({ done: true }); };
+var noReturn = function (value) { return Promise.resolve({ value: undefined, done: true }); };
 var noThrow = noReturn;
 function wrapAsyncIterableIterator(source) {
     var _this = this;
@@ -50,7 +50,7 @@ function wrapAsyncIterableIterator(source) {
             nexted = true;
             return result;
         },
-        _c.return = function () { return Promise.resolve({ done: true }); },
+        _c.return = function () { return Promise.resolve({ value: undefined, done: true }); },
         _c.throw = function (e) { return Promise.reject(e); },
         _c;
     var _a, _b, _c;

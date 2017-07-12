@@ -36,18 +36,18 @@ export const createQueue = <T>(): Queue<T> => {
         return _pushing.shift()();
       }
       if (_done) {
-        return Promise.resolve({ done: true });
+        return Promise.resolve({ value: undefined, done: true });
       }
       return new Promise<IteratorResult<T>>((resolve, reject) => {
         _pulling.push([resolve, reject]);
       });
     },
-    unshift(value: T) {
+    unshift(value?: T) {
       return write(value);
     },
-    return(returnValue?) {
+    return(returnValue?: T) {
       if (_done) {
-        return Promise.resolve({ done: true });
+        return Promise.resolve({ value: undefined, done: true });
       }
       _done = true;
       return write(returnValue, true);

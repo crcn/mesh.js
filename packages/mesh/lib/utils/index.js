@@ -1,13 +1,7 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.castGetter = function (value) { return typeof value === "function" ? value : function () { return value; }; };
-/*
-1. need to be able to abort stream from dispatched
-
-for await (const value of read()) {
-  break; // break to abort
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-
-const dispatch = (message: Message) => (value: string) =>
-*/
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(require("./iterators"));
 //# sourceMappingURL=index.js.map

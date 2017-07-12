@@ -34,7 +34,7 @@ exports.createQueue = function () {
                 return _pushing.shift()();
             }
             if (_done) {
-                return Promise.resolve({ done: true });
+                return Promise.resolve({ value: undefined, done: true });
             }
             return new Promise(function (resolve, reject) {
                 _pulling.push([resolve, reject]);
@@ -45,7 +45,7 @@ exports.createQueue = function () {
         },
         _a.return = function (returnValue) {
             if (_done) {
-                return Promise.resolve({ done: true });
+                return Promise.resolve({ value: undefined, done: true });
             }
             _done = true;
             return write(returnValue, true);

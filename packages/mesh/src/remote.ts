@@ -59,7 +59,7 @@ const createRemoteMessage = (type: RemoteMessageType, sid: string, did: string, 
 
 export const remote = (getOptions: () => RemoteAsyncGeneratorOptions | Promise<RemoteAsyncGeneratorOptions>, call: Function = noop) => {
 
-  const { promise: remotePromise, resolve: resolveRemote } = createDeferredPromise();
+  const { promise: remotePromise, resolve: resolveRemote } = createDeferredPromise<Function>();
 
   Promise.resolve(getOptions()).then(({ adapter, info = {} }: RemoteAsyncGeneratorOptions) => {
     const uid = createUID();

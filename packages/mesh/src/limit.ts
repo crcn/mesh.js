@@ -6,7 +6,7 @@ import { createDeferredPromise } from "./deferred-promise";
 
 export const limit = (fn: Function, max: number = 1) => {
   
-  const queue = createQueue();
+  const queue = createQueue<Function>();
 
   let queueCount = 0;
   

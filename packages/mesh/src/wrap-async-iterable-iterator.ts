@@ -1,4 +1,4 @@
-const noReturn = () => Promise.resolve({ done: true });
+const noReturn = (value?: any) => Promise.resolve({ value: undefined, done: true });
 const noThrow  = noReturn;
 
 export function wrapAsyncIterableIterator<TInput, TOutput>(source: any): AsyncIterableIterator<TOutput> {
@@ -49,7 +49,7 @@ export function wrapAsyncIterableIterator<TInput, TOutput>(source: any): AsyncIt
       nexted = true;
       return result;
     },
-    return: () => Promise.resolve({ done: true }),
+    return: () => Promise.resolve({ value: undefined, done: true }),
     throw: (e) => Promise.reject(e)
   }
 }
