@@ -1,6 +1,6 @@
 {
   "name": "mesh",
-  "version": "8.0.4",
+  "version": "8.0.5",
   "description": "Data flow library for async generators",
   "tag": "alpha",
   "main": "index.js",

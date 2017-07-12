@@ -2,6 +2,7 @@
 
 export * from "./base";
 export * from "./combine";
+export * from "./awaitable";
 export * from "./remote";
 export * from "./when";
 export * from "./proxy";

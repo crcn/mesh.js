@@ -5,6 +5,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 Symbol.asyncIterator = Symbol.asyncIterator || Symbol("Symbol.asyncIterator");
 __export(require("./combine"));
+__export(require("./awaitable"));
 __export(require("./remote"));
 __export(require("./when"));
 __export(require("./proxy"));
