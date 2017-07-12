@@ -23,3 +23,4 @@ export * from "./race";
 export * from "./tee";
 export * from "./timeout";
 export * from "./limit";
+export * from "./awaitable";

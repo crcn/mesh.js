@@ -26,4 +26,5 @@ __export(require("./race"));
 __export(require("./tee"));
 __export(require("./timeout"));
 __export(require("./limit"));
+__export(require("./awaitable"));
 //# sourceMappingURL=index.js.map
