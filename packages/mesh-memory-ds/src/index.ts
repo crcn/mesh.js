@@ -1,5 +1,5 @@
 import sift from "sift";
-import { BaseDataStore, DSFindRequest, DSFindAllRequest, DSInsertRequest, DSRemoveRequest, DSUpdateRequest, DSMessage } from "mesh-ds";
+import { dataStore, DSFindRequest, DSInsertRequest, DSRemoveRequest, DSUpdateRequest, DSMessage } from "mesh-ds";
 import { ReadableStream, DuplexAsyncIterableIterator } from "mesh";
 import mongoid = require("mongoid-js");
 

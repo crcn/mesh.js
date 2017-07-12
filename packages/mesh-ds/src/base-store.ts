@@ -8,7 +8,7 @@ type DataStoreOptions = {
   dsUpdate(message: DSUpdateRequest<any, any>);
 }
 
-export const dataStore = (getOptions: () => Promise<DataStoreOptions> ) => proxy((message: DSMessage) => new Promise((resolve) => {
+export const dataStoreDispatcher = (getOptions: () => Promise<DataStoreOptions> ) => proxy((message: DSMessage) => new Promise((resolve) => {
   getOptions().then(options => {
     resolve(message && options[message.type] || (() => {}));
   });

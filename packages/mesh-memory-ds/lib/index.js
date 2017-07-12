@@ -11,7 +11,6 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var sift_1 = require("sift");
-var mesh_ds_1 = require("mesh-ds");
 var mongoid = require("mongoid-js");
 var MemoryDataStore = (function (_super) {
     __extends(MemoryDataStore, _super);
@@ -67,6 +66,6 @@ var MemoryDataStore = (function (_super) {
         return this._data[collectionName] || (this._data[collectionName] = []);
     };
     return MemoryDataStore;
-}(mesh_ds_1.BaseDataStore));
+}(BaseDataStore));
 exports.MemoryDataStore = MemoryDataStore;
 //# sourceMappingURL=index.js.map
