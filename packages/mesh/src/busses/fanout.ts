@@ -25,7 +25,7 @@ export class FanoutBus<T> implements IStreamableBus<T> {
   private getTargets: <T>(message: T) => IBus<T, any>[];
 
   constructor(private _targets: FanoutBusTargetsParamType<T>, private _iterator: IteratorType<IBus<T, any>>) {
-    this.getTargets = typeof _targets === "function" ? _targets : () => _targets;
+    this.getTargets = typeof _targets === "function" ? _targets : () => _targets as any;
   }
   dispatch(message: T) {
     return new DuplexStream((input, output) => {
