@@ -1,6 +1,6 @@
 {
-  "name": "mesh-memory-ds",
-  "version": "0.0.3",
+  "name": "mesh-memory-ds7",
+  "version": "0.0.4",
   "description": "Memory Data Store",
   "main": "index.js",
   "repository": {
@@ -14,8 +14,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mesh": "7.0.x",
-    "mesh-ds": "0.0.x",
+    "mesh7": "7.0.x",
+    "mesh-ds7": "0.0.x",
     "mongoid-js": "1.1.x"
   }
 }

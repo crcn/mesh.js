@@ -1,6 +1,6 @@
 {
-  "name": "mesh",
-  "version": "7.0.3",
+  "name": "mesh7",
+  "version": "7.0.4",
   "description": "Data flow library for WHATWG streams",
   "main": "index.js",
   "scripts": {
