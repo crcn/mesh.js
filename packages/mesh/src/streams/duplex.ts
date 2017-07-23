@@ -132,7 +132,7 @@ export function wrapDuplexStream<T, U>(value): TransformStream<T, U> {
       start(controller) {
         readable.pipeTo(new WritableStream({
           write(chunk) {
-            controller.enqueue(chunk);
+            controller.enqueue(chunk as any);
           },
           abort(error) {
             controller.error(error);
