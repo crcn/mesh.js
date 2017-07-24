@@ -5,7 +5,7 @@ export const readOne = (value: any, done?: boolean) => new Promise((resolve, rej
   const iterable = wrapAsyncIterableIterator(value);
   iterable.next().then(({ value, done }) => {
     resolve(value);
-    if (done) {
+    if (done !== false) {
       iterable.return();
     }
   }, reject);

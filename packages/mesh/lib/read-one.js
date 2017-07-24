@@ -6,7 +6,7 @@ exports.readOne = function (value, done) { return new Promise(function (resolve,
     iterable.next().then(function (_a) {
         var value = _a.value, done = _a.done;
         resolve(value);
-        if (done) {
+        if (done !== false) {
             iterable.return();
         }
     }, reject);
