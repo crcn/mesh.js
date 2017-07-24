@@ -27,3 +27,4 @@ export * from "./tee";
 export * from "./timeout";
 export * from "./limit";
 export * from "./awaitable";
+export * from "./read-one";
