@@ -1,6 +1,6 @@
 {
   "name": "mesh-memory-ds7",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Memory Data Store",
   "main": "index.js",
   "repository": {
