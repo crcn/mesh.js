@@ -31,4 +31,5 @@ __export(require("./timeout"));
 __export(require("./limit"));
 __export(require("./awaitable"));
 __export(require("./read-one"));
+__export(require("./circular"));
 //# sourceMappingURL=index.js.map
