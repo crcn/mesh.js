@@ -132,7 +132,9 @@ export const remote = (getOptions: () => RemoteAsyncGeneratorOptions | Promise<R
 
     // throw incomming messages into a queue so that each gets handled in order, preventing
     // race conditions
-    adapter.addListener(message => messageQueue.unshift(message));
+    adapter.addListener(message => {
+      return messageQueue.unshift(message);
+    });
 
     // handle incomming messages
     pump(messageQueue, (message: RemoteMessage) => {

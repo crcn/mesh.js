@@ -109,7 +109,9 @@ exports.remote = function (getOptions, call) {
         };
         // throw incomming messages into a queue so that each gets handled in order, preventing
         // race conditions
-        adapter.addListener(function (message) { return messageQueue.unshift(message); });
+        adapter.addListener(function (message) {
+            return messageQueue.unshift(message);
+        });
         // handle incomming messages
         pump_1.pump(messageQueue, function (message) {
             switch (message.type) {

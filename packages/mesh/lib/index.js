@@ -32,4 +32,5 @@ __export(require("./limit"));
 __export(require("./awaitable"));
 __export(require("./read-one"));
 __export(require("./circular"));
+__export(require("./channel"));
 //# sourceMappingURL=index.js.map

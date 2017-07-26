@@ -1,7 +1,6 @@
 import { proxy } from "./proxy";
 import { sequence } from "./sequence";
 import { createQueue } from "./queue";
-import { createDuplex } from "./duplex";
 import { createDeferredPromise } from "./deferred-promise";
 
 export const limit = (fn: Function, max: number = 1) => {

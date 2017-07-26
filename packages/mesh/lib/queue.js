@@ -29,8 +29,6 @@ exports.createQueue = function () {
                 return Promise.reject(_e);
             }
             if (_pushing.length) {
-                if (_done) {
-                }
                 return _pushing.shift()();
             }
             if (_done) {
