@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { expect } from "chai";
 import { timeout } from "./test";
 import { EventEmitter } from "events";

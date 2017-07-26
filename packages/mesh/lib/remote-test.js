@@ -36,7 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-require("reflect-metadata");
 var chai_1 = require("chai");
 var events_1 = require("events");
 var _1 = require(".");
