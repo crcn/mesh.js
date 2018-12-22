@@ -1,4 +1,4 @@
-##  ⚠️⚠️⚠️This library is no longer maintained, and should not be used in production applications. ⚠️⚠️⚠️
+##  ⚠️ This library is no longer maintained, and should not be used in production applications. ⚠️
 
 [![Build Status](https://travis-ci.org/crcn/mesh.js.svg)](https://travis-ci.org/crcn/mesh.js) [![Coverage Status](https://coveralls.io/repos/crcn/mesh.js/badge.svg?branch=master&service=github)](https://coveralls.io/github/crcn/mesh.js?branch=master) [![Join the chat at https://gitter.im/crcn/mesh.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/mesh.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
